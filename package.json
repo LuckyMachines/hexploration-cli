@@ -1,0 +1,29 @@
+{
+  "name": "@luckymachines/hexploration-cli",
+  "version": "1.0.0",
+  "description": "A CLI to play Hexploration",
+  "main": "src/index.js",
+  "bin": {
+    "@luckymachines/hexploration-cli": "bin/hexploration-cli",
+    "hexploration-cli": "bin/hexploration-cli"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cli",
+    "hexploration-cli",
+    "hexploration"
+  ],
+  "author": "Max Meier",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "arg": "^5.0.1",
+    "chalk": "^4.1.0",
+    "esm": "^3.2.25",
+    "inquirer": "^8.2.4"
+  }
+}
