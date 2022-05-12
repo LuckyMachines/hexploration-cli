@@ -3,3 +3,4 @@
 **/.DS_Store
 env.js
 privatekey
+/bin/privatekey

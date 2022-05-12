@@ -6,6 +6,7 @@ import { submitMoves } from "./submit";
 import { playerInfo } from "./player";
 import GameRegistry from "@luckymachines/game-core/contracts/abi/v0.0/GameRegistry.json";
 import Provider from "./provider";
+import Addresses from "../settings/ContractAddresses.js";
 import fs from "fs";
 
 let web3; // provider
@@ -57,6 +58,15 @@ async function mainMenu(gameID) {
 export async function runCLI(options) {
   web3 = await Provider();
   // if game exists
+
+  const gameRegistryAddress = Addresses.GANACHE_GAME_REGISTRY;
+  const gameBoardAddress = Addresses.GANACHE_HEXPLORATION_BOARD;
+  const gameRegistry = new web3.eth.Contract(GameRegistry, gameRegistryAddress);
+  const latestGame = await gameRegistry.methods
+    .latestGame(gameBoardAddress)
+    .call();
+  console.log("Latest Game:", latestGame);
+
   // if player is registered
   if (options.gameID != 0) {
     console.log("\n%s Hexploration via CLI", chalk.green.bold("Playing"));
