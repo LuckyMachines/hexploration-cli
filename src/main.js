@@ -5,13 +5,19 @@ import { progressPhase } from "./phase";
 import { submitMoves } from "./submit";
 import { playerInfo } from "./player";
 import GameRegistry from "@luckymachines/game-core/contracts/abi/v0.0/GameRegistry.json";
+import PlayerRegistry from "@luckymachines/game-core/contracts/abi/v0.0/PlayerRegistry.json";
 import Provider from "./provider";
 import Addresses from "../settings/ContractAddresses.js";
 import fs from "fs";
 
 let web3; // provider
+let accounts;
 
 async function mainMenu(gameID) {
+  console.log(`${chalk.cyan.bold("\nPlaying Hexploration via CLI")}`);
+  console.log(`${chalk.green.bold("Game ID:")} ${gameID}`);
+  console.log(`${chalk.blue.bold("Player:")} ${accounts[0]}\n`);
+
   const questions = [];
   questions.push({
     type: "list",
@@ -57,21 +63,50 @@ async function mainMenu(gameID) {
 
 export async function runCLI(options) {
   web3 = await Provider();
-  // if game exists
-
+  accounts = await web3.eth.getAccounts();
+  // check that game is registered
   const gameRegistryAddress = Addresses.GANACHE_GAME_REGISTRY;
+  const playerRegistryAddress = Addresses.GANACHE_PLAYER_REGISTRY;
   const gameBoardAddress = Addresses.GANACHE_HEXPLORATION_BOARD;
+
   const gameRegistry = new web3.eth.Contract(GameRegistry, gameRegistryAddress);
   const latestGame = await gameRegistry.methods
     .latestGame(gameBoardAddress)
     .call();
   //console.log("Latest Game:", latestGame);
 
-  // if player is registered
   if (options.gameID != 0 && Number(latestGame) >= Number(options.gameID)) {
-    console.log("\n%s Hexploration via CLI", chalk.green.bold("Playing"));
-    console.log(`${chalk.green.bold("Game ID:")} ${options.gameID}\n`);
-    await mainMenu(options.gameID);
+    const playerRegistry = new web3.eth.Contract(
+      PlayerRegistry,
+      playerRegistryAddress
+    );
+
+    let isRegistered = await playerRegistry.methods
+      .isRegistered(options.gameID, accounts[0])
+      .call();
+
+    if (isRegistered) {
+      await mainMenu(options.gameID);
+    } else {
+      console.log(`Registering player: ${accounts[0]}`);
+      try {
+        await playerRegistry.methods
+          .register(options.gameID)
+          .send({ from: accounts[0], gas: "5000000" });
+      } catch (err) {
+        console.log("Error registering:", err.message);
+      }
+      isRegistered = await playerRegistry.methods
+        .isRegistered(options.gameID, accounts[0])
+        .call();
+      if (isRegistered) {
+        console.log("Player registered. Entering game.");
+        await mainMenu(options.gameID);
+      } else {
+        console.log("Unable to register player.");
+        process.exit();
+      }
+    }
   } else {
     console.log("Game ID not found.");
     process.exit();
