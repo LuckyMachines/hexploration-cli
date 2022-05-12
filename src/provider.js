@@ -6,7 +6,7 @@ const pkDir = dirname(require.main.filename);
 
 const provider = async (providerUrl) => {
   let keys = [];
-  const keysFromFile = fs.readFileSync(`${pkDir}/privateKey`).toString();
+  const keysFromFile = fs.readFileSync(`${pkDir}/.privateKey`).toString();
   keysFromFile.split(/\r?\n/).forEach((line) => {
     const privateKey = line.trim();
     keys.push(privateKey);

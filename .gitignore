@@ -2,5 +2,5 @@
 .env
 **/.DS_Store
 env.js
-privatekey
-/bin/privatekey
+.privatekey
+/bin/.privatekey
