@@ -8,6 +8,8 @@ import GameRegistry from "@luckymachines/game-core/contracts/abi/v0.0/GameRegist
 import Provider from "./provider";
 import fs from "fs";
 
+let web3; // provider
+
 async function mainMenu(gameID) {
   const questions = [];
   questions.push({
@@ -27,19 +29,19 @@ async function mainMenu(gameID) {
   const answers = await inquirer.prompt(questions);
   switch (answers.choice) {
     case "Submit Move":
-      await submitMoves(gameID);
+      await submitMoves(gameID, web3);
       await mainMenu(gameID);
       break;
     case "Player Info":
-      await playerInfo(gameID);
+      await playerInfo(gameID, web3);
       await mainMenu(gameID);
       break;
     case "View Map":
-      await showMap(gameID);
+      await showMap(gameID, web3);
       await mainMenu(gameID);
       break;
     case "Progress Phase":
-      await progressPhase(gameID);
+      await progressPhase(gameID, web3);
       await mainMenu(gameID);
       break;
     case "Exit":
@@ -53,7 +55,7 @@ async function mainMenu(gameID) {
 }
 
 export async function runCLI(options) {
-  const web3 = await Provider();
+  web3 = await Provider();
   // if game exists
   // if player is registered
   if (options.gameID != 0) {
