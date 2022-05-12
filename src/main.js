@@ -19,7 +19,7 @@ async function mainMenu(gameID) {
   questions.push({
     type: "list",
     name: "choice",
-    message: `\n${chalk.cyan.underline("Dashboard")}`,
+    message: `\n${chalk.blue.underline("Dashboard")}`,
     choices: [
       "Submit Move",
       "View Map",
