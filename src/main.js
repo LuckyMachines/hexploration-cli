@@ -65,12 +65,15 @@ export async function runCLI(options) {
   const latestGame = await gameRegistry.methods
     .latestGame(gameBoardAddress)
     .call();
-  console.log("Latest Game:", latestGame);
+  //console.log("Latest Game:", latestGame);
 
   // if player is registered
-  if (options.gameID != 0) {
+  if (options.gameID != 0 && Number(latestGame) >= Number(options.gameID)) {
     console.log("\n%s Hexploration via CLI", chalk.green.bold("Playing"));
     console.log(`${chalk.green.bold("Game ID:")} ${options.gameID}\n`);
     await mainMenu(options.gameID);
+  } else {
+    console.log("Game ID not found.");
+    process.exit();
   }
 }
