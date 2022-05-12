@@ -4,6 +4,9 @@ import { showMap } from "./map";
 import { progressPhase } from "./phase";
 import { submitMoves } from "./submit";
 import { playerInfo } from "./player";
+import GameRegistry from "@luckymachines/game-core/contracts/abi/v0.0/GameRegistry.json";
+import Provider from "./provider";
+import fs from "fs";
 
 async function mainMenu(gameID) {
   const questions = [];
@@ -41,6 +44,7 @@ async function mainMenu(gameID) {
       break;
     case "Exit":
       console.log("Exiting...");
+      process.exit();
       break;
     default:
       break;
@@ -49,6 +53,9 @@ async function mainMenu(gameID) {
 }
 
 export async function runCLI(options) {
+  const web3 = await Provider();
+  // if game exists
+  // if player is registered
   if (options.gameID != 0) {
     console.log("\n%s Hexploration via CLI", chalk.green.bold("Playing"));
     console.log(`${chalk.green.bold("Game ID:")} ${options.gameID}\n`);
