@@ -49,7 +49,9 @@ async function mainMenu(gameID) {
 }
 
 export async function runCLI(options) {
-  console.log("\n%s Hexploration via CLI", chalk.green.bold("Playing"));
-  console.log(`${chalk.green.bold("Game ID:")} ${options.gameID}\n`);
-  await mainMenu(options.gameID);
+  if (options.gameID != 0) {
+    console.log("\n%s Hexploration via CLI", chalk.green.bold("Playing"));
+    console.log(`${chalk.green.bold("Game ID:")} ${options.gameID}\n`);
+    await mainMenu(options.gameID);
+  }
 }
