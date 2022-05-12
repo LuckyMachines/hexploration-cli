@@ -8,7 +8,6 @@ import GameRegistry from "@luckymachines/game-core/contracts/abi/v0.0/GameRegist
 import PlayerRegistry from "@luckymachines/game-core/contracts/abi/v0.0/PlayerRegistry.json";
 import Provider from "./provider";
 import Addresses from "../settings/ContractAddresses.js";
-import fs from "fs";
 
 let web3; // provider
 let accounts;

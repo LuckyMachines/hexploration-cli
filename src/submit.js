@@ -1,12 +1,18 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
+import HexplorationBoard from "hexploration/build/contracts/HexplorationBoard.json";
+import HexplorationController from "hexploration/build/contracts/HexplorationController.json";
+import Addresses from "../settings/ContractAddresses.js";
 
 let currentAccount;
+let hexplorationBoard;
+let hexplorationController;
+let web3;
 
 async function moveToSpace() {
-  console.log("Move to space...");
   // TODO: get this from a contract
   const maxSpaces = 3;
+  //
   let spaceChoices = [];
   for (let i = 0; i < maxSpaces; i++) {
     spaceChoices.push(`${i + 1}`);
@@ -23,9 +29,11 @@ async function moveToSpace() {
   const spacesToMove = answers.spacesToMove;
   console.log(`Moving ${spacesToMove}`);
 
-  //TODO: get list of actual spaces to choose from
-  // can start with full list for ease of testing
-  let availableSpaces = ["0,0", "0,1", "1,1", "1,0"];
+  const availableSpaces = await hexplorationBoard.methods
+    .getZoneAliases()
+    .call();
+  //TODO (maybe): filter list down to only possible spaces within movement
+  //let availableSpaces = ["0,0", "0,1", "1,1", "1,0"];
 
   questions = [];
   for (let i = 0; i < spacesToMove; i++) {
@@ -63,17 +71,32 @@ async function setupCamp() {
   console.log("Setup camp...");
 }
 
-async function takeDownCamp() {
-  console.log("Take down camp...");
+async function campsiteActivity() {
+  console.log("Campsite activity...");
 }
 
-async function useItem() {
-  console.log("Use item...");
+async function equipItem() {
+  console.log("Equip item...");
+}
+
+async function tradeItems() {
+  console.log("Trade items...");
 }
 
 export async function submitMoves(gameID, provider, account) {
+  web3 = provider;
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
+
+  hexplorationBoard = new provider.eth.Contract(
+    HexplorationBoard.abi,
+    Addresses.GANACHE_HEXPLORATION_BOARD
+  );
+  hexplorationController = new provider.eth.Contract(
+    HexplorationController.abi,
+    Addresses.GANACHE_HEXPLORATION_CONTROLLER
+  );
+
   const questions = [];
   questions.push({
     type: "list",
@@ -82,8 +105,9 @@ export async function submitMoves(gameID, provider, account) {
     choices: [
       "Move to space",
       "Setup camp",
-      "Take down camp",
-      "Use item",
+      "Campsite activity",
+      "Equip item",
+      "Trade items",
       "Cancel"
     ],
     default: "Move to space"
@@ -96,11 +120,14 @@ export async function submitMoves(gameID, provider, account) {
     case "Setup camp":
       await setupCamp();
       break;
-    case "Take down camp":
-      await takeDownCamp();
+    case "Campsite activity":
+      await campsiteActivity();
       break;
-    case "Use item":
-      await useItem();
+    case "Equip item":
+      await equipItem();
+      break;
+    case "Trade items":
+      await tradeItems();
       break;
     case "Cancel":
     default:
