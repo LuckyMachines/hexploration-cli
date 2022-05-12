@@ -14,7 +14,8 @@ function parseArgumentsIntoOptions(rawArgs) {
   );
   return {
     newGame: args["--newGame"] || false,
-    gameID: args._[0]
+    gameID: args._[0],
+    walletIndex: args._[1]
   };
 }
 
@@ -45,6 +46,7 @@ async function promptForMissingOptions(options) {
 
 export async function cli(args) {
   let options = parseArgumentsIntoOptions(args);
+  //console.log("Wallet Index:", options.walletIndex);
   options = await promptForMissingOptions(options);
   //console.log("Option:", options);
   await runCLI(options);

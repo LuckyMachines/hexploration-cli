@@ -12,12 +12,9 @@ import fs from "fs";
 
 let web3; // provider
 let accounts;
+let currentAccount;
 
 async function mainMenu(gameID) {
-  console.log(`${chalk.cyan.bold("\nPlaying Hexploration via CLI")}`);
-  console.log(`${chalk.green.bold("Game ID:")} ${gameID}`);
-  console.log(`${chalk.blue.bold("Player:")} ${accounts[0]}\n`);
-
   const questions = [];
   questions.push({
     type: "list",
@@ -36,19 +33,19 @@ async function mainMenu(gameID) {
   const answers = await inquirer.prompt(questions);
   switch (answers.choice) {
     case "Submit Move":
-      await submitMoves(gameID, web3);
+      await submitMoves(gameID, web3, currentAccount);
       await mainMenu(gameID);
       break;
     case "Player Info":
-      await playerInfo(gameID, web3);
+      await playerInfo(gameID, web3, currentAccount);
       await mainMenu(gameID);
       break;
     case "View Map":
-      await showMap(gameID, web3);
+      await showMap(gameID, web3, currentAccount);
       await mainMenu(gameID);
       break;
     case "Progress Phase":
-      await progressPhase(gameID, web3);
+      await progressPhase(gameID, web3, currentAccount);
       await mainMenu(gameID);
       break;
     case "Exit":
@@ -64,6 +61,14 @@ async function mainMenu(gameID) {
 export async function runCLI(options) {
   web3 = await Provider();
   accounts = await web3.eth.getAccounts();
+  let overrideWallet = false;
+  if (options.walletIndex) {
+    if (options.walletIndex < accounts.length) {
+      overrideWallet = true;
+    }
+  }
+  currentAccount = overrideWallet ? accounts[options.walletIndex] : accounts[0];
+
   // check that game is registered
   const gameRegistryAddress = Addresses.GANACHE_GAME_REGISTRY;
   const playerRegistryAddress = Addresses.GANACHE_PLAYER_REGISTRY;
@@ -82,30 +87,32 @@ export async function runCLI(options) {
     );
 
     let isRegistered = await playerRegistry.methods
-      .isRegistered(options.gameID, accounts[0])
+      .isRegistered(options.gameID, currentAccount)
       .call();
 
-    if (isRegistered) {
-      await mainMenu(options.gameID);
-    } else {
-      console.log(`Registering player: ${accounts[0]}`);
+    if (!isRegistered) {
+      console.log(`Registering player: ${currentAccount}`);
       try {
         await playerRegistry.methods
           .register(options.gameID)
-          .send({ from: accounts[0], gas: "5000000" });
+          .send({ from: currentAccount, gas: "5000000" });
       } catch (err) {
         console.log("Error registering:", err.message);
       }
-      isRegistered = await playerRegistry.methods
-        .isRegistered(options.gameID, accounts[0])
-        .call();
-      if (isRegistered) {
-        console.log("Player registered. Entering game.");
-        await mainMenu(options.gameID);
-      } else {
-        console.log("Unable to register player.");
-        process.exit();
-      }
+    }
+
+    isRegistered = await playerRegistry.methods
+      .isRegistered(options.gameID, currentAccount)
+      .call();
+    if (isRegistered) {
+      console.log("Player registered. Entering game.");
+      console.log(`${chalk.cyan.bold("\nPlaying Hexploration via CLI")}`);
+      console.log(`${chalk.green.bold("Game ID:")} ${options.gameID}`);
+      console.log(`${chalk.blue.bold("Player:")} ${currentAccount}\n`);
+      await mainMenu(options.gameID);
+    } else {
+      console.log("Unable to register player.");
+      process.exit();
     }
   } else {
     console.log("Game ID not found.");
