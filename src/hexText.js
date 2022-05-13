@@ -61,12 +61,21 @@ export async function drawMap(rows, columns, showList) {
               x = hexColumn * 2 + 1;
               y = rows - i;
               xy = `${x},${y}`;
-              grid +=
-                needsTopRow || hexColumn == (columns + 1) / 2 - 1
-                  ? ` /    \\     `
-                  : ` /    \\ ${
-                      highlights.indexOf(xy) > -1 ? chalk.green.bold(xy) : xy
-                    } `;
+              if (!isBottomRow) {
+                grid += ` /`;
+              } else {
+                grid += x == 1 ? `  ` : ` /`;
+              }
+              if (isBottomRow && hexColumn == (columns + 1) / 2 - 1) {
+                `          `;
+              } else {
+                grid +=
+                  needsTopRow || hexColumn == (columns + 1) / 2 - 1
+                    ? `    \\     `
+                    : `    \\ ${
+                        highlights.indexOf(xy) > -1 ? chalk.green.bold(xy) : xy
+                      } `;
+              }
             }
           }
           break;
@@ -85,13 +94,17 @@ export async function drawMap(rows, columns, showList) {
                   : `      \\____/`;
             }
           } else {
-            grid += `/      \\`;
+            grid += !isBottomRow ? `/      \\` : `       \\`;
             for (
               let hexColumn = 0;
               hexColumn < (columns - 1) / 2;
               hexColumn++
             ) {
-              grid += `____/      \\`;
+              if (isBottomRow && hexColumn == (columns - 1) / 2 - 1) {
+                grid += `____/       `;
+              } else {
+                grid += `____/      \\`;
+              }
             }
           }
           break;
@@ -99,7 +112,7 @@ export async function drawMap(rows, columns, showList) {
           grid += `\n`;
           if (evenNumberOfColumns) {
             if (!isBottomRow) {
-              grid += isBottomRow ? `  ` : `\\ `;
+              grid += `\\ `;
               for (let hexColumn = 0; hexColumn < columns / 2; hexColumn++) {
                 x = hexColumn * 2;
                 y = rows - i - 1;
@@ -117,17 +130,19 @@ export async function drawMap(rows, columns, showList) {
               }
             }
           } else {
-            for (
-              let hexColumn = 0;
-              hexColumn < (columns + 1) / 2;
-              hexColumn++
-            ) {
-              x = hexColumn * 2;
-              y = rows - i - 1;
-              xy = `${x},${y}`;
-              grid += `\\ ${
-                highlights.indexOf(xy) > -1 ? chalk.green.bold(xy) : xy
-              }  /    `;
+            if (!isBottomRow) {
+              for (
+                let hexColumn = 0;
+                hexColumn < (columns + 1) / 2;
+                hexColumn++
+              ) {
+                x = hexColumn * 2;
+                y = rows - i - 1;
+                xy = `${x},${y}`;
+                grid += `\\ ${
+                  highlights.indexOf(xy) > -1 ? chalk.green.bold(xy) : xy
+                }  /    `;
+              }
             }
           }
           break;
@@ -141,12 +156,14 @@ export async function drawMap(rows, columns, showList) {
               }
             }
           } else {
-            for (
-              let hexColumn = 0;
-              hexColumn < (columns + 1) / 2;
-              hexColumn++
-            ) {
-              grid += ` \\____/     `;
+            if (!isBottomRow) {
+              for (
+                let hexColumn = 0;
+                hexColumn < (columns + 1) / 2;
+                hexColumn++
+              ) {
+                grid += ` \\____/     `;
+              }
             }
           }
           break;
