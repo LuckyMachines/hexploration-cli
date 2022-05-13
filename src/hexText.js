@@ -3,7 +3,7 @@ import chalk from "chalk";
 export async function drawMap(rows, columns, showList) {
   // rows = 4, columns = 5, showList = ["1,0","2,2","3,0"];
   let highlights = showList ? showList : [];
-  console.log("Hightlights:", highlights);
+  //console.log("Hightlights:", highlights);
   let grid = "";
   let x;
   let y;
