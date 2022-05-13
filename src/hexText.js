@@ -1,6 +1,13 @@
 import chalk from "chalk";
 
-export async function drawMap(rows, columns, showList) {
+export async function drawMap(
+  rows,
+  columns,
+  showList,
+  startingZone,
+  currentPlayerZone,
+  allPlayerZones
+) {
   // rows = 4, columns = 5, showList = ["1,0","2,2","3,0"];
   let highlights = showList ? showList : [];
   //console.log("Hightlights:", highlights);
