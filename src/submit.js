@@ -1,13 +1,13 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
-import HexplorationBoard from "hexploration/build/contracts/HexplorationBoard.json";
-import HexplorationController from "hexploration/build/contracts/HexplorationController.json";
+
 import Addresses from "../settings/ContractAddresses.js";
+import Contract from "./contract.js";
 
 let currentAccount;
 let hexplorationBoard;
 let hexplorationController;
-let web3;
+//let web3;
 
 async function moveToSpace() {
   // TODO: get this from a contract
@@ -84,18 +84,12 @@ async function tradeItems() {
 }
 
 export async function submitMoves(gameID, provider, account) {
-  web3 = provider;
+  //web3 = provider;
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
 
-  hexplorationBoard = new provider.eth.Contract(
-    HexplorationBoard.abi,
-    Addresses.GANACHE_HEXPLORATION_BOARD
-  );
-  hexplorationController = new provider.eth.Contract(
-    HexplorationController.abi,
-    Addresses.GANACHE_HEXPLORATION_CONTROLLER
-  );
+  hexplorationBoard = await Contract("board", provider);
+  hexplorationController = await Contract("controller", provider);
 
   const questions = [];
   questions.push({

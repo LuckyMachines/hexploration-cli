@@ -4,6 +4,7 @@ import { showMap } from "./map";
 import { progressPhase } from "./phase";
 import { submitMoves } from "./submit";
 import { playerInfo } from "./player";
+import { chooseLandingSite } from "./landingSite";
 import GameRegistry from "@luckymachines/game-core/contracts/abi/v0.0/GameRegistry.json";
 import PlayerRegistry from "@luckymachines/game-core/contracts/abi/v0.0/PlayerRegistry.json";
 import GameBoard from "hexploration/build/contracts/HexplorationBoard.json";
