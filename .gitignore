@@ -4,3 +4,4 @@
 env.js
 .privatekey
 /bin/.privatekey
+/settings/ContractAddresses.js
