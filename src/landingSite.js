@@ -6,11 +6,25 @@ let currentAccount;
 let controller;
 let board;
 
+const startPlayersOnLandingSite = async (gameID) => {
+  //console.log("Checking game needs update");
+  await controller.methods
+    .startGame(gameID, board._address)
+    .send({ from: currentAccount, gas: "5000000" });
+  // locks registration
+  // // players already registered can continue their existing game with more credits,
+  // // but new players can't join an already started game.
+};
+
 export async function chooseLandingSite(gameID, provider, account) {
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
   controller = await Contract("controller", provider);
   board = await Contract("board", provider);
+
+  //console.log("Board:", board._address);
+  //console.log("Controller:", controller.methods);
+
   const availableSpaces = await board.methods.getZoneAliases().call();
 
   const questions = {
@@ -27,6 +41,9 @@ export async function chooseLandingSite(gameID, provider, account) {
       .send({ from: currentAccount, gas: "2000000" });
     console.log(`Landing zone set to ${answers.landingZone}`);
     console.log("gas used:", tx.gasUsed);
+
+    await startPlayersOnLandingSite(gameID);
+    console.log("Players moved to landing site:", answers.landingZone);
   } catch (err) {
     console.log("Error setting landing site:", err.message);
   }

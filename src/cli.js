@@ -47,7 +47,9 @@ async function promptForMissingOptions(options) {
 export async function cli(args) {
   let options = parseArgumentsIntoOptions(args);
   //console.log("Wallet Index:", options.walletIndex);
+
   options = await promptForMissingOptions(options);
+
   //console.log("Option:", options);
   await runCLI(options);
 }

@@ -10,12 +10,14 @@ import PlayerRegistry from "@luckymachines/game-core/contracts/abi/v0.0/PlayerRe
 import GameBoard from "hexploration/build/contracts/HexplorationBoard.json";
 import Provider from "./provider";
 import Addresses from "../settings/ContractAddresses.js";
+import Contract from "./contract.js";
 
 let web3; // provider
 let accounts;
 let currentAccount;
 let gameRegistry;
 let gameBoard;
+let gameController;
 let playerRegistry;
 let landingSiteSet;
 
@@ -106,6 +108,16 @@ async function checkForLandingSite(gameID) {
   landingSiteSet = initialPlayZone != "";
 }
 
+async function registerNewGame() {
+  await gameController.methods
+    .requestNewGame(gameRegistry._address, gameBoard._address)
+    .send({ from: currentAccount, gas: "2000000" });
+  let newGameID = gameController.methods
+    .latestGame(gameRegistry._address, gameBoard._address)
+    .call();
+  return newGameID;
+}
+
 export async function runCLI(options) {
   web3 = await Provider();
   accounts = await web3.eth.getAccounts();
@@ -121,17 +133,26 @@ export async function runCLI(options) {
   const gameBoardAddress = Addresses.GANACHE_HEXPLORATION_BOARD;
   gameBoard = new web3.eth.Contract(GameBoard.abi, gameBoardAddress);
   gameRegistry = new web3.eth.Contract(GameRegistry, gameRegistryAddress);
+  gameController = await Contract("controller", web3);
+
+  let gameID;
+  if (options.newGame) {
+    gameID = await registerNewGame();
+  } else {
+    gameID = options.gameID;
+  }
+
   // check that game is registered
   const latestGame = await gameRegistry.methods
     .latestGame(gameBoardAddress)
     .call();
   //console.log("Latest Game:", latestGame);
 
-  if (options.gameID != 0 && Number(latestGame) >= Number(options.gameID)) {
-    await registerPlayerIfNeeded(options.gameID);
-    await checkForLandingSite(options.gameID);
-    // TODO: check game status, if 0 or 1, run loop until finished.
-    await mainMenu(options.gameID);
+  if (gameID != 0 && Number(latestGame) >= Number(gameID)) {
+    await registerPlayerIfNeeded(gameID);
+    await checkForLandingSite(gameID);
+
+    await mainMenu(gameID);
   } else {
     console.log("Game ID not found.");
     process.exit();

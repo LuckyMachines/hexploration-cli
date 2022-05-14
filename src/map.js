@@ -1,25 +1,34 @@
 import { drawMap } from "./hexText";
 import Contract from "./contract.js";
 
-let controller;
+//let controller;
 let board;
+let summary;
 let currentAccount;
 
 export async function showMap(gameID, provider, account) {
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
-  console.log("Show Map of Hexploration World with ID:", gameID);
-  const startZone = await board.methods.initialPlayZone(gameID).call();
-  // get active zones
-  // get player locations
-  // send all that to draw map
+  board = await Contract("board", provider);
+  summary = await Contract("summary", provider);
 
-  let currentPlayerZone = "";
-  let allPlayerZones = [];
+  const startZone = await summary.methods
+    .landingSite(board._address, gameID)
+    .call();
+  const activeZones = "fix me";
+  // const activeZones = await summary.methods
+  //   .activeZones(board._address, gameID)
+  //   .call();
+  const currentPlayerZone = await summary.methods
+    .currentLocation(board._address, gameID)
+    .call({ from: currentAccount });
+  const allPlayerZones = await summary.methods
+    .allPlayerLocations(board._address, gameID)
+    .call();
   await drawMap(
-    10,
-    10,
-    ["2,3", "3,4", "4,3", "3,3", "4,2", "4,1", "5,1"],
+    5,
+    5,
+    activeZones,
     startZone,
     currentPlayerZone,
     allPlayerZones

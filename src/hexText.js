@@ -11,6 +11,9 @@ export async function drawMap(
   // rows = 4, columns = 5, showList = ["1,0","2,2","3,0"];
   let highlights = showList ? showList : [];
   //console.log("Hightlights:", highlights);
+  console.log("start zone:", startingZone);
+  console.log("current player zone:", currentPlayerZone);
+  console.log("all player zones:", allPlayerZones);
   let grid = "";
   let x;
   let y;

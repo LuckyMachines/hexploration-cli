@@ -17,6 +17,7 @@ const contract = async (contractName, provider) => {
         HexplorationController.abi,
         Addresses.GANACHE_HEXPLORATION_CONTROLLER
       );
+      break;
     case "summary":
       c = new provider.eth.Contract(
         GameSummary.abi,
