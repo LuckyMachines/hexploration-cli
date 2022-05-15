@@ -7,9 +7,10 @@ import Contract from "./contract.js";
 let currentAccount;
 let hexplorationBoard;
 let hexplorationController;
+let summary;
 //let web3;
 
-async function moveToSpace() {
+async function moveToSpace(gameID) {
   // TODO: get this from a contract
   const maxSpaces = 3;
   //
@@ -58,17 +59,21 @@ async function moveToSpace() {
     answers.destination8,
     answers.destination9
   ];
-  let movementChoices = [];
+
+  const currentSpace = await summary.methods
+    .currentLocation(hexplorationBoard._address, gameID)
+    .call({ from: currentAccount });
+
+  let movementChoices = [currentSpace];
   for (let i = 0; i < spacesToMove; i++) {
     movementChoices.push(possibleMovementChoices[i]);
   }
   console.log(`Moving through spaces: ${movementChoices}`);
   try {
-    let tx = await hexplorationController.methods.moveThroughPath(
-      movementChoices,
-      gameID,
-      hexplorationBoard._address
-    );
+    let tx = await hexplorationController.methods
+      .moveThroughPath(movementChoices, gameID, hexplorationBoard._address)
+      .send({ from: currentAccount, gas: "5000000" });
+    console.log("Gas used:", tx.gasUsed);
   } catch (err) {
     console.log(err.message);
   }
@@ -97,6 +102,7 @@ export async function submitMoves(gameID, provider, account) {
 
   hexplorationBoard = await Contract("board", provider);
   hexplorationController = await Contract("controller", provider);
+  summary = await Contract("summary", provider);
 
   const questions = [];
   questions.push({
@@ -116,7 +122,7 @@ export async function submitMoves(gameID, provider, account) {
   const answers = await inquirer.prompt(questions);
   switch (answers.move) {
     case "Move to space":
-      await moveToSpace();
+      await moveToSpace(gameID);
       break;
     case "Setup camp":
       await setupCamp();
