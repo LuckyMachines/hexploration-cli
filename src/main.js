@@ -38,18 +38,22 @@ async function mainMenu(gameID) {
   switch (answers.choice) {
     case "Submit Move":
       await submitMoves(gameID, web3, currentAccount);
+      await checkForLandingSite(gameID);
       await mainMenu(gameID);
       break;
     case "Player Info":
       await playerInfo(gameID, web3, currentAccount);
+      await checkForLandingSite(gameID);
       await mainMenu(gameID);
       break;
     case "View Map":
       await showMap(gameID, web3, currentAccount);
+      await checkForLandingSite(gameID);
       await mainMenu(gameID);
       break;
     case "Progress Phase":
       await progressPhase(gameID, web3, currentAccount);
+      await checkForLandingSite(gameID);
       await mainMenu(gameID);
       break;
     case "Choose Landing Site":
@@ -101,11 +105,13 @@ async function registerPlayerIfNeeded(gameID) {
 
 async function checkForLandingSite(gameID) {
   // board . mapping(uint256 => string) public initialPlayZone;
-  const initialPlayZone = await gameBoard.methods
-    .initialPlayZone(gameID)
-    .call();
-  console.log("Initial play zone:", initialPlayZone);
-  landingSiteSet = initialPlayZone != "";
+  if (!landingSiteSet) {
+    const initialPlayZone = await gameBoard.methods
+      .initialPlayZone(gameID)
+      .call();
+    console.log("Initial play zone:", initialPlayZone);
+    landingSiteSet = initialPlayZone != "";
+  }
 }
 
 async function registerNewGame() {

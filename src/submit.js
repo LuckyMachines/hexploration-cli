@@ -63,8 +63,15 @@ async function moveToSpace() {
     movementChoices.push(possibleMovementChoices[i]);
   }
   console.log(`Moving through spaces: ${movementChoices}`);
-
-  // submit movement choices to controller
+  try {
+    let tx = await hexplorationController.methods.moveThroughPath(
+      movementChoices,
+      gameID,
+      hexplorationBoard._address
+    );
+  } catch (err) {
+    console.log(err.message);
+  }
 }
 
 async function setupCamp() {
