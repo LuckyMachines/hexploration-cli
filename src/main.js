@@ -5,9 +5,6 @@ import { progressPhase } from "./phase";
 import { submitMoves } from "./submit";
 import { playerInfo } from "./player";
 import { chooseLandingSite } from "./landingSite";
-import GameRegistry from "@luckymachines/game-core/contracts/abi/v0.0/GameRegistry.json";
-import PlayerRegistry from "@luckymachines/game-core/contracts/abi/v0.0/PlayerRegistry.json";
-import GameBoard from "hexploration/build/contracts/HexplorationBoard.json";
 import Provider from "./provider";
 import Addresses from "../settings/ContractAddresses.js";
 import Contract from "./contract.js";
@@ -19,7 +16,6 @@ let gameRegistry;
 let gameBoard;
 let gameController;
 let gameSummary;
-let playerRegistry;
 let landingSiteSet;
 
 async function mainMenu(gameID) {
@@ -72,11 +68,7 @@ async function mainMenu(gameID) {
 }
 
 async function registerPlayerIfNeeded(gameID) {
-  const playerRegistryAddress = Addresses.GANACHE_PLAYER_REGISTRY;
-  playerRegistry = new web3.eth.Contract(PlayerRegistry, playerRegistryAddress);
-
-  // TODO: check summary instead
-  let isRegistered = await playerRegistry.methods
+  let isRegistered = await gameSummary.methods
     .isRegistered(gameID, currentAccount)
     .call();
 
@@ -91,7 +83,7 @@ async function registerPlayerIfNeeded(gameID) {
     }
   }
 
-  isRegistered = await playerRegistry.methods
+  isRegistered = await gameSummary.methods
     .isRegistered(gameID, currentAccount)
     .call();
   if (isRegistered) {
@@ -137,10 +129,8 @@ export async function runCLI(options) {
   }
   currentAccount = overrideWallet ? accounts[options.walletIndex] : accounts[0];
 
-  const gameRegistryAddress = Addresses.GANACHE_GAME_REGISTRY;
-  const gameBoardAddress = Addresses.GANACHE_HEXPLORATION_BOARD;
-  gameBoard = new web3.eth.Contract(GameBoard.abi, gameBoardAddress);
-  gameRegistry = new web3.eth.Contract(GameRegistry, gameRegistryAddress);
+  gameBoard = await Contract("board", web3);
+  gameRegistry = await Contract("registry", web3);
   gameController = await Contract("controller", web3);
   gameSummary = await Contract("summary", web3);
 
