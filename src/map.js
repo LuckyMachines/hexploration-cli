@@ -6,6 +6,8 @@ let board;
 let summary;
 let currentAccount;
 
+// TODO: get size of board from contract
+
 export async function showMap(gameID, provider, account) {
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
@@ -15,10 +17,10 @@ export async function showMap(gameID, provider, account) {
   const startZone = await summary.methods
     .landingSite(board._address, gameID)
     .call();
-  const activeZones = "fix me";
-  // const activeZones = await summary.methods
-  //   .activeZones(board._address, gameID)
-  //   .call();
+  // const activeZones = "fix me";
+  const activeZones = await summary.methods
+    .activeZones(board._address, gameID)
+    .call();
   const currentPlayerZone = await summary.methods
     .currentLocation(board._address, gameID)
     .call({ from: currentAccount });
@@ -27,7 +29,7 @@ export async function showMap(gameID, provider, account) {
     .call();
   await drawMap(
     5,
-    5,
+    7,
     activeZones,
     startZone,
     currentPlayerZone,
