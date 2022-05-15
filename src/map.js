@@ -27,9 +27,11 @@ export async function showMap(gameID, provider, account) {
   const allPlayerZones = await summary.methods
     .allPlayerLocations(board._address, gameID)
     .call();
+  const mapSize = await summary.methods.boardSize(board._address).call();
+  console.log("Map size:", mapSize);
   await drawMap(
-    5,
-    7,
+    Number(mapSize.rows),
+    Number(mapSize.columns),
     activeZones,
     startZone,
     currentPlayerZone,
