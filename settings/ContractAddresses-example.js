@@ -9,6 +9,7 @@ const contractAddresses = {
   // copy from command line during deployments
   GANACHE_HEXPLORATION_RULES: "",
   GANACHE_HEXPLORATION_ZONE: "",
+  GANACHE_HEXPLORATION_CHARACTER_CARD: "",
   GANACHE_GAME_SUMMARY: "",
   GANACHE_AMBUSH_DECK: "",
   GANACHE_EVENT_DECK: "",
@@ -30,6 +31,7 @@ const contractAddresses = {
   // _HEXPLORATION_RULES: "",
   // _HEXPLORATION_ZONE: "",
   // _GAME_SUMMARY: "",
+  // _HEXPLORATION_CHARACTER_CARD: "",
   // _AMBUSH_DECK: "",
   // _EVENT_DECK: "",
   // _LAND_DECK: "",

@@ -1,6 +1,8 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
 
+import { equipItem } from "./equip";
+
 import Addresses from "../settings/ContractAddresses.js";
 import Contract from "./contract.js";
 
@@ -83,16 +85,24 @@ async function setupCamp() {
   console.log("Setup camp...");
 }
 
-async function campsiteActivity() {
-  console.log("Campsite activity...");
+async function takeDownCamp() {
+  console.log("Take down camp");
 }
 
-async function equipItem() {
-  console.log("Equip item...");
+async function dig() {
+  console.log("Digging...");
+}
+
+async function rest() {
+  console.log("Resting......");
 }
 
 async function tradeItems() {
   console.log("Trade items...");
+}
+
+async function pickUpItems() {
+  console.log("Pick up items...");
 }
 
 export async function submitMoves(gameID, provider, account) {
@@ -104,19 +114,30 @@ export async function submitMoves(gameID, provider, account) {
   hexplorationController = await Contract("controller", provider);
   summary = await Contract("summary", provider);
 
+  let choices = ["Equip item", "Move to space"];
+  let isAtCampsite = false;
+  let canTrade = false;
+  let canPickupItems = false;
+  if (isAtCampsite) {
+    choices.push("Dig");
+    choices.push("Rest");
+    choices.push("Take down camp");
+  } else {
+    choices.push("Setup camp");
+  }
+  if (canPickupItems) {
+    choices.push("Pick up items");
+  }
+  if (canTrade) {
+    choices.push("Trade items");
+  }
+  choices.push("Cancel");
   const questions = [];
   questions.push({
     type: "list",
     name: "move",
     message: "Which move do you want to make?",
-    choices: [
-      "Move to space",
-      "Setup camp",
-      "Campsite activity",
-      "Equip item",
-      "Trade items",
-      "Cancel"
-    ],
+    choices: choices,
     default: "Move to space"
   });
   const answers = await inquirer.prompt(questions);
@@ -127,14 +148,23 @@ export async function submitMoves(gameID, provider, account) {
     case "Setup camp":
       await setupCamp();
       break;
-    case "Campsite activity":
-      await campsiteActivity();
+    case "Dig":
+      await dig();
+      break;
+    case "Rest":
+      await rest();
+      break;
+    case "Take down camp":
+      await takeDownCamp();
       break;
     case "Equip item":
-      await equipItem();
+      await equipItem(gameID, provider, account);
       break;
     case "Trade items":
       await tradeItems();
+      break;
+    case "Pick up items":
+      await pickUpItems();
       break;
     case "Cancel":
     default:
