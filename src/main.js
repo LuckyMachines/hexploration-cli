@@ -18,6 +18,7 @@ let currentAccount;
 let gameRegistry;
 let gameBoard;
 let gameController;
+let gameSummary;
 let playerRegistry;
 let landingSiteSet;
 
@@ -74,6 +75,7 @@ async function registerPlayerIfNeeded(gameID) {
   const playerRegistryAddress = Addresses.GANACHE_PLAYER_REGISTRY;
   playerRegistry = new web3.eth.Contract(PlayerRegistry, playerRegistryAddress);
 
+  // TODO: check summary instead
   let isRegistered = await playerRegistry.methods
     .isRegistered(gameID, currentAccount)
     .call();
@@ -81,8 +83,8 @@ async function registerPlayerIfNeeded(gameID) {
   if (!isRegistered) {
     console.log(`Registering player: ${currentAccount}`);
     try {
-      await playerRegistry.methods
-        .register(gameID)
+      await gameController.methods
+        .registerForGame(gameID, gameBoard._address)
         .send({ from: currentAccount, gas: "5000000" });
     } catch (err) {
       console.log("Error registering:", err.message);
@@ -140,6 +142,7 @@ export async function runCLI(options) {
   gameBoard = new web3.eth.Contract(GameBoard.abi, gameBoardAddress);
   gameRegistry = new web3.eth.Contract(GameRegistry, gameRegistryAddress);
   gameController = await Contract("controller", web3);
+  gameSummary = await Contract("summary", web3);
 
   let gameID;
   if (options.newGame) {
