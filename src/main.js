@@ -6,7 +6,6 @@ import { submitMoves } from "./submit";
 import { playerInfo } from "./player";
 import { chooseLandingSite } from "./landingSite";
 import Provider from "./provider";
-import Addresses from "../settings/ContractAddresses.js";
 import Contract from "./contract.js";
 
 let web3; // provider
@@ -69,7 +68,7 @@ async function mainMenu(gameID) {
 
 async function registerPlayerIfNeeded(gameID) {
   let isRegistered = await gameSummary.methods
-    .isRegistered(gameID, currentAccount)
+    .isRegistered(gameBoard._address, gameID, currentAccount)
     .call();
 
   if (!isRegistered) {
@@ -84,7 +83,7 @@ async function registerPlayerIfNeeded(gameID) {
   }
 
   isRegistered = await gameSummary.methods
-    .isRegistered(gameID, currentAccount)
+    .isRegistered(gameBoard._address, gameID, currentAccount)
     .call();
   if (isRegistered) {
     console.log("Player registered. Entering game.");
@@ -129,10 +128,10 @@ export async function runCLI(options) {
   }
   currentAccount = overrideWallet ? accounts[options.walletIndex] : accounts[0];
 
+  gameSummary = await Contract("summary", web3);
   gameBoard = await Contract("board", web3);
   gameRegistry = await Contract("registry", web3);
   gameController = await Contract("controller", web3);
-  gameSummary = await Contract("summary", web3);
 
   let gameID;
   if (options.newGame) {
@@ -143,7 +142,7 @@ export async function runCLI(options) {
 
   // check that game is registered
   const latestGame = await gameRegistry.methods
-    .latestGame(gameBoardAddress)
+    .latestGame(gameBoard._address)
     .call();
   //console.log("Latest Game:", latestGame);
 

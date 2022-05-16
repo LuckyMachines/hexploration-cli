@@ -24,6 +24,7 @@ const contract = async (contractName, provider) => {
         GameSummary.abi,
         Addresses.GANACHE_GAME_SUMMARY
       );
+      break;
     case "registry":
       c = new provider.eth.Contract(
         GameRegistry,
