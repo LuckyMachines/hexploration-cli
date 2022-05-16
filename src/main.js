@@ -102,7 +102,7 @@ async function checkForLandingSite(gameID) {
     const initialPlayZone = await gameBoard.methods
       .initialPlayZone(gameID)
       .call();
-    console.log("Initial play zone:", initialPlayZone);
+    //console.log("Initial play zone:", initialPlayZone);
     landingSiteSet = initialPlayZone != "";
   }
 }
