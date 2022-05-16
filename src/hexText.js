@@ -84,18 +84,20 @@ export async function drawMap(
   activeZones,
   startingZone,
   currentPlayerZone,
-  allPlayerZones
+  allPlayerZones,
+  gamePhase
 ) {
   // rows = 4, columns = 5, showList = ["1,0","2,2","3,0"];
   // activeZones.tiles has types of tiles
   let showList = activeZones.zones;
   let highlights = showList ? showList : [];
   //console.log("Hightlights:", highlights);
-  console.log("start zone:", startingZone);
+  //console.log("start zone:", startingZone);
   console.log("current player zone:", currentPlayerZone);
   console.log("all player zones:", allPlayerZones);
-  console.log("active zones:", showList);
-  console.log("active zone tiles:", activeZones.tiles);
+  //console.log("active zones:", showList);
+  //console.log("active zone tiles:", activeZones.tiles);
+  console.log("Game Phase:", gamePhase);
   let grid = "";
   let x;
   let y;

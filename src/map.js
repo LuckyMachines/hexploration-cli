@@ -17,7 +17,6 @@ export async function showMap(gameID, provider, account) {
   const startZone = await summary.methods
     .landingSite(board._address, gameID)
     .call();
-  // const activeZones = "fix me";
   const activeZones = await summary.methods
     .activeZones(board._address, gameID)
     .call();
@@ -28,13 +27,17 @@ export async function showMap(gameID, provider, account) {
     .allPlayerLocations(board._address, gameID)
     .call();
   const mapSize = await summary.methods.boardSize(board._address).call();
-  console.log("Map size:", mapSize);
+  const gamePhase = await summary.methods
+    .currentPhase(board._address, gameID)
+    .call();
+  //console.log("Map size:", mapSize);
   await drawMap(
     Number(mapSize.rows),
     Number(mapSize.columns),
     activeZones,
     startZone,
     currentPlayerZone,
-    allPlayerZones
+    allPlayerZones,
+    gamePhase
   );
 }
