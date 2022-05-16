@@ -6,7 +6,9 @@ function parseArgumentsIntoOptions(rawArgs) {
   const args = arg(
     {
       "--newGame": Boolean,
-      "-n": "--newGame"
+      "--adminMode": Boolean,
+      "-n": "--newGame",
+      "-a": "--adminMode"
     },
     {
       argv: rawArgs.slice(2)
@@ -14,6 +16,7 @@ function parseArgumentsIntoOptions(rawArgs) {
   );
   return {
     newGame: args["--newGame"] || false,
+    adminMode: args["--adminMode"] || false,
     gameID: args._[0],
     walletIndex: args._[1]
   };

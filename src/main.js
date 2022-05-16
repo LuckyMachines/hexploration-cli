@@ -16,6 +16,7 @@ let gameBoard;
 let gameController;
 let gameSummary;
 let landingSiteSet;
+let adminMode = false;
 
 async function mainMenu(gameID) {
   const questions = [];
@@ -89,7 +90,8 @@ async function registerPlayerIfNeeded(gameID) {
     console.log("Player registered. Entering game.");
     console.log(`${chalk.cyan.bold("\nPlaying Hexploration via CLI")}`);
     console.log(`${chalk.green.bold("Game ID:")} ${gameID}`);
-    console.log(`${chalk.blue.bold("Player:")} ${currentAccount}\n`);
+    console.log(`${chalk.blue.bold("Player:")} ${currentAccount}`);
+    console.log(`${adminMode ? chalk.red.bold("Admin mode enabled") : ""}`);
   } else {
     console.log("Unable to register player.");
     process.exit();
@@ -120,6 +122,8 @@ async function registerNewGame() {
 export async function runCLI(options) {
   web3 = await Provider();
   accounts = await web3.eth.getAccounts();
+  adminMode = options.adminMode;
+
   let overrideWallet = false;
   if (options.walletIndex) {
     if (options.walletIndex < accounts.length) {
