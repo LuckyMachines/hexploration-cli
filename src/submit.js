@@ -10,6 +10,7 @@ let currentAccount;
 let hexplorationBoard;
 let hexplorationController;
 let summary;
+let playerWallet;
 //let web3;
 
 async function moveToSpace(gameID) {
@@ -83,26 +84,32 @@ async function moveToSpace(gameID) {
 
 async function setupCamp() {
   console.log("Setup camp...");
+  // send to queue
 }
 
 async function takeDownCamp() {
   console.log("Take down camp");
+  // send to queue
 }
 
 async function dig() {
   console.log("Digging...");
+  // send to queue
 }
 
 async function rest() {
   console.log("Resting......");
+  // send to queue
 }
 
 async function tradeItems() {
   console.log("Trade items...");
+  // send to queue??
 }
 
 async function pickUpItems() {
   console.log("Pick up items...");
+  // immediate action??
 }
 
 export async function submitMoves(gameID, provider, account) {
@@ -113,16 +120,18 @@ export async function submitMoves(gameID, provider, account) {
   hexplorationBoard = await Contract("board", provider);
   hexplorationController = await Contract("controller", provider);
   summary = await Contract("summary", provider);
+  playerWallet = await Contract("playerWallet", provider);
 
   let choices = ["Equip item", "Move to space"];
   let isAtCampsite = false;
   let canTrade = false;
   let canPickupItems = false;
+  let hasCampsiteInInventory = true;
   if (isAtCampsite) {
     choices.push("Dig");
     choices.push("Rest");
     choices.push("Take down camp");
-  } else {
+  } else if (hasCampsiteInInventory) {
     choices.push("Setup camp");
   }
   if (canPickupItems) {
