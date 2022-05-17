@@ -5,6 +5,7 @@ import { progressPhase } from "./phase";
 import { submitMoves } from "./submit";
 import { playerInfo } from "./player";
 import { chooseLandingSite } from "./landingSite";
+import { viewQueue } from "./queue";
 import Provider from "./provider";
 import Contract from "./contract.js";
 
@@ -25,6 +26,7 @@ async function mainMenu(gameID) {
     : ["Choose Landing Site", "View Map"];
   if (adminMode) {
     choices.push("Progress Phase");
+    choices.push("View Queue");
   }
   choices.push("Exit");
   questions.push({
@@ -61,6 +63,12 @@ async function mainMenu(gameID) {
       await chooseLandingSite(gameID, web3, currentAccount);
       await checkForLandingSite(gameID);
       await mainMenu(gameID);
+      break;
+    case "View Queue":
+      await viewQueue(gameID, web3, currentAccount);
+      await checkForLandingSite(gameID);
+      await mainMenu(gameID);
+      break;
     case "Exit":
       console.log("Goodbye!");
       process.exit();

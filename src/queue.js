@@ -1,0 +1,75 @@
+import chalk from "chalk";
+import inquirer from "inquirer";
+import Contract from "./contract";
+
+let currentAccount;
+let board;
+let queue;
+let summary;
+
+/*
+    mapping(uint256 => bool) public inProcessingQueue; // game queue is in processing queue
+    mapping(uint256 => ProcessingPhase) public currentPhase; // processingPhase
+    mapping(uint256 => uint256) public queueID; // mapping from game ID to it's queue, updates to 0 when finished
+    mapping(uint256 => uint256) public game; // mapping from queue ID to it's game ID
+    mapping(uint256 => uint256[]) public players; // all players with moves to process
+    mapping(uint256 => uint16) public totalPlayers; // total # of players who will be submitting
+
+    // mappings from queue index => player id
+    mapping(uint256 => mapping(uint256 => Action)) public submissionAction;
+    mapping(uint256 => mapping(uint256 => string[])) public submissionOptions;
+    mapping(uint256 => mapping(uint256 => string)) public submissionLeftHand;
+    mapping(uint256 => mapping(uint256 => string)) public submissionRightHand;  
+*/
+
+export async function viewQueue(gameID, provider, account) {
+  const accounts = await provider.eth.getAccounts();
+  currentAccount = account ? account : accounts[0];
+  console.log("View queue for game ID:", gameID);
+  queue = await Contract("queue", provider);
+  summary = await Contract("summary", provider);
+  board = await Contract("board", provider);
+  let playerID = await summary.methods
+    .getPlayerID(board._address, gameID, currentAccount)
+    .call();
+  console.log("Player ID:", playerID);
+
+  const _queueID = "1";
+
+  let inProcessingQueue = await queue.methods
+    .inProcessingQueue(_queueID)
+    .call();
+  let currentPhase = await queue.methods.currentPhase(_queueID).call();
+  let queueID = await queue.methods.queueID(_queueID).call();
+  let game = await queue.methods.game(_queueID).call();
+
+  let totalPlayers = await queue.methods.totalPlayers(_queueID).call();
+
+  let players = await queue.methods.getAllPlayers(_queueID).call();
+
+  let subAction = await queue.methods
+    .submissionAction(_queueID, playerID)
+    .call();
+  let subOptions = await queue.methods
+    .getSubmissionOptions(_queueID, playerID)
+    .call();
+  let subLeftHand = await queue.methods
+    .submissionLeftHand(_queueID, playerID)
+    .call();
+  let subRightHand = await queue.methods
+    .submissionRightHand(_queueID, playerID)
+    .call();
+
+  console.log("In processing queue:", inProcessingQueue);
+  console.log("Current phase", currentPhase);
+  console.log("Queue ID (from gameID)", queueID);
+  console.log("Game ID (from queueID)", game);
+  console.log("Total Players", totalPlayers);
+  console.log("Players with moves:", players);
+
+  console.log("submitted action:");
+  console.log("Action:", subAction);
+  console.log("Options", subOptions);
+  console.log("LH:", subLeftHand);
+  console.log("RH:", subRightHand);
+}
