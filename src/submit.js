@@ -1,8 +1,6 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
 
-import { equipItem } from "./equip";
-
 import Addresses from "../settings/ContractAddresses.js";
 import Contract from "./contract.js";
 
@@ -10,7 +8,10 @@ let currentAccount;
 let hexplorationBoard;
 let hexplorationController;
 let summary;
-let playerWallet;
+
+let inventory;
+let submitLeftHand;
+let submitRightHand;
 //let web3;
 
 async function moveToSpace(gameID) {
@@ -82,13 +83,19 @@ async function moveToSpace(gameID) {
   }
 }
 
+async function equipItem(gameID) {
+  console.log("Equip item...");
+  // get inventory...
+  // save locally
+}
+
 async function setupCamp() {
   console.log("Setup camp...");
   // send to queue
 }
 
-async function takeDownCamp() {
-  console.log("Take down camp");
+async function breakDownCamp() {
+  console.log("Break down camp");
   // send to queue
 }
 
@@ -120,18 +127,41 @@ export async function submitMoves(gameID, provider, account) {
   hexplorationBoard = await Contract("board", provider);
   hexplorationController = await Contract("controller", provider);
   summary = await Contract("summary", provider);
-  playerWallet = await Contract("playerWallet", provider);
 
-  let choices = ["Equip item", "Move to space"];
+  inventory = await summary.methods
+    .inactiveInventory(hexplorationBoard._address, gameID)
+    .call();
+  //console.log(inventory);
+
+  let choices = ["Move to space"];
+  let hasItems = false;
+  for (let i = 0; i < inventory.itemBalances.length; i++) {
+    if (
+      i != inventory.itemTypes.indexOf("Campsite") &&
+      Number(inventory.itemBalances[i]) > 0
+    ) {
+      hasItems = true;
+      break;
+    }
+  }
+
   let isAtCampsite = false;
+  let hasCampsiteInInventory =
+    Number(inventory.itemBalances[inventory.itemTypes.indexOf("Campsite")]) > 0;
+  let isOnLandingZone = true;
+  let isOnRelicZone = false;
+  // TODO:...
   let canTrade = false;
   let canPickupItems = false;
-  let hasCampsiteInInventory = true;
+  ///
+  if (hasItems) {
+    choices.push("Equip item");
+  }
   if (isAtCampsite) {
     choices.push("Dig");
     choices.push("Rest");
-    choices.push("Take down camp");
-  } else if (hasCampsiteInInventory) {
+    choices.push("Break down camp");
+  } else if (hasCampsiteInInventory && !isOnLandingZone && !isOnRelicZone) {
     choices.push("Setup camp");
   }
   if (canPickupItems) {
@@ -163,11 +193,11 @@ export async function submitMoves(gameID, provider, account) {
     case "Rest":
       await rest();
       break;
-    case "Take down camp":
-      await takeDownCamp();
+    case "Break down camp":
+      await breakDownCamp();
       break;
     case "Equip item":
-      await equipItem(gameID, provider, account);
+      await equipItem(gameID);
       break;
     case "Trade items":
       await tradeItems();

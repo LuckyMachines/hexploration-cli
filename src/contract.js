@@ -1,9 +1,8 @@
 import HexplorationBoard from "hexploration/build/contracts/HexplorationBoard.json";
 import HexplorationController from "hexploration/build/contracts/HexplorationController.json";
 import GameSummary from "hexploration/build/contracts/GameSummary.json";
-import BoardWallet from "hexploration/build/contracts/BoardWallet.json";
-import ZoneWallet from "hexploration/build/contracts/ZoneWallet.json";
-import PlayerWallet from "hexploration/build/contracts/PlayerWallet.json";
+import Queue from "hexploration/build/contracts/HexplorationQueue.json";
+import Gameplay from "hexploration/build/contracts/HexplorationGameplay.json";
 import GameRegistry from "@luckymachines/game-core/contracts/abi/v0.0/GameRegistry.json";
 import Addresses from "../settings/ContractAddresses.js";
 //TODO: update for multiple chains
@@ -34,22 +33,16 @@ const contract = async (contractName, provider) => {
         Addresses.GANACHE_GAME_REGISTRY
       );
       break;
-    case "boardWallet":
+    case "queue":
       c = new provider.eth.Contract(
-        BoardWallet.abi,
-        Addresses.GANACHE_BOARD_WALLET
+        Queue.abi,
+        Addresses.GANACHE_HEXPLORATION_QUEUE
       );
       break;
-    case "zoneWallet":
+    case "gameplay":
       c = new provider.eth.Contract(
-        ZoneWallet.abi,
-        Addresses.GANACHE_ZONE_WALLET
-      );
-      break;
-    case "playerWallet":
-      c = new provider.eth.Contract(
-        PlayerWallet.abi,
-        Addresses.GANACHE_PLAYER_WALLET
+        Gameplay.abi,
+        Addresses.GANACHE_HEXPLORATION_GAMEPLAY
       );
       break;
     default:

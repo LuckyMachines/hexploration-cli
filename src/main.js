@@ -20,9 +20,13 @@ let adminMode = false;
 
 async function mainMenu(gameID) {
   const questions = [];
-  const choices = landingSiteSet
-    ? ["Submit Move", "View Map", "Player Info", "Progress Phase", "Exit"]
-    : ["Choose Landing Site", "View Map", "Exit"];
+  let choices = landingSiteSet
+    ? ["Submit Move", "View Map", "Player Info"]
+    : ["Choose Landing Site", "View Map"];
+  if (adminMode) {
+    choices.push("Progress Phase");
+  }
+  choices.push("Exit");
   questions.push({
     type: "list",
     name: "choice",
@@ -58,7 +62,7 @@ async function mainMenu(gameID) {
       await checkForLandingSite(gameID);
       await mainMenu(gameID);
     case "Exit":
-      console.log("Exiting...");
+      console.log("Goodbye!");
       process.exit();
       break;
     default:
