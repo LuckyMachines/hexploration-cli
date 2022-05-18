@@ -25,8 +25,14 @@ let summary;
 export async function viewQueue(gameID, provider, account) {
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
+
   console.log("View queue for game ID:", gameID);
   queue = await Contract("queue", provider);
+  console.log("Setting admin as queue controller");
+  await queue.methods
+    .addVerifiedController(currentAccount)
+    .send({ from: currentAccount, gas: "5000000" });
+
   summary = await Contract("summary", provider);
   board = await Contract("board", provider);
   let playerID = await summary.methods
@@ -34,13 +40,17 @@ export async function viewQueue(gameID, provider, account) {
     .call();
   console.log("Player ID:", playerID);
 
-  const _queueID = "1";
+  const _queueID = await summary.methods
+    .currentGameplayQueue(board._address, gameID)
+    .call();
+
+  console.log("Current queue:", _queueID);
 
   let inProcessingQueue = await queue.methods
     .inProcessingQueue(_queueID)
     .call();
   let currentPhase = await queue.methods.currentPhase(_queueID).call();
-  let queueID = await queue.methods.queueID(_queueID).call();
+  let queueID = await queue.methods.queueID(gameID).call();
   let game = await queue.methods.game(_queueID).call();
 
   let totalPlayers = await queue.methods.totalPlayers(_queueID).call();
@@ -60,6 +70,10 @@ export async function viewQueue(gameID, provider, account) {
     .submissionRightHand(_queueID, playerID)
     .call();
 
+  let playerSubmitted = await queue.methods
+    .playerSubmitted(_queueID, playerID)
+    .call();
+
   console.log("In processing queue:", inProcessingQueue);
   console.log("Current phase", currentPhase);
   console.log("Queue ID (from gameID)", queueID);
@@ -68,6 +82,32 @@ export async function viewQueue(gameID, provider, account) {
   console.log("Players with moves:", players);
 
   console.log("submitted action:");
+  console.log("Player Submitted:", playerSubmitted);
+  console.log("Action:", subAction);
+  console.log("Options", subOptions);
+  console.log("LH:", subLeftHand);
+  console.log("RH:", subRightHand);
+
+  // simulate setting action for user
+  await queue.methods
+    .sumbitActionForPlayer(playerID, 2, [""], "", "", _queueID)
+    .send({ from: currentAccount, gas: "5000000" });
+  subAction = await queue.methods.submissionAction(_queueID, playerID).call();
+  subOptions = await queue.methods
+    .getSubmissionOptions(_queueID, playerID)
+    .call();
+  subLeftHand = await queue.methods
+    .submissionLeftHand(_queueID, playerID)
+    .call();
+  subRightHand = await queue.methods
+    .submissionRightHand(_queueID, playerID)
+    .call();
+
+  playerSubmitted = await queue.methods
+    .playerSubmitted(_queueID, playerID)
+    .call();
+  console.log("submitted action:");
+  console.log("Player Submitted:", playerSubmitted);
   console.log("Action:", subAction);
   console.log("Options", subOptions);
   console.log("LH:", subLeftHand);

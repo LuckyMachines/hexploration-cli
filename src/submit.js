@@ -14,9 +14,45 @@ let submitLeftHand;
 let submitRightHand;
 //let web3;
 
+async function submitAction(action, options, gameID) {
+  const lh = submitLeftHand ? submitLeftHand : "";
+  const rh = submitRightHand ? submitRightHand : "";
+  const ActionType = [
+    "Idle",
+    "Move",
+    "SetupCamp",
+    "BreakDownCamp",
+    "Dig",
+    "Rest",
+    "Help"
+  ];
+  const actionEnum = ActionType.indexOf(action);
+  const pid = await summary.methods
+    .getPlayerID(hexplorationBoard._address, gameID, currentAccount)
+    .call();
+
+  console.log(`Submitting ${action} action:`);
+  console.log(
+    `playerID: ${pid}\nactionIndex:${actionEnum}\noptions:${options}\nlh:${lh} rh:${rh}`
+  );
+  await hexplorationController.methods.submitAction(
+    pid,
+    actionEnum,
+    options,
+    lh,
+    rh,
+    gameID,
+    hexplorationBoard.address
+  );
+  console.log(`${action} action submitted to queue`);
+}
+
 async function moveToSpace(gameID) {
   // TODO: get this from a contract
-  const maxSpaces = 3;
+  let playerStats = await summary.methods
+    .currentPlayerStats(hexplorationBoard._address, gameID)
+    .call();
+  const maxSpaces = Number(playerStats.movement);
   //
   let spaceChoices = [];
   for (let i = 0; i < maxSpaces; i++) {
@@ -72,15 +108,16 @@ async function moveToSpace(gameID) {
   for (let i = 0; i < spacesToMove; i++) {
     movementChoices.push(possibleMovementChoices[i]);
   }
-  console.log(`Moving through spaces: ${movementChoices}`);
-  try {
-    let tx = await hexplorationController.methods
-      .moveThroughPath(movementChoices, gameID, hexplorationBoard._address)
-      .send({ from: currentAccount, gas: "5000000" });
-    console.log("Gas used:", tx.gasUsed);
-  } catch (err) {
-    console.log(err.message);
-  }
+  await submitAction("Move", movementChoices, gameID);
+  //console.log(`Moving through spaces: ${movementChoices}`);
+  // try {
+  //   let tx = await hexplorationController.methods
+  //     .moveThroughPath(movementChoices, gameID, hexplorationBoard._address)
+  //     .send({ from: currentAccount, gas: "5000000" });
+  //   console.log("Gas used:", tx.gasUsed);
+  // } catch (err) {
+  //   console.log(err.message);
+  // }
 }
 
 async function equipItem(gameID) {
