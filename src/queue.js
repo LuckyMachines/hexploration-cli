@@ -89,8 +89,16 @@ export async function viewQueue(gameID, provider, account) {
   console.log("RH:", subRightHand);
 
   // simulate setting action for user
+  /*
   await queue.methods
-    .sumbitActionForPlayer(playerID, 2, [""], "", "", _queueID)
+    .sumbitActionForPlayer(
+      playerID,
+      2,
+      ["1,0", "1,1", "1,2", "1,3"],
+      "Laser Sword",
+      "Rusty Pistol",
+      _queueID
+    )
     .send({ from: currentAccount, gas: "5000000" });
   subAction = await queue.methods.submissionAction(_queueID, playerID).call();
   subOptions = await queue.methods
@@ -112,4 +120,5 @@ export async function viewQueue(gameID, provider, account) {
   console.log("Options", subOptions);
   console.log("LH:", subLeftHand);
   console.log("RH:", subRightHand);
+  */
 }

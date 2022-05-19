@@ -35,15 +35,17 @@ async function submitAction(action, options, gameID) {
   console.log(
     `playerID: ${pid}\nactionIndex:${actionEnum}\noptions:${options}\nlh:${lh} rh:${rh}`
   );
-  await hexplorationController.methods.submitAction(
-    pid,
-    actionEnum,
-    options,
-    lh,
-    rh,
-    gameID,
-    hexplorationBoard.address
-  );
+  await hexplorationController.methods
+    .submitAction(
+      pid,
+      actionEnum,
+      options,
+      lh,
+      rh,
+      gameID,
+      hexplorationBoard._address
+    )
+    .send({ from: currentAccount, gas: "5000000" });
   console.log(`${action} action submitted to queue`);
 }
 
@@ -123,29 +125,33 @@ async function moveToSpace(gameID) {
 async function equipItem(gameID) {
   console.log("Equip item...");
   // get inventory...
-  // save locally
+  // save locally to submitLeftHand or submitRightHand
 }
 
 async function setupCamp() {
   console.log("Setup camp...");
   // send to queue
+  await submitAction("SetupCamp", [""], gameID);
 }
 
 async function breakDownCamp() {
   console.log("Break down camp");
   // send to queue
+  await submitAction("BreakDownCamp", [""], gameID);
 }
 
 async function dig() {
   console.log("Digging...");
   // send to queue
+  await submitAction("Dig", [""], gameID);
 }
 
 async function rest() {
   console.log("Resting......");
-  // send to queue
+  await submitAction("Rest", [""], gameID);
 }
 
+/*
 async function tradeItems() {
   console.log("Trade items...");
   // send to queue??
@@ -155,6 +161,7 @@ async function pickUpItems() {
   console.log("Pick up items...");
   // immediate action??
 }
+*/
 
 export async function submitMoves(gameID, provider, account) {
   //web3 = provider;
@@ -171,6 +178,7 @@ export async function submitMoves(gameID, provider, account) {
   //console.log(inventory);
 
   let choices = ["Move to space"];
+
   let hasItems = false;
   for (let i = 0; i < inventory.itemBalances.length; i++) {
     if (
@@ -181,16 +189,22 @@ export async function submitMoves(gameID, provider, account) {
       break;
     }
   }
-
+  // TODO:
+  // get balance of campsite tokens on zone
   let isAtCampsite = false;
+
   let hasCampsiteInInventory =
     Number(inventory.itemBalances[inventory.itemTypes.indexOf("Campsite")]) > 0;
+
   let isOnLandingZone = true;
+
   let isOnRelicZone = false;
-  // TODO:...
+
+  //////////////////////////
+  // Not doing these yet
   let canTrade = false;
   let canPickupItems = false;
-  ///
+  //////////////////////////
   if (hasItems) {
     choices.push("Equip item");
   }
