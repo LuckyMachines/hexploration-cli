@@ -124,7 +124,10 @@ async function moveToSpace(gameID) {
 
 async function equipItem(gameID) {
   console.log("Equip item...");
-  // get inventory...
+  // inventory is set
+  console.log("Which hand?");
+  console.log("Choose from the following:");
+  console.log(inventory.itemTypes);
   // save locally to submitLeftHand or submitRightHand
 }
 
