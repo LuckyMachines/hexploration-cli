@@ -106,7 +106,7 @@ async function moveToSpace(gameID) {
     .currentLocation(hexplorationBoard._address, gameID)
     .call({ from: currentAccount });
 
-  let movementChoices = [currentSpace];
+  let movementChoices = [];
   for (let i = 0; i < spacesToMove; i++) {
     movementChoices.push(possibleMovementChoices[i]);
   }
@@ -124,10 +124,55 @@ async function moveToSpace(gameID) {
 
 async function equipItem(gameID) {
   console.log("Equip item...");
-  // inventory is set
-  console.log("Which hand?");
-  console.log("Choose from the following:");
-  console.log(inventory.itemTypes);
+
+  let inventoryChoices = [];
+  let excluded = ["Campsite"];
+  if (submitLeftHand) {
+    excluded.push(submitLeftHand);
+  }
+  if (submitRightHand) {
+    excluded.push(submitRightHand);
+  }
+  for (let i = 0; i < inventory.itemBalances.length; i++) {
+    if (
+      Number(inventory.itemBalances[i]) > 0 &&
+      excluded.indexOf(inventory.itemTypes[i]) < 0
+    ) {
+      inventoryChoices.push(inventory.itemTypes[i]);
+    }
+  }
+  inventoryChoices.push("Clear hand");
+
+  let questions = [];
+  questions.push({
+    type: "list",
+    name: "handToUse",
+    message: "Which hand?",
+    choices: ["Left", "Right"],
+    default: "Left"
+  });
+  questions.push({
+    type: "list",
+    name: "itemToEquip",
+    message: "Which item?",
+    choices: inventoryChoices,
+    default: inventoryChoices[0]
+  });
+
+  let answers = await inquirer.prompt(questions);
+
+  console.log(`Equipping ${answers.itemToEquip} to ${answers.handToUse} hand`);
+  if (answers.handToUse == "Left") {
+    submitLeftHand =
+      answers.itemToEquip != "Clear hand" ? answers.itemToEquip : "none";
+  } else {
+    submitRightHand =
+      answers.itemToEquip != "Clear hand" ? answers.itemToEquip : "none";
+  }
+  console.log(`LH: ${submitLeftHand}, RH: ${submitRightHand}`);
+  // console.log("Which hand?");
+  // console.log("Choose from the following:");
+  // console.log(inventoryChoices);
   // save locally to submitLeftHand or submitRightHand
 }
 
@@ -174,6 +219,17 @@ export async function submitMoves(gameID, provider, account) {
   hexplorationBoard = await Contract("board", provider);
   hexplorationController = await Contract("controller", provider);
   summary = await Contract("summary", provider);
+
+  //////////////////
+  // TEST METHOD //
+  // TODO: remove before deployment
+  ////////////////////
+  await hexplorationController.methods
+    .getTestInventory(gameID, hexplorationBoard._address)
+    .send({
+      from: currentAccount,
+      gas: "5000000"
+    });
 
   inventory = await summary.methods
     .inactiveInventory(hexplorationBoard._address, gameID)

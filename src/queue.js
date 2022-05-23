@@ -74,12 +74,15 @@ export async function viewQueue(gameID, provider, account) {
     .playerSubmitted(_queueID, playerID)
     .call();
 
+  let randomness = await queue.methods.randomness(_queueID).call();
+
   console.log("In processing queue:", inProcessingQueue);
   console.log("Current phase", currentPhase);
   console.log("Queue ID (from gameID)", queueID);
   console.log("Game ID (from queueID)", game);
   console.log("Total Players", totalPlayers);
   console.log("Players with moves:", players);
+  console.log("Randomness:", randomness);
 
   console.log("submitted action:");
   console.log("Player Submitted:", playerSubmitted);
