@@ -10,8 +10,11 @@ let hexplorationController;
 let summary;
 
 let inventory;
+let activeInventory;
 let submitLeftHand;
 let submitRightHand;
+
+let currentSpace;
 //let web3;
 
 async function submitAction(action, options, gameID) {
@@ -102,7 +105,7 @@ async function moveToSpace(gameID) {
     answers.destination9
   ];
 
-  const currentSpace = await summary.methods
+  currentSpace = await summary.methods
     .currentLocation(hexplorationBoard._address, gameID)
     .call({ from: currentAccount });
 
@@ -161,7 +164,13 @@ async function equipItem(gameID) {
 
   let answers = await inquirer.prompt(questions);
 
-  console.log(`Equipping ${answers.itemToEquip} to ${answers.handToUse} hand`);
+  if (answers.itemToEquip != "Clear hand") {
+    console.log(
+      `Equipping ${answers.itemToEquip} to ${answers.handToUse} hand`
+    );
+  } else {
+    console.log(`Clearing ${answers.handToUse} hand`);
+  }
   if (answers.handToUse == "Left") {
     submitLeftHand =
       answers.itemToEquip != "Clear hand" ? answers.itemToEquip : "none";
@@ -169,11 +178,7 @@ async function equipItem(gameID) {
     submitRightHand =
       answers.itemToEquip != "Clear hand" ? answers.itemToEquip : "none";
   }
-  console.log(`LH: ${submitLeftHand}, RH: ${submitRightHand}`);
-  // console.log("Which hand?");
-  // console.log("Choose from the following:");
-  // console.log(inventoryChoices);
-  // save locally to submitLeftHand or submitRightHand
+  //console.log(`LH: ${submitLeftHand}, RH: ${submitRightHand}`);
 }
 
 async function setupCamp() {
@@ -222,19 +227,23 @@ export async function submitMoves(gameID, provider, account) {
 
   //////////////////
   // TEST METHOD //
-  // TODO: remove before deployment
+  // Remove before deployment
   ////////////////////
-  await hexplorationController.methods
-    .getTestInventory(gameID, hexplorationBoard._address)
-    .send({
-      from: currentAccount,
-      gas: "5000000"
-    });
+  // await hexplorationController.methods
+  //   .getTestInventory(gameID, hexplorationBoard._address)
+  //   .send({
+  //     from: currentAccount,
+  //     gas: "5000000"
+  //   });
 
   inventory = await summary.methods
     .inactiveInventory(hexplorationBoard._address, gameID)
     .call();
   //console.log(inventory);
+
+  activeInventory = await summary.methods
+    .activeInventory(hexplorationBoard._address, gameID)
+    .call();
 
   let choices = ["Move to space"];
 
@@ -249,15 +258,22 @@ export async function submitMoves(gameID, provider, account) {
     }
   }
   // TODO:
-  // get balance of campsite tokens on zone
+  // check if already at campsite
+
+  const landingSite = await summary.methods
+    .landingSite(hexplorationBoard._address, gameID)
+    .call();
+  if (!currentSpace) {
+    currentSpace = await summary.methods
+      .currentLocation(hexplorationBoard._address, gameID)
+      .call({ from: currentAccount });
+  }
+
   let isAtCampsite = false;
-
-  let hasCampsiteInInventory =
-    Number(inventory.itemBalances[inventory.itemTypes.indexOf("Campsite")]) > 0;
-
-  let isOnLandingZone = true;
-
+  let isOnLandingZone = currentSpace == landingSite;
   let isOnRelicZone = false;
+
+  let hasCampsiteInInventory = activeInventory.campsite;
 
   //////////////////////////
   // Not doing these yet

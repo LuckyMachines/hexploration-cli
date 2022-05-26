@@ -23,14 +23,55 @@ export async function progressPhase(gameID, provider, account) {
   const qID = await summary.methods
     .currentGameplayQueue(board._address, gameID)
     .call();
+
+  // check for updates available, should return queue in bytecode
+  let upkeepInfo = await gameplay.methods.needsUpkeep().call();
+  let needsUpkeep = upkeepInfo[0];
+  let performData = upkeepInfo[1];
+
+  console.log("Current queue:", qID);
+  console.log("Needs upkeep:", needsUpkeep);
+  console.log("Perform data:", performData);
+
+  // if updates available, perform upkeep, check gas costs
+  // come on under 5,000,000...
+
+  if (needsUpkeep) {
+    console.log("Performing upkeep...");
+    let tx = await gameplay.methods
+      .doUpkeep(performData)
+      .send({ from: currentAccount, gas: "5000000" });
+    console.log("Gas used for phase update:", tx.gasUsed);
+  }
+
+  // do second time for playthrough phase
+  /*
+  upkeepInfo = await gameplay.methods.needsUpkeep().call();
+  needsUpkeep = upkeepInfo[0];
+  performData = upkeepInfo[1];
+  console.log("Needs upkeep:", needsUpkeep);
+  console.log("Perform data:", performData);
+  if (needsUpkeep) {
+    console.log("Performing upkeep...");
+    let tx = await gameplay.methods
+      .doUpkeep(performData)
+      .send({ from: currentAccount, gas: "5000000" });
+    console.log("Gas used for phase update:", tx.gasUsed);
+  }
+  */
+
+  /*
+  previous way of updating
   let updates = await gameplay.methods.shouldContinueProcessing(qID).call();
   console.log("Current update:");
   console.log("Needs update:", updates[0]);
   console.log("Values:", updates[1]);
   console.log("Strings:", updates[2]);
 
+  console.log("Posting game state updates");
   let tx = await gameplay.methods
     .postProcessedGameState(qID, updates[1], updates[2])
     .send({ from: currentAccount, gas: "15000000" });
   console.log("Processed. Gas used:", tx.gasUsed);
+  */
 }
