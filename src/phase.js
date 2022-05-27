@@ -42,10 +42,11 @@ export async function progressPhase(gameID, provider, account) {
     let tx = await gameplay.methods
       .doUpkeep(performData)
       .send({ from: currentAccount, gas: "5000000" });
-    console.log("Gas used for phase update:", tx.gasUsed);
+    //console.log("Gas used for phase update:", tx.gasUsed);
   }
 
   // do second time for playthrough phase
+
   /*
   upkeepInfo = await gameplay.methods.needsUpkeep().call();
   needsUpkeep = upkeepInfo[0];
@@ -57,7 +58,7 @@ export async function progressPhase(gameID, provider, account) {
     let tx = await gameplay.methods
       .doUpkeep(performData)
       .send({ from: currentAccount, gas: "5000000" });
-    console.log("Gas used for phase update:", tx.gasUsed);
+    //console.log("Gas used for phase update:", tx.gasUsed);
   }
   */
 

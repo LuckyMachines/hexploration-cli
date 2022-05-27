@@ -53,12 +53,13 @@ async function submitAction(action, options, gameID) {
 }
 
 async function moveToSpace(gameID) {
-  // TODO: get this from a contract
   let playerStats = await summary.methods
     .currentPlayerStats(hexplorationBoard._address, gameID)
-    .call();
+    .call({ from: currentAccount });
   const maxSpaces = Number(playerStats.movement);
   //
+  // console.log("Player stats:", playerStats);
+  // console.log("Max spaces:", maxSpaces);
   let spaceChoices = [];
   for (let i = 0; i < maxSpaces; i++) {
     spaceChoices.push(`${i + 1}`);
@@ -78,6 +79,7 @@ async function moveToSpace(gameID) {
   const availableSpaces = await hexplorationBoard.methods
     .getZoneAliases()
     .call();
+
   //TODO (maybe): filter list down to only possible spaces within movement
   //let availableSpaces = ["0,0", "0,1", "1,1", "1,0"];
 

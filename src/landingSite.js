@@ -13,7 +13,7 @@ const startPlayersOnLandingSite = async (gameID) => {
       .startGame(gameID, board._address)
       .send({ from: currentAccount, gas: "5000000" });
     console.log("Players moved to landing site. The game has begun.");
-    console.log("Gas used:", tx.gasUsed);
+    //console.log("Gas used:", tx.gasUsed);
   } catch (err) {
     console.log(err.message);
   }
@@ -38,7 +38,7 @@ export async function chooseLandingSite(gameID, provider, account) {
     name: `landingZone`,
     message: "Where do we land this thing?",
     choices: availableSpaces,
-    default: availableSpaces[0]
+    default: availableSpaces[0],
   };
   const answers = await inquirer.prompt(questions);
   try {
@@ -46,7 +46,7 @@ export async function chooseLandingSite(gameID, provider, account) {
       .chooseLandingSite(answers.landingZone, gameID, board._address)
       .send({ from: currentAccount, gas: "2000000" });
     console.log(`Landing zone set to ${answers.landingZone}`);
-    console.log("gas used:", tx.gasUsed);
+    //console.log("gas used:", tx.gasUsed);
 
     await startPlayersOnLandingSite(gameID);
   } catch (err) {
