@@ -27,7 +27,7 @@ async function submitAction(action, options, gameID) {
     "BreakDownCamp",
     "Dig",
     "Rest",
-    "Help"
+    "Help",
   ];
   const actionEnum = ActionType.indexOf(action);
   const pid = await summary.methods
@@ -69,7 +69,7 @@ async function moveToSpace(gameID) {
     name: "spacesToMove",
     message: "How many spaces do you want to move?",
     choices: spaceChoices,
-    default: spaceChoices[0]
+    default: spaceChoices[0],
   });
   let answers = await inquirer.prompt(questions);
   const spacesToMove = answers.spacesToMove;
@@ -88,7 +88,7 @@ async function moveToSpace(gameID) {
       name: `destination${i}`,
       message: "which spaces to move through?",
       choices: availableSpaces,
-      default: availableSpaces[0]
+      default: availableSpaces[0],
     });
   }
   answers = await inquirer.prompt(questions);
@@ -102,7 +102,7 @@ async function moveToSpace(gameID) {
     answers.destination6,
     answers.destination7,
     answers.destination8,
-    answers.destination9
+    answers.destination9,
   ];
 
   currentSpace = await summary.methods
@@ -152,14 +152,14 @@ async function equipItem(gameID) {
     name: "handToUse",
     message: "Which hand?",
     choices: ["Left", "Right"],
-    default: "Left"
+    default: "Left",
   });
   questions.push({
     type: "list",
     name: "itemToEquip",
     message: "Which item?",
     choices: inventoryChoices,
-    default: inventoryChoices[0]
+    default: inventoryChoices[0],
   });
 
   let answers = await inquirer.prompt(questions);
@@ -201,6 +201,8 @@ async function dig() {
 
 async function rest() {
   console.log("Resting......");
+  // TODO:
+  // Choose which attribute to rest
   await submitAction("Rest", [""], gameID);
 }
 
@@ -269,7 +271,10 @@ export async function submitMoves(gameID, provider, account) {
       .call({ from: currentAccount });
   }
 
-  let isAtCampsite = false;
+  let isAtCampsite = await summary.methods
+    .isAtCampsite(hexplorationBoard._address, gameID)
+    .call({ from: currentAccount });
+
   let isOnLandingZone = currentSpace == landingSite;
   let isOnRelicZone = false;
 
@@ -303,7 +308,7 @@ export async function submitMoves(gameID, provider, account) {
     name: "move",
     message: "Which move do you want to make?",
     choices: choices,
-    default: "Move to space"
+    default: "Move to space",
   });
   const answers = await inquirer.prompt(questions);
   switch (answers.move) {

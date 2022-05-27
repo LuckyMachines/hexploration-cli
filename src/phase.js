@@ -14,6 +14,7 @@ export async function progressPhase(gameID, provider, account) {
   board = await Contract("board", provider);
   gameplay = await Contract("gameplay", provider);
 
+  console.log("Gameplay address:", gameplay._address);
   // add self as verified controller for manual phase progression
   await gameplay.methods
     .addVerifiedController(currentAccount)

@@ -43,4 +43,6 @@ export async function playerInfo(gameID, provider, account) {
   );
   console.log("Relic:", activeInventory.relic ? activeInventory.relic : "None");
   console.log("Shield:", activeInventory.shield ? "Enabled" : "None");
+  // TODO:
+  // Show results of last action if available
 }
