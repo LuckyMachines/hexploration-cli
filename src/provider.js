@@ -4,6 +4,11 @@ import fs from "fs";
 const { dirname } = require("path");
 const pkDir = dirname(require.main.filename);
 
+// UNCOMMENT DESIRED PROVIDER
+// const PROVIDER_URL = "https://matic-testnet-archive-rpc.bwarelabs.com"; // Mumbai
+// const PROVIDER_URL = "https://data-seed-prebsc-2-s3.binance.org:8545"; // Binance Test
+const PROVIDER_URL = "http://127.0.0.1:7545"; // Ganache
+
 const provider = async (providerUrl) => {
   let keys = [];
   const keysFromFile = fs.readFileSync(`${pkDir}/.privateKey`).toString();
@@ -13,7 +18,7 @@ const provider = async (providerUrl) => {
   });
   let wallet = new HDWalletProvider({
     privateKeys: keys,
-    providerOrUrl: providerUrl ? providerUrl : "http://127.0.0.1:7545"
+    providerOrUrl: providerUrl ? providerUrl : PROVIDER_URL,
   });
   let provider = await new Web3(wallet);
   return provider;
