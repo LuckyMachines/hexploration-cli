@@ -181,25 +181,25 @@ async function equipItem(gameID) {
   //console.log(`LH: ${submitLeftHand}, RH: ${submitRightHand}`);
 }
 
-async function setupCamp() {
+async function setupCamp(gameID) {
   console.log("Setup camp...");
   // send to queue
   await submitAction("SetupCamp", [""], gameID);
 }
 
-async function breakDownCamp() {
+async function breakDownCamp(gameID) {
   console.log("Break down camp");
   // send to queue
   await submitAction("BreakDownCamp", [""], gameID);
 }
 
-async function dig() {
+async function dig(gameID) {
   console.log("Digging...");
   // send to queue
   await submitAction("Dig", [""], gameID);
 }
 
-async function rest() {
+async function rest(gameID) {
   console.log("Resting......");
   // TODO:
   // Choose which attribute to rest
@@ -316,16 +316,16 @@ export async function submitMoves(gameID, provider, account) {
       await moveToSpace(gameID);
       break;
     case "Setup camp":
-      await setupCamp();
+      await setupCamp(gameID);
       break;
     case "Dig":
-      await dig();
+      await dig(gameID);
       break;
     case "Rest":
-      await rest();
+      await rest(gameID);
       break;
     case "Break down camp":
-      await breakDownCamp();
+      await breakDownCamp(gameID);
       break;
     case "Equip item":
       await equipItem(gameID);
