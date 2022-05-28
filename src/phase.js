@@ -39,9 +39,13 @@ export async function progressPhase(gameID, provider, account) {
 
   if (needsUpkeep) {
     console.log("Performing upkeep...");
-    let tx = await gameplay.methods
-      .doUpkeep(performData)
-      .send({ from: currentAccount, gas: "5000000" });
+    try {
+      let tx = await gameplay.methods
+        .doUpkeep(performData)
+        .send({ from: currentAccount, gas: "5000000" });
+    } catch (err) {
+      console.log(err.message);
+    }
     //console.log("Gas used for phase update:", tx.gasUsed);
   }
 

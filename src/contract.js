@@ -14,37 +14,37 @@ const selectedChain = 1; //Mumbai
 const boardAddresses = [
   Addresses.GANACHE_HEXPLORATION_BOARD,
   Addresses.MUMBAI_HEXPLORATION_BOARD,
-  Addresses.BINANCE_TEST_HEXPLORATION_BOARD,
+  Addresses.BINANCE_TEST_HEXPLORATION_BOARD
 ];
 
 const controllerAddresses = [
   Addresses.GANACHE_HEXPLORATION_CONTROLLER,
   Addresses.MUMBAI_HEXPLORATION_CONTROLLER,
-  Addresses.BINANCE_TEST_HEXPLORATION_CONTROLLER,
+  Addresses.BINANCE_TEST_HEXPLORATION_CONTROLLER
 ];
 
 const summaryAddresses = [
   Addresses.GANACHE_GAME_SUMMARY,
   Addresses.MUMBAI_GAME_SUMMARY,
-  Addresses.BINANCE_TEST_GAME_SUMMARY,
+  Addresses.BINANCE_TEST_GAME_SUMMARY
 ];
 
 const registryAddresses = [
   Addresses.GANACHE_GAME_REGISTRY,
   Addresses.MUMBAI_GAME_REGISTRY,
-  Addresses.BINANCE_TEST_GAME_REGISTRY,
+  Addresses.BINANCE_TEST_GAME_REGISTRY
 ];
 
 const queueAddresses = [
   Addresses.GANACHE_HEXPLORATION_QUEUE,
   Addresses.MUMBAI_HEXPLORATION_QUEUE,
-  Addresses.BINANCE_TEST_HEXPLORATION_QUEUE,
+  Addresses.BINANCE_TEST_HEXPLORATION_QUEUE
 ];
 
 const gameplayAddresses = [
   Addresses.GANACHE_HEXPLORATION_GAMEPLAY,
   Addresses.MUMBAI_HEXPLORATION_GAMEPLAY,
-  Addresses.BINANCE_TEST_HEXPLORATION_GAMEPLAY,
+  Addresses.BINANCE_TEST_HEXPLORATION_GAMEPLAY
 ];
 
 const contract = async (contractName, provider) => {

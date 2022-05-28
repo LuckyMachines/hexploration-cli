@@ -18,7 +18,7 @@ const provider = async (providerUrl) => {
   });
   let wallet = new HDWalletProvider({
     privateKeys: keys,
-    providerOrUrl: providerUrl ? providerUrl : PROVIDER_URL,
+    providerOrUrl: providerUrl ? providerUrl : PROVIDER_URL
   });
   let provider = await new Web3(wallet);
   return provider;

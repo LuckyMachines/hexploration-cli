@@ -14,13 +14,13 @@ export async function playerInfo(gameID, provider, account) {
   board = await Contract("board", provider);
   let playerStats = await summary.methods
     .currentPlayerStats(board._address, gameID)
-    .call();
+    .call({ from: currentAccount });
   let activeInventory = await summary.methods
     .activeInventory(board._address, gameID)
-    .call();
+    .call({ from: currentAccount });
   let handInventory = await summary.methods
     .currentHandInventory(board._address, gameID)
-    .call();
+    .call({ from: currentAccount });
 
   console.log(
     `Movement: ${playerStats.movement}, Agility: ${playerStats.agility}, Dexterity: ${playerStats.dexterity}`
