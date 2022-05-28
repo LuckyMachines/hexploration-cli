@@ -5,8 +5,8 @@ const { dirname } = require("path");
 const pkDir = dirname(require.main.filename);
 
 // UNCOMMENT DESIRED PROVIDER
-// const PROVIDER_URL = "https://matic-mumbai.chainstacklabs.com"; // Mumbai
-const PROVIDER_URL = "https://data-seed-prebsc-2-s3.binance.org:8545"; // Binance Test
+const PROVIDER_URL = "https://matic-mumbai.chainstacklabs.com"; // Mumbai
+// const PROVIDER_URL = "https://data-seed-prebsc-2-s3.binance.org:8545"; // Binance Test
 // const PROVIDER_URL = "http://127.0.0.1:7545"; // Ganache
 
 const provider = async (providerUrl) => {
