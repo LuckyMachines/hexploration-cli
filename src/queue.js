@@ -28,10 +28,10 @@ export async function viewQueue(gameID, provider, account) {
 
   console.log("View queue for game ID:", gameID);
   queue = await Contract("queue", provider);
-  console.log("Setting admin as queue controller");
-  await queue.methods
-    .addVerifiedController(currentAccount)
-    .send({ from: currentAccount, gas: "5000000" });
+  // console.log("Setting admin as queue controller");
+  // await queue.methods
+  //   .addVerifiedController(currentAccount)
+  //   .send({ from: currentAccount, gas: "5000000" });
 
   summary = await Contract("summary", provider);
   board = await Contract("board", provider);
