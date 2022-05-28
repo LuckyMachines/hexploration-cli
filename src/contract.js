@@ -8,8 +8,8 @@ import Addresses from "../settings/ContractAddresses.js";
 
 //UNCOMMENT SELECTED CHAIN
 // const selectedChain = 0; //Ganache
-const selectedChain = 1; //Mumbai
-// const selctedChain = 2; //Binance Test
+// const selectedChain = 1; //Mumbai
+const selectedChain = 2; //Binance Test
 
 const boardAddresses = [
   Addresses.GANACHE_HEXPLORATION_BOARD,
