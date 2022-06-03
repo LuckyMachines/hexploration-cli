@@ -7,8 +7,8 @@ import GameRegistry from "@luckymachines/game-core/contracts/abi/v0.0/GameRegist
 import Addresses from "../settings/ContractAddresses.js";
 
 //UNCOMMENT SELECTED CHAIN
-// const selectedChain = 0; //Ganache
-const selectedChain = 1; //Mumbai
+const selectedChain = 0; //Ganache
+// const selectedChain = 1; //Mumbai
 // const selectedChain = 2; //Binance Test
 
 const boardAddresses = [

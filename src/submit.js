@@ -27,7 +27,7 @@ async function submitAction(action, options, gameID) {
     "BreakDownCamp",
     "Dig",
     "Rest",
-    "Help",
+    "Help"
   ];
   const actionEnum = ActionType.indexOf(action);
   const pid = await summary.methods
@@ -52,6 +52,45 @@ async function submitAction(action, options, gameID) {
   console.log(`${action} action submitted to queue`);
 }
 
+function getAvailableSpaceChoices(currentSpace, allSpaces, maxMovement) {
+  const curX = Number(currentSpace.split(",")[0]);
+  const curY = Number(currentSpace.split(",")[1]);
+  // let possibleXs = [Number(curX) - 1, Number(curX), Number(curX) + 1];
+  // let possibleYs = [Number(curY) - 1, Number(curY), Number(curY) + 1];
+  let evenPossibleChoices = [
+    `${curX},${curY - 1}`,
+    `${curX - 1},${curY}`,
+    `${curX - 1},${curY + 1}`,
+    `${curX},${curY + 1}`,
+    `${curX + 1},${curY + 1}`,
+    `${curX + 1},${curY}`
+  ];
+  let oddPossibleChoices = [
+    `${curX},${curY - 1}`,
+    `${curX - 1},${curY - 1}`,
+    `${curX - 1},${curY}`,
+    `${curX},${curY + 1}`,
+    `${curX + 1},${curY}`,
+    `${curX + 1},${curY - 1}`
+  ];
+  let possibleChoices =
+    curX % 2 == 0 ? evenPossibleChoices : oddPossibleChoices;
+  //console.log("Possible choices:", possibleChoices);
+
+  let availablePossibleChoices = [];
+  // Close, but need to do different stuff for even / odd columns
+  for (let i = 0; i < possibleChoices.length; i++) {
+    if (
+      allSpaces.indexOf(possibleChoices[i]) > -1 &&
+      possibleChoices[i] != `${curX},${curY}`
+    ) {
+      availablePossibleChoices.push(possibleChoices[i]);
+    }
+  }
+
+  return availablePossibleChoices;
+}
+
 async function moveToSpace(gameID) {
   let playerStats = await summary.methods
     .currentPlayerStats(hexplorationBoard._address, gameID)
@@ -70,7 +109,7 @@ async function moveToSpace(gameID) {
     name: "spacesToMove",
     message: "How many spaces do you want to move?",
     choices: spaceChoices,
-    default: spaceChoices[0],
+    default: spaceChoices[0]
   });
   let answers = await inquirer.prompt(questions);
   const spacesToMove = answers.spacesToMove;
@@ -80,41 +119,37 @@ async function moveToSpace(gameID) {
     .getZoneAliases()
     .call();
 
-  //TODO (maybe): filter list down to only possible spaces within movement
-  //let availableSpaces = ["0,0", "0,1", "1,1", "1,0"];
-
-  questions = [];
-  for (let i = 0; i < spacesToMove; i++) {
-    questions.push({
-      type: "list",
-      name: `destination${i}`,
-      message: "which spaces to move through?",
-      choices: availableSpaces,
-      default: availableSpaces[0],
-    });
-  }
-  answers = await inquirer.prompt(questions);
-  const possibleMovementChoices = [
-    answers.destination0,
-    answers.destination1,
-    answers.destination2,
-    answers.destination3,
-    answers.destination4,
-    answers.destination5,
-    answers.destination6,
-    answers.destination7,
-    answers.destination8,
-    answers.destination9,
-  ];
-
   currentSpace = await summary.methods
     .currentLocation(hexplorationBoard._address, gameID)
     .call({ from: currentAccount });
 
   let movementChoices = [];
+  // TODO: update to get available space choices from function
+  let availableSpaceChoices = getAvailableSpaceChoices(
+    currentSpace,
+    availableSpaces,
+    maxSpaces
+  );
+
   for (let i = 0; i < spacesToMove; i++) {
-    movementChoices.push(possibleMovementChoices[i]);
+    // update to show available choices only after each choice made
+    answers = await inquirer.prompt({
+      type: "list",
+      name: `destination`,
+      message: "which spaces to move through?",
+      choices: availableSpaceChoices,
+      default: availableSpaceChoices[0]
+    });
+    movementChoices.push(answers.destination);
+    if (i < spacesToMove - 1) {
+      availableSpaceChoices = getAvailableSpaceChoices(
+        answers.destination,
+        availableSpaces,
+        maxSpaces - (i + 1)
+      );
+    } // otherwise is at last space choice, doesn't need to update this
   }
+
   await submitAction("Move", movementChoices, gameID);
   //console.log(`Moving through spaces: ${movementChoices}`);
   // try {
@@ -154,14 +189,14 @@ async function equipItem(gameID) {
     name: "handToUse",
     message: "Which hand?",
     choices: ["Left", "Right"],
-    default: "Left",
+    default: "Left"
   });
   questions.push({
     type: "list",
     name: "itemToEquip",
     message: "Which item?",
     choices: inventoryChoices,
-    default: inventoryChoices[0],
+    default: inventoryChoices[0]
   });
 
   let answers = await inquirer.prompt(questions);
@@ -310,7 +345,7 @@ export async function submitMoves(gameID, provider, account) {
     name: "move",
     message: "Which move do you want to make?",
     choices: choices,
-    default: "Move to space",
+    default: "Move to space"
   });
   const answers = await inquirer.prompt(questions);
   switch (answers.move) {
