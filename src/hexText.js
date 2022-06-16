@@ -85,6 +85,7 @@ export async function drawMap(
   startingZone,
   currentPlayerZone,
   allPlayerZones,
+  campSiteZones,
   gamePhase
 ) {
   // rows = 4, columns = 5, showList = ["1,0","2,2","3,0"];
@@ -102,6 +103,7 @@ export async function drawMap(
   let x;
   let y;
   let xy;
+  let xy2;
   for (let i = 0; i < rows + 1; i++) {
     // first hex is 5 rows, rest are 4
     const evenNumberOfColumns = columns % 2 == 0;
@@ -164,10 +166,19 @@ export async function drawMap(
               if (isBottomRow && hexColumn == (columns + 1) / 2 - 1) {
                 `          `;
               } else {
+                xy2 = `${x - 1},${y - 1}`;
                 grid +=
                   needsTopRow || hexColumn == (columns + 1) / 2 - 1
-                    ? `    \\     `
-                    : `    \\ ${
+                    ? ` ${
+                        campSiteZones.indexOf(xy2) > -1
+                          ? chalk.magenta.bold("/\\")
+                          : "  "
+                      } \\     `
+                    : ` ${
+                        campSiteZones.indexOf(xy2) > -1
+                          ? chalk.magenta.bold("/\\")
+                          : "  "
+                      } \\ ${
                         highlights.indexOf(xy) > -1 ? chalk.green.bold(xy) : xy
                       } `;
               }
@@ -246,9 +257,14 @@ export async function drawMap(
                 x = hexColumn * 2;
                 y = rows - i - 1;
                 xy = `${x},${y}`;
+                xy2 = `${x + 1},${y}`;
                 grid += `\\ ${
                   highlights.indexOf(xy) > -1 ? chalk.green.bold(xy) : xy
-                }  /    `;
+                }  / ${
+                  campSiteZones.indexOf(xy2) > -1
+                    ? chalk.magenta.bold("/\\")
+                    : "  "
+                } `;
               }
             }
           }
