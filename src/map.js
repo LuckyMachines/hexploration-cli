@@ -30,6 +30,7 @@ export async function showMap(gameID, provider, account) {
   const gamePhase = await summary.methods
     .currentPhase(board._address, gameID)
     .call();
+  // TODO: get all campsites on board...
   const campSites = []; // zone aliases
   //console.log("Map size:", mapSize);
   await drawMap(

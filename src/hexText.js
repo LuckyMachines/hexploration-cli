@@ -137,14 +137,30 @@ export async function drawMap(
               x = hexColumn * 2 + 1;
               y = rows - i;
               xy = `${x},${y}`;
+              xy2 = `${x - 1},${y - 1}`;
               if (needsTopRow || hexColumn == (columns + 1) / 2 - 1) {
                 if (needsTopRow && hexColumn == columns / 2 - 1) {
-                  grid += `    \\       `;
+                  // TOP RIGHT CORNER
+                  grid += ` ${
+                    campSiteZones.indexOf(xy2) > -1
+                      ? chalk.magenta.bold("/\\")
+                      : "  "
+                  } \\       `;
                 } else {
-                  grid += `    \\      /`;
+                  // TOP ROW
+                  grid += ` ${
+                    campSiteZones.indexOf(xy2) > -1
+                      ? chalk.magenta.bold("/\\")
+                      : "  "
+                  } \\      /`;
                 }
               } else {
-                grid += `    \\ ${
+                // EVEN COLUMNS
+                grid += ` ${
+                  campSiteZones.indexOf(xy2) > -1
+                    ? chalk.magenta.bold("/\\")
+                    : "  "
+                } \\ ${
                   highlights.indexOf(xy) > -1 ? chalk.green.bold(xy) : xy
                 }  /`;
               }
@@ -235,15 +251,25 @@ export async function drawMap(
                 x = hexColumn * 2;
                 y = rows - i - 1;
                 xy = `${x},${y}`;
+                xy2 = `${x + 1},${y}`;
                 if (hexColumn == columns / 2 - 1) {
-                  //is last column
+                  //RIGHT COLUMN
                   grid += `${
                     highlights.indexOf(xy) > -1 ? chalk.green.bold(xy) : xy
-                  }  /    \\ `;
+                  }  / ${
+                    campSiteZones.indexOf(xy2) > -1
+                      ? chalk.magenta.bold("/\\")
+                      : "  "
+                  } \\ `;
                 } else {
+                  // ODD COLUMNS (MINUS RIGHT)
                   grid += `${
                     highlights.indexOf(xy) > -1 ? chalk.green.bold(xy) : xy
-                  }  /    \\ `;
+                  }  / ${
+                    campSiteZones.indexOf(xy2) > -1
+                      ? chalk.magenta.bold("/\\")
+                      : "  "
+                  } \\ `;
                 }
               }
             }
