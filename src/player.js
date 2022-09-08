@@ -43,6 +43,11 @@ export async function playerInfo(gameID, provider, account) {
   );
   console.log("Relic:", activeInventory.relic ? activeInventory.relic : "None");
   console.log("Shield:", activeInventory.shield ? "Enabled" : "None");
-  // TODO:
-  // Show results of last action if available
+
+  //TODO: ensure these values are stored during dig + day phase action
+  console.log("\nLast Actions:");
+  const lastActions = await summary.methods
+    .lastPlayerActions(board._address, gameID)
+    .call();
+  console.log(lastActions);
 }
