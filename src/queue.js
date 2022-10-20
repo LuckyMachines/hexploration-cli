@@ -93,14 +93,16 @@ export async function viewQueue(gameID, provider, account) {
 
   // simulate setting action for user
   /*
+  const isDayPhase = ???
   await queue.methods
-    .sumbitActionForPlayer(
+    .submitActionForPlayer(
       playerID,
       2,
       ["1,0", "1,1", "1,2", "1,3"],
       "Laser Sword",
       "Rusty Pistol",
-      _queueID
+      _queueID,
+      isDayPhase
     )
     .send({ from: currentAccount, gas: "5000000" });
   subAction = await queue.methods.submissionAction(_queueID, playerID).call();
