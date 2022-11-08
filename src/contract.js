@@ -1,15 +1,24 @@
-import HexplorationBoard from "hexploration/build/contracts/HexplorationBoard.json";
-import HexplorationController from "hexploration/build/contracts/HexplorationController.json";
-import GameSummary from "hexploration/build/contracts/GameSummary.json";
-import Queue from "hexploration/build/contracts/HexplorationQueue.json";
-import Gameplay from "hexploration/build/contracts/HexplorationGameplay.json";
+import HexplorationBoard from "hexploration-deployments/artifacts/contracts/HexplorationBoard.sol/HexplorationBoard.json";
+import Queue from "hexploration-deployments/artifacts/contracts/HexplorationQueue.sol/HexplorationQueue.json";
+import Gameplay from "hexploration-deployments/artifacts/contracts/HexplorationGameplay.sol/HexplorationGameplay.json";
 import GameRegistry from "@luckymachines/game-core/contracts/abi/v0.0/GameRegistry.json";
+
+// The following are the ABI, not an object with an ABI property
+import GameSummary from "@luckymachines/game-core/games/hexploration/abi/GameSummary.json";
+import HexplorationController from "@luckymachines/game-core/games/hexploration/abi/HexplorationController.json";
 import Addresses from "../settings/ContractAddresses.js";
 
 //UNCOMMENT SELECTED CHAIN
-const selectedChain = 0; //Ganache
-// const selectedChain = 1; //Mumbai
+// const selectedChain = 0; //Ganache
+const selectedChain = 1; //Mumbai
 // const selectedChain = 2; //Binance Test
+
+// const selectedChain = 3; // Hardhat
+// const selectedChain = 4; // Goerli
+// const selectedChain = 5; // Polygon
+
+// TODO:
+// Set Polygon, Hardhat, Goerli addresses
 
 const boardAddresses = [
   Addresses.GANACHE_HEXPLORATION_BOARD,
@@ -58,13 +67,13 @@ const contract = async (contractName, provider) => {
       break;
     case "controller":
       c = new provider.eth.Contract(
-        HexplorationController.abi,
+        HexplorationController,
         controllerAddresses[selectedChain]
       );
       break;
     case "summary":
       c = new provider.eth.Contract(
-        GameSummary.abi,
+        GameSummary,
         summaryAddresses[selectedChain]
       );
       break;

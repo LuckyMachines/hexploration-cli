@@ -21,12 +21,13 @@
   "author": "Max Meier",
   "license": "GPL-3.0",
   "dependencies": {
-    "@luckymachines/game-core": "^0.0.11",
+    "@luckymachines/game-core": "^0.0.19",
     "@truffle/hdwallet-provider": "^2.0.8",
     "arg": "^5.0.1",
     "chalk": "^4.1.0",
+    "dotenv": "^16.0.3",
     "esm": "^3.2.25",
-    "hexploration": "file:../hexploration",
+    "hexploration-deployments": "../hexploration-deployments",
     "inquirer": "^8.2.4",
     "web3": "^1.7.3"
   }

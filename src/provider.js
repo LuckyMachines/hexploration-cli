@@ -3,11 +3,13 @@ import Web3 from "web3";
 import fs from "fs";
 const { dirname } = require("path");
 const pkDir = dirname(require.main.filename);
+require("dotenv").config();
 
 // UNCOMMENT DESIRED PROVIDER
-// const PROVIDER_URL = "https://matic-mumbai.chainstacklabs.com"; // Mumbai
-// const PROVIDER_URL = "https://data-seed-prebsc-2-s3.binance.org:8545"; // Binance Test
-const PROVIDER_URL = "http://127.0.0.1:7545"; // Ganache
+const PROVIDER_URL = process.env.RPC_URL_MUMBAI; // Mumbai
+// const PROVIDER_URL = process.env.RPC_URL_BINANCE_TEST; // Binance Test
+// const PROVIDER_URL = process.env.RPC_URL_GOERLI; // GOERLI
+// const PROVIDER_URL = "http://127.0.0.1:7545"; // Ganache
 
 const provider = async (providerUrl) => {
   let keys = [];
@@ -20,7 +22,7 @@ const provider = async (providerUrl) => {
     privateKeys: keys,
     providerOrUrl: providerUrl ? providerUrl : PROVIDER_URL
   });
-  let provider = await new Web3(wallet);
+  let provider = new Web3(wallet);
   return provider;
 };
 

@@ -16,17 +16,17 @@ function parseArgumentsIntoOptions(rawArgs) {
       "--newGame": Boolean,
       "--adminMode": Boolean,
       "-n": "--newGame",
-      "-a": "--adminMode",
+      "-a": "--adminMode"
     },
     {
-      argv: rawArgs.slice(2),
+      argv: rawArgs.slice(2)
     }
   );
   return {
     newGame: args["--newGame"] || false,
     adminMode: args["--adminMode"] || false,
     gameID: args._[0],
-    walletIndex: args._[1],
+    walletIndex: args._[1]
   };
 }
 
@@ -34,12 +34,12 @@ async function promptForMissingOptions(options) {
   if (options.newGame) {
     return {
       ...options,
-      gameID: 0,
+      gameID: 0
     };
   }
 
-  let availableGameIDs = await summary.methods
-    .getAvailableGameIDs(board._address, registry._address)
+  let availableGames = await summary.methods
+    .getAvailableGames(board._address, registry._address)
     .call();
 
   const questions = [];
@@ -48,15 +48,15 @@ async function promptForMissingOptions(options) {
       type: "number",
       name: "gameID",
       message: "Which game ID shall we play?",
-      default: 0,
+      default: 0
     });
   }
   console.log("Available games:");
-  console.log(availableGameIDs);
+  console.log(availableGames);
   const answers = await inquirer.prompt(questions);
   return {
     ...options,
-    gameID: options.gameID || answers.gameID,
+    gameID: options.gameID || answers.gameID
   };
 }
 

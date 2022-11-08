@@ -23,7 +23,7 @@ async function mainMenu(gameID) {
   const questions = [];
   let choices = landingSiteSet
     ? ["Submit Move", "View Map", "Player Info"]
-    : ["Choose Landing Site", "View Map"];
+    : ["View Map"];
   if (adminMode) {
     choices.push("Progress Phase");
     choices.push("View Queue");

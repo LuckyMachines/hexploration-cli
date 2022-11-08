@@ -1,3 +1,9 @@
+/*
+Note:
+Choosing a landing site is now done automatically once all players join a game.
+Do not use these methods any more
+*/
+
 import chalk from "chalk";
 import inquirer from "inquirer";
 import Contract from "./contract.js";
@@ -38,7 +44,7 @@ export async function chooseLandingSite(gameID, provider, account) {
     name: `landingZone`,
     message: "Where do we land this thing?",
     choices: availableSpaces,
-    default: availableSpaces[0],
+    default: availableSpaces[0]
   };
   const answers = await inquirer.prompt(questions);
   try {
