@@ -1,7 +1,7 @@
 // import addresses from some deployments.json
 // into settings/ContractAddresses.json
 
-// pass:
+// pass: deployments.json
 
 const fs = require("fs");
 const deploymentsFile = process.argv[2];
