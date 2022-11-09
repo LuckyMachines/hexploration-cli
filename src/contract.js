@@ -1,13 +1,13 @@
-// TODO: import from public hexploration repo, not hexploration-deployments
-import HexplorationBoard from "hexploration-deployments/artifacts/contracts/HexplorationBoard.sol/HexplorationBoard.json";
-import Queue from "hexploration-deployments/artifacts/contracts/HexplorationQueue.sol/HexplorationQueue.json";
-import Gameplay from "hexploration-deployments/artifacts/contracts/HexplorationGameplay.sol/HexplorationGameplay.json";
-
 import GameRegistry from "@luckymachines/game-core/contracts/abi/v0.0/GameRegistry.json";
 
-// The following are the ABI, not an object with an ABI property
+// Game-core ABIs
 import GameSummary from "@luckymachines/game-core/games/hexploration/abi/GameSummary.json";
 import HexplorationController from "@luckymachines/game-core/games/hexploration/abi/HexplorationController.json";
+
+// Extra ABIs for admin functionality
+import HexplorationBoard from "hexploration/abi/HexplorationBoard.json";
+import Queue from "hexploration/abi/HexplorationQueue.json";
+import Gameplay from "hexploration/abi/HexplorationGameplay.json";
 
 import Addresses from "../settings/ContractAddresses.json";
 
@@ -82,7 +82,7 @@ const contract = async (contractName, provider) => {
   switch (contractName) {
     case "board":
       c = new provider.eth.Contract(
-        HexplorationBoard.abi,
+        HexplorationBoard,
         boardAddresses[selectedChain]
       );
       break;
@@ -108,10 +108,7 @@ const contract = async (contractName, provider) => {
       c = new provider.eth.Contract(Queue.abi, queueAddresses[selectedChain]);
       break;
     case "gameplay":
-      c = new provider.eth.Contract(
-        Gameplay.abi,
-        gameplayAddresses[selectedChain]
-      );
+      c = new provider.eth.Contract(Gameplay, gameplayAddresses[selectedChain]);
       break;
     default:
       break;
