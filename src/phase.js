@@ -16,14 +16,35 @@ export async function progressPhase(gameID, provider, account) {
 
   console.log("Gameplay address:", gameplay._address);
   // add self as verified controller for manual phase progression
-  await gameplay.methods
-    .addVerifiedController(currentAccount)
-    .send({ from: currentAccount, gas: "5000000" });
+  // await gameplay.methods
+  //   .addVerifiedController(currentAccount)
+  //   .send({ from: currentAccount, gas: "5000000" });
 
   // get data to post if update ready...
-  const qID = await summary.methods
-    .currentGameplayQueue(board._address, gameID)
-    .call();
+  // const qid = await summary.methods
+  //   .currentGameplayQueue(board._address, gameID)
+  //   .call();
+
+  let upkeep = await gameplay.methods
+    .checkUpkeep("0x")
+    .send({ from: currentAccount, gas: "5000000" });
+
+  let { 0: upkeepNeeded, 1: performData } = upkeep;
+
+  if (upkeepNeeded) {
+    let tx = await gameplay.methods
+      .performUpkeep(performData)
+      .send({ from: currentAccount, gas: "5000000" });
+    console.log("Upkeep performed. Gas used:", tx.gasUsed);
+    // await tx.wait();
+    // let processingPhase = await GAME_QUEUE.currentPhase(qid);
+    // expect(processingPhase).to.equal(PROCESSING_PHASE_PLAY_THROUGH);
+  } else {
+    console.log("No upkeep needed");
+  }
+  // expect(processingPhase).to.equal(PROCESSING_PHASE_PROCESSED);
+
+  /*
 
   // check for updates available, should return queue in bytecode
   let upkeepInfo = await gameplay.methods.needsUpkeep().call();
@@ -50,7 +71,7 @@ export async function progressPhase(gameID, provider, account) {
   }
 
   // do second time for playthrough phase
-
+*/
   /*
   upkeepInfo = await gameplay.methods.needsUpkeep().call();
   needsUpkeep = upkeepInfo[0];
