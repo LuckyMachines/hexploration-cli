@@ -27,7 +27,7 @@ yarn
 ## Start CLI:
 
 ```
-npx hexploration-cli`
+npx hexploration-cli
 ```
 
 ## Arguments:
