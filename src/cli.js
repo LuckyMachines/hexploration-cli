@@ -56,7 +56,7 @@ async function promptForMissingOptions(options) {
   for (let i = 0; i < availableGames.gameIDs.length; i++) {
     gameData.push({
       "Game ID": availableGames.gameIDs[i].toString(),
-      "Current Players": `${availableGames.currentRegistrations[i]} / ${availableGames.maxPlayers[i]}`
+      Players: `${availableGames.currentRegistrations[i]} / ${availableGames.maxPlayers[i]}`
     });
   }
   console.table(gameData);
