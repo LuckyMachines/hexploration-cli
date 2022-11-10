@@ -31,7 +31,7 @@ yarn
 ## Start CLI:
 
 ```
-npx hexploration-cli
+npx @luckymachines/hexploration-cli
 ```
 
 ## Arguments:
