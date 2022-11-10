@@ -25,13 +25,17 @@ cd hexploration-cli
 ```
 
 ```
-yarn
+npm install
+```
+
+```
+npm link
 ```
 
 ## Start CLI:
 
 ```
-npx @luckymachines/hexploration-cli
+hexploration-cli
 ```
 
 ## Arguments:
