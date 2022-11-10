@@ -1,19 +1,34 @@
 # Hexploration CLI
 
-## Setup Private Keys and game addresses:
+## Clone Hexploration and Hexploration CLI to same directory
+
+```
+gh repo clone LuckyMachines/hexploration
+```
+
+```
+gh repo clone LuckyMachines/hexploration-cli
+```
+
+## Setup Private Keys in `hexploration-cli`:
 
 - Create .privatekey file and move to /bin
-- Create ContractAddresses.js in /settings
 
 ## Install hexploration-cli:
 
-`npm install`
+```
+cd hexploration-cli
+```
 
-`npm install -g i .`
+```
+yarn
+```
 
-## Start:
+## Start CLI:
 
-`hexploration-cli`
+```
+npx hexploration-cli`
+```
 
 ## Arguments:
 
