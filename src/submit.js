@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
 
-import Addresses from "../settings/ContractAddresses.js";
+// import Addresses from "../settings/ContractAddresses.json";
 import Contract from "./contract.js";
 
 let currentAccount;

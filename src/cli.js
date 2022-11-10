@@ -52,7 +52,18 @@ async function promptForMissingOptions(options) {
     });
   }
   console.log("Available games:");
-  console.log(availableGames);
+  let gameData = [];
+  for (let i = 0; i < availableGames.gameIDs.length; i++) {
+    gameData.push({
+      "Game ID": availableGames.gameIDs[i],
+      "Current Players": `${availableGames.currentRegistrations[i]} / ${availableGames.maxPlayers[i]}`
+    });
+  }
+  const transformedGameData = gameData.reduce((acc, { gameID, ...x }) => {
+    acc[gameID] = x;
+    return acc;
+  }, {});
+  console.table(transformedGameData);
   const answers = await inquirer.prompt(questions);
   return {
     ...options,

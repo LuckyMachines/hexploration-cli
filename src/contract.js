@@ -10,6 +10,8 @@ import Queue from "hexploration/abi/HexplorationQueue.json";
 import Gameplay from "hexploration/abi/HexplorationGameplay.json";
 
 import Addresses from "../settings/ContractAddresses.json";
+// const Addresses = require(`${process.cwd()}/settings/ContractAddresses.json`);
+// console.log("Addresses", Addresses);
 
 //UNCOMMENT SELECTED CHAIN
 // const selectedChain = 0; //Ganache
@@ -105,7 +107,7 @@ const contract = async (contractName, provider) => {
       );
       break;
     case "queue":
-      c = new provider.eth.Contract(Queue.abi, queueAddresses[selectedChain]);
+      c = new provider.eth.Contract(Queue, queueAddresses[selectedChain]);
       break;
     case "gameplay":
       c = new provider.eth.Contract(Gameplay, gameplayAddresses[selectedChain]);

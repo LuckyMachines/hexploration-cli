@@ -10,7 +10,11 @@ gh repo clone LuckyMachines/hexploration
 gh repo clone LuckyMachines/hexploration-cli
 ```
 
-## Setup Private Keys in `hexploration-cli`:
+## Create .env file with RPC providers
+
+- use `.env-example` as a template
+
+## Setup Private Keys in `hexploration-cli`
 
 - Create .privatekey file and move to /bin
 
