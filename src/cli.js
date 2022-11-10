@@ -55,15 +55,11 @@ async function promptForMissingOptions(options) {
   let gameData = [];
   for (let i = 0; i < availableGames.gameIDs.length; i++) {
     gameData.push({
-      "Game ID": availableGames.gameIDs[i],
+      "Game ID": availableGames.gameIDs[i].toString(),
       "Current Players": `${availableGames.currentRegistrations[i]} / ${availableGames.maxPlayers[i]}`
     });
   }
-  const transformedGameData = gameData.reduce((acc, { gameID, ...x }) => {
-    acc[gameID] = x;
-    return acc;
-  }, {});
-  console.table(transformedGameData);
+  console.table(gameData);
   const answers = await inquirer.prompt(questions);
   return {
     ...options,
