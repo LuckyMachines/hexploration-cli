@@ -22,9 +22,6 @@ import Addresses from "../settings/ContractAddresses.json";
 const selectedChain = 4; // Goerli
 // const selectedChain = 5; // Polygon
 
-// TODO:
-// Set Polygon, Hardhat, Goerli addresses
-
 const boardAddresses = [
   Addresses.ganache.HEXPLORATION_BOARD,
   Addresses.mumbai.HEXPLORATION_BOARD,
