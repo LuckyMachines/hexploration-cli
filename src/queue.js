@@ -46,6 +46,8 @@ export async function viewQueue(gameID, provider, account) {
 
   console.log("Current queue:", _queueID);
 
+  /// works to here
+
   let inProcessingQueue = await queue.methods
     .inProcessingQueue(_queueID)
     .call();
@@ -74,9 +76,12 @@ export async function viewQueue(gameID, provider, account) {
     .playerSubmitted(_queueID, playerID)
     .call();
 
-  let randomness = await queue.methods.randomness(_queueID).call();
+  let isDayPhase = await queue.methods.isDayPhase(_queueID).call();
+
+  let randomness = await queue.methods.getRandomness(_queueID).call();
 
   console.log("In processing queue:", inProcessingQueue);
+  console.log("Is day phase:", isDayPhase);
   console.log("Current phase", currentPhase);
   console.log("Queue ID (from gameID)", queueID);
   console.log("Game ID (from queueID)", game);
