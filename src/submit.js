@@ -210,10 +210,10 @@ async function equipItem(gameID) {
   }
   if (answers.handToUse == "Left") {
     submitLeftHand =
-      answers.itemToEquip != "Clear hand" ? answers.itemToEquip : "none";
+      answers.itemToEquip != "Clear hand" ? answers.itemToEquip : "None";
   } else {
     submitRightHand =
-      answers.itemToEquip != "Clear hand" ? answers.itemToEquip : "none";
+      answers.itemToEquip != "Clear hand" ? answers.itemToEquip : "None";
   }
   //console.log(`LH: ${submitLeftHand}, RH: ${submitRightHand}`);
 }
@@ -277,12 +277,12 @@ export async function submitMoves(gameID, provider, account) {
 
   inventory = await summary.methods
     .inactiveInventory(hexplorationBoard._address, gameID)
-    .call();
-  //console.log(inventory);
+    .call({ from: currentAccount });
+  // console.log(inventory);
 
   activeInventory = await summary.methods
     .activeInventory(hexplorationBoard._address, gameID)
-    .call();
+    .call({ from: currentAccount });
 
   let choices = ["Move to space"];
 
@@ -296,8 +296,6 @@ export async function submitMoves(gameID, provider, account) {
       break;
     }
   }
-  // TODO:
-  // check if already at campsite
 
   const landingSite = await summary.methods
     .landingSite(hexplorationBoard._address, gameID)
