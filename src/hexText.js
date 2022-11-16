@@ -12,6 +12,39 @@ function playerCount(zoneToCheck, allPlayerZones) {
   return count;
 }
 
+function playerString(zone, allPlayerZones) {
+  const pc = playerCount(zone, allPlayerZones);
+  let playerIcons = "";
+  for (let i = 0; i < allPlayerZones.playerIDs.length; i++) {
+    // if p1 is on the space
+    let playerID;
+    if (allPlayerZones.playerZones[i] == zone) {
+      playerID = allPlayerZones.playerIDs[i];
+    }
+    switch (playerID) {
+      case "1":
+        playerIcons += chalk.red.bold("X");
+        break;
+      case "2":
+        playerIcons += chalk.magenta.bold("X");
+        break;
+      case "3":
+        playerIcons += chalk.blue.bold("X");
+        break;
+      case "4":
+        playerIcons += chalk.yellow.bold("X");
+        break;
+      default:
+        break;
+    }
+  }
+  let line = "";
+  for (let i = 0; i < 4 - pc; i++) {
+    line += "_";
+  }
+  return playerIcons + line;
+}
+
 function tileType(zoneToCheck, activeZones) {
   let tileIndex = activeZones.zones.indexOf(zoneToCheck);
   let type;
@@ -99,11 +132,23 @@ export async function drawMap(
   let highlights = showList ? showList : [];
   //console.log("Hightlights:", highlights);
   //console.log("start zone:", startingZone);
-  console.log("current player zone:", currentPlayerZone);
-  console.log("all player zones:", allPlayerZones);
+  console.log("Current Zone:", currentPlayerZone);
+  console.log("Game Phase:", gamePhase);
+  // console.log("all player zones:", allPlayerZones);
   //console.log("active zones:", showList);
   //console.log("active zone tiles:", activeZones.tiles);
-  console.log("Game Phase:", gamePhase);
+  let totalPlayers = allPlayerZones.playerIDs.length;
+
+  // TODO: display players on map
+  // Key:
+  console.log(
+    `P1:${chalk.red.bold("X")}${
+      totalPlayers > 1 ? `, P2:${chalk.magenta.bold("X")}` : ""
+    }${totalPlayers > 2 ? `, P3:${chalk.blue.bold("X")}` : ""}${
+      totalPlayers > 3 ? `, P4:${chalk.yellow.bold("X")}` : ""
+    }`
+  );
+
   let grid = "";
   let x;
   let y;
@@ -217,11 +262,16 @@ export async function drawMap(
               y = rows - i - 1;
               xy = `${x},${y}`;
               tType = tileType(xy, activeZones);
-
+              let zoneCoords = `${x + 1},${y + 1}`;
+              let players = playerString(zoneCoords, allPlayerZones);
               if (needsTopRow && hexColumn == columns / 2 - 1) {
-                grid += !isBottomRow ? `  ${tType}   \\____ ` : `      \\____ `;
+                grid += !isBottomRow
+                  ? `  ${tType}   \\${players} `
+                  : `      \\${players} `;
               } else {
-                grid += !isBottomRow ? `  ${tType}   \\____/` : `      \\____/`;
+                grid += !isBottomRow
+                  ? `  ${tType}   \\${players}/`
+                  : `      \\${players}/`;
               }
             }
           } else {
@@ -237,10 +287,15 @@ export async function drawMap(
               x = hexColumn * 2 + 2;
               xy = `${x},${y}`;
               tType = tileType(xy, activeZones);
+              let zoneCoords = `${x - 1},${y + 1}`;
+              let players = playerString(zoneCoords, allPlayerZones);
+
               if (isBottomRow && hexColumn == (columns - 1) / 2 - 1) {
-                grid += `____/       `;
+                grid += `${players}/       `;
               } else {
-                grid += !isBottomRow ? `____/  ${tType}   \\` : `____/      \\`;
+                grid += !isBottomRow
+                  ? `${players}/  ${tType}   \\`
+                  : `${players}/      \\`;
               }
             }
           }
@@ -306,7 +361,9 @@ export async function drawMap(
                 y = rows - i - 1;
                 xy = `${x},${y}`;
                 tType = tileType(xy, activeZones);
-                grid += `____/  ${tType}   \\`;
+                let zoneCoords = `${x - 1},${y}`;
+                let players = playerString(zoneCoords, allPlayerZones);
+                grid += `${players}/  ${tType}   \\`;
               }
             }
           } else {
@@ -319,8 +376,13 @@ export async function drawMap(
                 x = hexColumn * 2 + 1;
                 y = rows - i - 1;
                 xy = `${x},${y}`;
+                let zoneCoords = `${x - 1},${y}`;
+                let players = playerString(zoneCoords, allPlayerZones);
                 tType = tileType(xy, activeZones);
-                grid += x != columns ? ` \\____/  ${tType}  ` : ` \\____/     `;
+                grid +=
+                  x != columns
+                    ? ` \\${players}/  ${tType}  `
+                    : ` \\${players}/     `;
               }
             }
           }
