@@ -85,12 +85,17 @@ export async function drawMap(
   startingZone,
   currentPlayerZone,
   allPlayerZones,
-  campSiteZones,
   gamePhase
 ) {
   // rows = 4, columns = 5, showList = ["1,0","2,2","3,0"];
   // activeZones.tiles has types of tiles
   let showList = activeZones.zones;
+  let campsiteZones = [];
+  for (let i = 0; i < showList.length; i++) {
+    if (activeZones.campsites[i]) {
+      campsiteZones.push(showList[i]);
+    }
+  }
   let highlights = showList ? showList : [];
   //console.log("Hightlights:", highlights);
   //console.log("start zone:", startingZone);
@@ -142,24 +147,22 @@ export async function drawMap(
                 if (needsTopRow && hexColumn == columns / 2 - 1) {
                   // TOP RIGHT CORNER
                   grid += ` ${
-                    campSiteZones.indexOf(xy2) > -1
-                      ? chalk.magenta.bold("/\\")
+                    campsiteZones.indexOf(xy2) > -1
+                      ? chalk.red.bold("/\\")
                       : "  "
                   } \\       `;
                 } else {
                   // TOP ROW
                   grid += ` ${
-                    campSiteZones.indexOf(xy2) > -1
-                      ? chalk.magenta.bold("/\\")
+                    campsiteZones.indexOf(xy2) > -1
+                      ? chalk.red.bold("/\\")
                       : "  "
                   } \\      /`;
                 }
               } else {
                 // EVEN COLUMNS
                 grid += ` ${
-                  campSiteZones.indexOf(xy2) > -1
-                    ? chalk.magenta.bold("/\\")
-                    : "  "
+                  campsiteZones.indexOf(xy2) > -1 ? chalk.red.bold("/\\") : "  "
                 } \\ ${
                   highlights.indexOf(xy) > -1 ? chalk.green.bold(xy) : xy
                 }  /`;
@@ -186,13 +189,13 @@ export async function drawMap(
                 grid +=
                   needsTopRow || hexColumn == (columns + 1) / 2 - 1
                     ? ` ${
-                        campSiteZones.indexOf(xy2) > -1
-                          ? chalk.magenta.bold("/\\")
+                        campsiteZones.indexOf(xy2) > -1
+                          ? chalk.red.bold("/\\")
                           : "  "
                       } \\     `
                     : ` ${
-                        campSiteZones.indexOf(xy2) > -1
-                          ? chalk.magenta.bold("/\\")
+                        campsiteZones.indexOf(xy2) > -1
+                          ? chalk.red.bold("/\\")
                           : "  "
                       } \\ ${
                         highlights.indexOf(xy) > -1 ? chalk.green.bold(xy) : xy
@@ -257,8 +260,8 @@ export async function drawMap(
                   grid += `${
                     highlights.indexOf(xy) > -1 ? chalk.green.bold(xy) : xy
                   }  / ${
-                    campSiteZones.indexOf(xy2) > -1
-                      ? chalk.magenta.bold("/\\")
+                    campsiteZones.indexOf(xy2) > -1
+                      ? chalk.red.bold("/\\")
                       : "  "
                   } \\ `;
                 } else {
@@ -266,8 +269,8 @@ export async function drawMap(
                   grid += `${
                     highlights.indexOf(xy) > -1 ? chalk.green.bold(xy) : xy
                   }  / ${
-                    campSiteZones.indexOf(xy2) > -1
-                      ? chalk.magenta.bold("/\\")
+                    campsiteZones.indexOf(xy2) > -1
+                      ? chalk.red.bold("/\\")
                       : "  "
                   } \\ `;
                 }
@@ -287,9 +290,7 @@ export async function drawMap(
                 grid += `\\ ${
                   highlights.indexOf(xy) > -1 ? chalk.green.bold(xy) : xy
                 }  / ${
-                  campSiteZones.indexOf(xy2) > -1
-                    ? chalk.magenta.bold("/\\")
-                    : "  "
+                  campsiteZones.indexOf(xy2) > -1 ? chalk.red.bold("/\\") : "  "
                 } `;
               }
             }
