@@ -6,6 +6,16 @@ let currentAccount;
 let summary;
 let board;
 
+const ACTION = [
+  "Idle",
+  "Move",
+  "Setup Camp",
+  "Break Down Camp",
+  "Dig",
+  "Rest",
+  "Help"
+];
+
 export async function playerInfo(gameID, provider, account) {
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
@@ -23,13 +33,16 @@ export async function playerInfo(gameID, provider, account) {
     .call({ from: currentAccount });
 
   console.log(
-    `Movement: ${playerStats.movement}, Agility: ${playerStats.agility}, Dexterity: ${playerStats.dexterity}`
+    `\nMovement: ${playerStats.movement}, Agility: ${playerStats.agility}, Dexterity: ${playerStats.dexterity}`
   );
-  console.log("Campsite:", activeInventory.campsite ? "Packed Up" : "On Board");
+  console.log(
+    "Campsite:",
+    activeInventory.campsite ? "Packed Up" : "Set Up (in game)"
+  );
   console.log(
     `Left hand item: ${
       handInventory.leftHandItem ? handInventory.leftHandItem : "None"
-    }, Right hand item:${
+    }, Right hand item: ${
       handInventory.rightHandItem ? handInventory.rightHandItem : "None"
     }`
   );
@@ -49,5 +62,29 @@ export async function playerInfo(gameID, provider, account) {
   const lastActions = await summary.methods
     .lastPlayerActions(board._address, gameID)
     .call();
-  console.log(lastActions);
+  // console.log(lastActions);
+  let lastActionData = [];
+  for (let i = 0; i < lastActions.playerIDs.length; i++) {
+    const inventoryChanges = lastActions.activeActionCardInventoryChanges[i];
+    const inventoryChange =
+      inventoryChanges[0] != ""
+        ? `Item loss: ${inventoryChanges[0]}`
+        : inventoryChanges[1] != ""
+        ? `Item gain: ${inventoryChanges[1]}`
+        : inventoryChanges[2] != ""
+        ? `Item loss: ${inventoryChanges[2]}`
+        : "";
+    lastActionData.push({
+      "Player ID": lastActions.playerIDs[i].toString(),
+      "Card Type": lastActions.activeActionCardTypes[i],
+      "Card Drawn": lastActions.activeActionCardsDrawn[i],
+      Action: ACTION[Number(lastActions.currentActiveActions[i])],
+      Result: lastActions.activeActionCardResults[i],
+      Inventory: inventoryChange,
+      "Stat Updates": lastActions.activeActionStatUpdates[i]
+    });
+  }
+  console.table(lastActionData);
+
+  console.log("\n Day Time Events:");
 }
