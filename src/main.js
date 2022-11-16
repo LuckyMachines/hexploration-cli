@@ -91,7 +91,7 @@ async function registerPlayerIfNeeded(gameID) {
         .registerForGame(gameID, gameBoard._address)
         .send({ from: currentAccount, gas: "5000000" });
       const gasUsed = tx.gasUsed;
-      console.log("Registered player with gas:", gasUsed);
+      // console.log("Registered player with gas:", gasUsed);
     } catch (err) {
       console.log("Error registering:", err.message);
     }
