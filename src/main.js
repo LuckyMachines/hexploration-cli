@@ -87,9 +87,11 @@ async function registerPlayerIfNeeded(gameID) {
   if (!isRegistered) {
     console.log(`Registering player: ${currentAccount}`);
     try {
-      await gameController.methods
+      let tx = await gameController.methods
         .registerForGame(gameID, gameBoard._address)
         .send({ from: currentAccount, gas: "5000000" });
+      const gasUsed = tx.gasUsed;
+      console.log("Registered player with gas:", gasUsed);
     } catch (err) {
       console.log("Error registering:", err.message);
     }
