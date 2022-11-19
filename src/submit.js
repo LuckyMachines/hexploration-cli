@@ -237,10 +237,17 @@ async function dig(gameID) {
 }
 
 async function rest(gameID) {
-  console.log("Resting......");
-  // TODO:
-  // Choose which attribute to rest
-  await submitAction("Rest", [""], gameID);
+  let questions = [];
+  questions.push({
+    type: "list",
+    name: "restAttribute",
+    message: "Which attribute to rest?",
+    choices: ["Movement", "Agility", "Dexterity"],
+    default: "Movement"
+  });
+
+  let answers = await inquirer.prompt(questions);
+  await submitAction("Rest", [answers.restAttribute], gameID);
 }
 
 /*

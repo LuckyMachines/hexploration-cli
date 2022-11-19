@@ -118,7 +118,8 @@ export async function drawMap(
   startingZone,
   currentPlayerZone,
   allPlayerZones,
-  gamePhase
+  gamePhase,
+  dayNumber
 ) {
   // rows = 4, columns = 5, showList = ["1,0","2,2","3,0"];
   // activeZones.tiles has types of tiles
@@ -134,12 +135,12 @@ export async function drawMap(
   //console.log("start zone:", startingZone);
   console.log("Current Zone:", currentPlayerZone);
   console.log("Game Phase:", gamePhase);
+  console.log("Day #", dayNumber);
   // console.log("all player zones:", allPlayerZones);
   //console.log("active zones:", showList);
   //console.log("active zone tiles:", activeZones.tiles);
   let totalPlayers = allPlayerZones.playerIDs.length;
 
-  // TODO: display players on map
   // Key:
   console.log(
     `P1:${chalk.red.bold("X")}${
