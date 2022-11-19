@@ -30,6 +30,7 @@ export async function showMap(gameID, provider, account) {
   const gamePhase = await summary.methods
     .currentPhase(board._address, gameID)
     .call();
+  // console.log(summary.methods);
   const dayNumber = await summary.methods
     .currentDay(board._address, gameID)
     .call();

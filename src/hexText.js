@@ -135,7 +135,7 @@ export async function drawMap(
   //console.log("start zone:", startingZone);
   console.log("Current Zone:", currentPlayerZone);
   console.log("Game Phase:", gamePhase);
-  console.log("Day #", dayNumber);
+  console.log(`Day #${dayNumber}`);
   // console.log("all player zones:", allPlayerZones);
   //console.log("active zones:", showList);
   //console.log("active zone tiles:", activeZones.tiles);
