@@ -11,6 +11,7 @@ const PROVIDER_URL = process.env.RPC_URL_MUMBAI; // Mumbai
 // const PROVIDER_URL = process.env.RPC_URL_GOERLI; // GOERLI
 // const PROVIDER_URL = "http://127.0.0.1:7545"; // Ganache
 
+// TODO: choose between web3 or ethers (default to web3 if nothing passed for legacy support)
 const provider = async (providerUrl) => {
   let keys = [];
   const keysFromFile = fs.readFileSync(`${pkDir}/.privateKey`).toString();

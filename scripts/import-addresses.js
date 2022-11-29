@@ -16,6 +16,8 @@ addressesDestination.goerli.HEXPLORATION_BOARD =
 addressesDestination.goerli.HEXPLORATION_CONTROLLER =
   DeploymentSource.goerli.HEXPLORATION_CONTROLLER;
 addressesDestination.goerli.GAME_SUMMARY = DeploymentSource.goerli.GAME_SUMMARY;
+addressesDestination.goerli.PLAYER_SUMMARY =
+  DeploymentSource.goerli.PLAYER_SUMMARY;
 addressesDestination.goerli.GAME_QUEUE = DeploymentSource.goerli.GAME_QUEUE;
 addressesDestination.goerli.GAMEPLAY = DeploymentSource.goerli.GAMEPLAY;
 
@@ -26,6 +28,8 @@ addressesDestination.mumbai.HEXPLORATION_BOARD =
 addressesDestination.mumbai.HEXPLORATION_CONTROLLER =
   DeploymentSource.mumbai.HEXPLORATION_CONTROLLER;
 addressesDestination.mumbai.GAME_SUMMARY = DeploymentSource.mumbai.GAME_SUMMARY;
+addressesDestination.mumbai.PLAYER_SUMMARY =
+  DeploymentSource.mumbai.PLAYER_SUMMARY;
 addressesDestination.mumbai.GAME_QUEUE = DeploymentSource.mumbai.GAME_QUEUE;
 addressesDestination.mumbai.GAMEPLAY = DeploymentSource.mumbai.GAMEPLAY;
 

@@ -7,6 +7,7 @@ import Provider from "./provider";
 let web3;
 let accounts;
 let summary;
+let playerSummary;
 let board;
 let registry;
 
@@ -71,6 +72,7 @@ export async function cli(args) {
   web3 = await Provider();
   accounts = await web3.eth.getAccounts();
   summary = await Contract("summary", web3);
+  playerSummary = await Contract("playerSummary", web3);
   board = await Contract("board", web3);
   registry = await Contract("registry", web3);
 

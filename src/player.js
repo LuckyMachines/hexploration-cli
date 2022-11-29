@@ -4,6 +4,7 @@ import Contract from "./contract";
 
 let currentAccount;
 let summary;
+let playerSummary;
 let board;
 
 const ACTION = [
@@ -21,14 +22,15 @@ export async function playerInfo(gameID, provider, account) {
   currentAccount = account ? account : accounts[0];
   // console.log("Getting player info for game:", gameID);
   summary = await Contract("summary", provider);
+  playerSummary = await Contract("playerSummary", provider);
   board = await Contract("board", provider);
-  let playerStats = await summary.methods
+  let playerStats = await playerSummary.methods
     .currentPlayerStats(board._address, gameID)
     .call({ from: currentAccount });
-  let activeInventory = await summary.methods
+  let activeInventory = await playerSummary.methods
     .activeInventory(board._address, gameID)
     .call({ from: currentAccount });
-  let handInventory = await summary.methods
+  let handInventory = await playerSummary.methods
     .currentHandInventory(board._address, gameID)
     .call({ from: currentAccount });
 

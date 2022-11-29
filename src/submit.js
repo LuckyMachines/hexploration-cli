@@ -8,6 +8,7 @@ let currentAccount;
 let hexplorationBoard;
 let hexplorationController;
 let summary;
+let playerSummary;
 
 let inventory;
 let activeInventory;
@@ -30,7 +31,7 @@ async function submitAction(action, options, gameID) {
     "Help"
   ];
   const actionEnum = ActionType.indexOf(action);
-  const pid = await summary.methods
+  const pid = await playerSummary.methods
     .getPlayerID(hexplorationBoard._address, gameID, currentAccount)
     .call();
 
@@ -92,7 +93,7 @@ function getAvailableSpaceChoices(currentSpace, allSpaces, maxMovement) {
 }
 
 async function moveToSpace(gameID) {
-  let playerStats = await summary.methods
+  let playerStats = await playerSummary.methods
     .currentPlayerStats(hexplorationBoard._address, gameID)
     .call({ from: currentAccount });
   const maxSpaces = Number(playerStats.movement);
@@ -119,7 +120,7 @@ async function moveToSpace(gameID) {
     .getZoneAliases()
     .call();
 
-  currentSpace = await summary.methods
+  currentSpace = await playerSummary.methods
     .currentLocation(hexplorationBoard._address, gameID)
     .call({ from: currentAccount });
 
@@ -270,6 +271,7 @@ export async function submitMoves(gameID, provider, account) {
   hexplorationBoard = await Contract("board", provider);
   hexplorationController = await Contract("controller", provider);
   summary = await Contract("summary", provider);
+  playerSummary = await Contract("playerSummary", provider);
 
   //////////////////
   // TEST METHOD //
@@ -282,12 +284,12 @@ export async function submitMoves(gameID, provider, account) {
   //     gas: "5000000"
   //   });
 
-  inventory = await summary.methods
+  inventory = await playerSummary.methods
     .inactiveInventory(hexplorationBoard._address, gameID)
     .call({ from: currentAccount });
   // console.log(inventory);
 
-  activeInventory = await summary.methods
+  activeInventory = await playerSummary.methods
     .activeInventory(hexplorationBoard._address, gameID)
     .call({ from: currentAccount });
 
@@ -308,12 +310,12 @@ export async function submitMoves(gameID, provider, account) {
     .landingSite(hexplorationBoard._address, gameID)
     .call();
   if (!currentSpace) {
-    currentSpace = await summary.methods
+    currentSpace = await playerSummary.methods
       .currentLocation(hexplorationBoard._address, gameID)
       .call({ from: currentAccount });
   }
 
-  let isAtCampsite = await summary.methods
+  let isAtCampsite = await playerSummary.methods
     .isAtCampsite(hexplorationBoard._address, gameID)
     .call({ from: currentAccount });
 

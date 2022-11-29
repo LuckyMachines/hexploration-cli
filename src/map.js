@@ -4,6 +4,7 @@ import Contract from "./contract.js";
 //let controller;
 let board;
 let summary;
+let playerSummary;
 let currentAccount;
 
 // TODO: get size of board from contract
@@ -13,6 +14,7 @@ export async function showMap(gameID, provider, account) {
   currentAccount = account ? account : accounts[0];
   board = await Contract("board", provider);
   summary = await Contract("summary", provider);
+  playerSummary = await Contract("playerSummary", provider);
 
   const startZone = await summary.methods
     .landingSite(board._address, gameID)
@@ -20,7 +22,7 @@ export async function showMap(gameID, provider, account) {
   const activeZones = await summary.methods
     .activeZones(board._address, gameID)
     .call();
-  const currentPlayerZone = await summary.methods
+  const currentPlayerZone = await playerSummary.methods
     .currentLocation(board._address, gameID)
     .call({ from: currentAccount });
   const allPlayerZones = await summary.methods

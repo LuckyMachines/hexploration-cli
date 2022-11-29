@@ -4,6 +4,7 @@ import Contract from "./contract";
 
 let currentAccount;
 let summary;
+let playerSummary;
 let board;
 let gameplay;
 
@@ -11,6 +12,7 @@ export async function progressPhase(gameID, provider, account) {
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
   summary = await Contract("summary", provider);
+  playerSummary = await Contract("playerSummary", provider);
   board = await Contract("board", provider);
   gameplay = await Contract("gameplay", provider);
 

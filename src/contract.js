@@ -2,6 +2,7 @@ import GameRegistry from "@luckymachines/game-core/contracts/abi/v0.0/GameRegist
 
 // Game-core ABIs
 import GameSummary from "@luckymachines/game-core/games/hexploration/abi/GameSummary.json";
+import PlayerSummary from "@luckymachines/game-core/games/hexploration/abi/PlayerSummary.json";
 import HexplorationController from "@luckymachines/game-core/games/hexploration/abi/HexplorationController.json";
 
 // Extra ABIs for admin functionality
@@ -49,6 +50,15 @@ const summaryAddresses = [
   Addresses.polygon.GAME_SUMMARY
 ];
 
+const playerSummaryAddresses = [
+  Addresses.ganache.PLAYER_SUMMARY,
+  Addresses.mumbai.PLAYER_SUMMARY,
+  Addresses.bnbTest.PLAYER_SUMMARY,
+  Addresses.hardhat.PLAYER_SUMMARY,
+  Addresses.goerli.PLAYER_SUMMARY,
+  Addresses.polygon.PLAYER_SUMMARY
+];
+
 const registryAddresses = [
   Addresses.ganache.GAME_REGISTRY,
   Addresses.mumbai.GAME_REGISTRY,
@@ -92,9 +102,16 @@ const contract = async (contractName, provider) => {
       );
       break;
     case "summary":
+    case "gameSummary":
       c = new provider.eth.Contract(
         GameSummary,
         summaryAddresses[selectedChain]
+      );
+      break;
+    case "playerSummary":
+      c = new provider.eth.Contract(
+        PlayerSummary,
+        playerSummaryAddresses[selectedChain]
       );
       break;
     case "registry":

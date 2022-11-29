@@ -16,6 +16,7 @@ let gameRegistry;
 let gameBoard;
 let gameController;
 let gameSummary;
+let playerSummary;
 let landingSiteSet;
 let adminMode = false;
 
@@ -80,7 +81,7 @@ async function mainMenu(gameID) {
 }
 
 async function registerPlayerIfNeeded(gameID) {
-  let isRegistered = await gameSummary.methods
+  let isRegistered = await playerSummary.methods
     .isRegistered(gameBoard._address, gameID, currentAccount)
     .call();
 
@@ -97,7 +98,7 @@ async function registerPlayerIfNeeded(gameID) {
     }
   }
 
-  isRegistered = await gameSummary.methods
+  isRegistered = await playerSummary.methods
     .isRegistered(gameBoard._address, gameID, currentAccount)
     .call();
   if (isRegistered) {
@@ -147,6 +148,7 @@ export async function runCLI(options) {
   currentAccount = overrideWallet ? accounts[options.walletIndex] : accounts[0];
 
   gameSummary = await Contract("summary", web3);
+  playerSummary = await Contract("playerSummary", web3);
   gameBoard = await Contract("board", web3);
   gameRegistry = await Contract("registry", web3);
   gameController = await Contract("controller", web3);

@@ -6,6 +6,7 @@ let currentAccount;
 let board;
 let queue;
 let summary;
+let playerSummary;
 
 /*
     mapping(uint256 => bool) public inProcessingQueue; // game queue is in processing queue
@@ -34,8 +35,9 @@ export async function viewQueue(gameID, provider, account) {
   //   .send({ from: currentAccount, gas: "5000000" });
 
   summary = await Contract("summary", provider);
+  playerSummary = await Contract("playerSummary", provider);
   board = await Contract("board", provider);
-  let playerID = await summary.methods
+  let playerID = await playerSummary.methods
     .getPlayerID(board._address, gameID, currentAccount)
     .call();
   console.log("Player ID:", playerID);
