@@ -1,3 +1,5 @@
+import Ethers from "ethers";
+
 import GameRegistry from "@luckymachines/game-core/contracts/abi/v0.0/GameRegistry.json";
 
 // Game-core ABIs
@@ -86,45 +88,87 @@ const gameplayAddresses = [
   Addresses.polygon.GAMEPLAY
 ];
 
-const contract = async (contractName, provider) => {
+const contract = async (contractName, provider, ethersWallet) => {
   let c;
   switch (contractName) {
     case "board":
-      c = new provider.eth.Contract(
-        HexplorationBoard,
-        boardAddresses[selectedChain]
-      );
+      c = ethersWallet
+        ? new Ethers.Contract(
+            boardAddresses[selectedChain],
+            HexplorationBoard,
+            ethersWallet
+          )
+        : new provider.eth.Contract(
+            HexplorationBoard,
+            boardAddresses[selectedChain]
+          );
       break;
     case "controller":
-      c = new provider.eth.Contract(
-        HexplorationController,
-        controllerAddresses[selectedChain]
-      );
+      c = ethersWallet
+        ? new Ethers.Contract(
+            controllerAddresses[selectedChain],
+            HexplorationController,
+            ethersWallet
+          )
+        : new provider.eth.Contract(
+            HexplorationController,
+            controllerAddresses[selectedChain]
+          );
       break;
     case "summary":
     case "gameSummary":
-      c = new provider.eth.Contract(
-        GameSummary,
-        summaryAddresses[selectedChain]
-      );
+      c = ethersWallet
+        ? new Ethers.Contract(
+            summaryAddresses[selectedChain],
+            GameSummary,
+            ethersWallet
+          )
+        : new provider.eth.Contract(
+            GameSummary,
+            summaryAddresses[selectedChain]
+          );
       break;
     case "playerSummary":
-      c = new provider.eth.Contract(
-        PlayerSummary,
-        playerSummaryAddresses[selectedChain]
-      );
+      c = ethersWallet
+        ? new Ethers.Contract(
+            playerSummaryAddresses[selectedChain],
+            PlayerSummary,
+            ethersWallet
+          )
+        : new provider.eth.Contract(
+            PlayerSummary,
+            playerSummaryAddresses[selectedChain]
+          );
       break;
     case "registry":
-      c = new provider.eth.Contract(
-        GameRegistry,
-        registryAddresses[selectedChain]
-      );
+      c = ethersWallet
+        ? new Ethers.Contract(
+            registryAddresses[selectedChain],
+            GameRegistry,
+            ethersWallet
+          )
+        : new provider.eth.Contract(
+            GameRegistry,
+            registryAddresses[selectedChain]
+          );
       break;
     case "queue":
-      c = new provider.eth.Contract(Queue, queueAddresses[selectedChain]);
+      c = ethersWallet
+        ? new Ethers.Contract(
+            queueAddresses[selectedChain],
+            Queue,
+            ethersWallet
+          )
+        : new provider.eth.Contract(Queue, queueAddresses[selectedChain]);
       break;
     case "gameplay":
-      c = new provider.eth.Contract(Gameplay, gameplayAddresses[selectedChain]);
+      c = ethersWallet
+        ? new Ethers.Contract(
+            gameplayAddresses[selectedChain],
+            Gameplay,
+            ethersWallet
+          )
+        : new provider.eth.Contract(Gameplay, gameplayAddresses[selectedChain]);
       break;
     default:
       break;

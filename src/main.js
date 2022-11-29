@@ -10,6 +10,7 @@ import Provider from "./provider";
 import Contract from "./contract.js";
 
 let web3; // provider
+let ethers; // ethers provider
 let accounts;
 let currentAccount;
 let gameRegistry;
@@ -88,10 +89,9 @@ async function registerPlayerIfNeeded(gameID) {
   if (!isRegistered) {
     console.log(`Registering player: ${currentAccount}`);
     try {
-      let tx = await gameController.methods
-        .registerForGame(gameID, gameBoard._address)
-        .send({ from: currentAccount, gas: "1000000" });
-      const gasUsed = tx.gasUsed;
+      let tx = await gameController.registerForGame(gameID, gameBoard._address);
+      await tx.wait();
+      // const gasUsed = tx.gasUsed;
       // console.log("Registered player with gas:", gasUsed);
     } catch (err) {
       console.log("Error registering:", err.message);
@@ -125,19 +125,22 @@ async function checkForLandingSite(gameID) {
 }
 
 async function registerNewGame() {
-  await gameController.methods
-    .requestNewGame(gameRegistry._address, gameBoard._address)
-    .send({ from: currentAccount, gas: "2000000" });
-  let newGameID = gameController.methods
-    .latestGame(gameRegistry._address, gameBoard._address)
-    .call();
+  let tx = await gameController.requestNewGame(
+    gameRegistry._address,
+    gameBoard._address
+  );
+  await tx.wait();
+
+  let newGameID = await gameController.latestGame(
+    gameRegistry._address,
+    gameBoard._address
+  );
   return newGameID;
 }
 
 export async function runCLI(options) {
   web3 = await Provider();
   accounts = await web3.eth.getAccounts();
-  adminMode = options.adminMode;
 
   let overrideWallet = false;
   if (options.walletIndex) {
@@ -147,11 +150,19 @@ export async function runCLI(options) {
   }
   currentAccount = overrideWallet ? accounts[options.walletIndex] : accounts[0];
 
+  adminMode = options.adminMode;
+
+  ethers = await Provider(
+    null,
+    "ethers",
+    overrideWallet ? options.walletIndex : 0
+  );
+
   gameSummary = await Contract("summary", web3);
   playerSummary = await Contract("playerSummary", web3);
   gameBoard = await Contract("board", web3);
   gameRegistry = await Contract("registry", web3);
-  gameController = await Contract("controller", web3);
+  gameController = await Contract("controller", ethers.provider, ethers.wallet);
 
   let gameID;
   if (options.newGame) {
