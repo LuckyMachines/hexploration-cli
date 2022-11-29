@@ -7,8 +7,6 @@ let summary;
 let playerSummary;
 let currentAccount;
 
-// TODO: get size of board from contract
-
 export async function showMap(gameID, provider, account) {
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
