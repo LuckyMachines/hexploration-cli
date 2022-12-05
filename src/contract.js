@@ -1,4 +1,4 @@
-import Ethers from "ethers";
+const Ethers = require("ethers");
 
 import GameRegistry from "@luckymachines/game-core/contracts/abi/v0.0/GameRegistry.json";
 

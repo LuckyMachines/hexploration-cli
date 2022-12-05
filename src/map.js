@@ -35,6 +35,10 @@ export async function showMap(gameID, provider, account) {
     .currentDay(board._address, gameID)
     .call();
   //console.log("Map size:", mapSize);
+  const playerID = await playerSummary.methods
+    .getPlayerID(board._address, gameID, currentAccount)
+    .call();
+  console.log(`Current Player: P${playerID}`);
   await drawMap(
     Number(mapSize.rows),
     Number(mapSize.columns),

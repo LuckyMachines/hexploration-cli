@@ -1,6 +1,6 @@
 import HDWalletProvider from "@truffle/hdwallet-provider";
 import Web3 from "web3";
-import Ethers from "ethers";
+const Ethers = require("ethers");
 import fs from "fs";
 const { dirname } = require("path");
 const pkDir = dirname(require.main.filename);
