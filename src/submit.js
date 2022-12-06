@@ -309,11 +309,10 @@ export async function submitMoves(gameID, provider, account) {
   const landingSite = await summary.methods
     .landingSite(hexplorationBoard._address, gameID)
     .call();
-  if (!currentSpace) {
-    currentSpace = await playerSummary.methods
-      .currentLocation(hexplorationBoard._address, gameID)
-      .call({ from: currentAccount });
-  }
+
+  currentSpace = await playerSummary.methods
+    .currentLocation(hexplorationBoard._address, gameID)
+    .call({ from: currentAccount });
 
   let isAtCampsite = await playerSummary.methods
     .isAtCampsite(hexplorationBoard._address, gameID)
