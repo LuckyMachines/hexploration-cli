@@ -9,6 +9,7 @@ let hexplorationBoard;
 let hexplorationController;
 let summary;
 let playerSummary;
+let queue;
 
 let inventory;
 let activeInventory;
@@ -272,6 +273,7 @@ export async function submitMoves(gameID, provider, account) {
   hexplorationController = await Contract("controller", provider);
   summary = await Contract("summary", provider);
   playerSummary = await Contract("playerSummary", provider);
+  queue = await Contract("queue", provider);
 
   //////////////////
   // TEST METHOD //
@@ -294,6 +296,13 @@ export async function submitMoves(gameID, provider, account) {
     .call({ from: currentAccount });
 
   let choices = ["Move to space"];
+
+  const _queueID = await summary.methods
+    .currentGameplayQueue(hexplorationBoard._address, gameID)
+    .call();
+  let currentPhase = await queue.methods.currentPhase(_queueID).call();
+
+  let isSubmissionPhase = currentPhase == 1;
 
   let hasItems = false;
   for (let i = 0; i < inventory.itemBalances.length; i++) {
@@ -328,60 +337,64 @@ export async function submitMoves(gameID, provider, account) {
   let canTrade = false;
   let canPickupItems = false;
   //////////////////////////
-  if (hasItems) {
-    choices.push("Equip item");
-  }
-  if (isAtCampsite) {
-    choices.push("Dig");
-    choices.push("Rest");
-    choices.push("Break down camp");
-  } else if (hasCampsiteInInventory && !isOnLandingZone && !isOnRelicZone) {
-    choices.push("Setup camp");
-  }
-  if (canPickupItems) {
-    choices.push("Pick up items");
-  }
-  if (canTrade) {
-    choices.push("Trade items");
-  }
-  choices.push("Cancel");
-  const questions = [];
-  questions.push({
-    type: "list",
-    name: "move",
-    message: "Which move do you want to make?",
-    choices: choices,
-    default: "Move to space"
-  });
-  const answers = await inquirer.prompt(questions);
-  switch (answers.move) {
-    case "Move to space":
-      await moveToSpace(gameID);
-      break;
-    case "Setup camp":
-      await setupCamp(gameID);
-      break;
-    case "Dig":
-      await dig(gameID);
-      break;
-    case "Rest":
-      await rest(gameID);
-      break;
-    case "Break down camp":
-      await breakDownCamp(gameID);
-      break;
-    case "Equip item":
-      await equipItem(gameID);
-      break;
-    case "Trade items":
-      await tradeItems();
-      break;
-    case "Pick up items":
-      await pickUpItems();
-      break;
-    case "Cancel":
-    default:
-      console.log("Cancel move.");
-      break;
+  if (isSubmissionPhase) {
+    if (hasItems) {
+      choices.push("Equip item");
+    }
+    if (isAtCampsite) {
+      choices.push("Dig");
+      choices.push("Rest");
+      choices.push("Break down camp");
+    } else if (hasCampsiteInInventory && !isOnLandingZone && !isOnRelicZone) {
+      choices.push("Setup camp");
+    }
+    if (canPickupItems) {
+      choices.push("Pick up items");
+    }
+    if (canTrade) {
+      choices.push("Trade items");
+    }
+    choices.push("Cancel");
+    const questions = [];
+    questions.push({
+      type: "list",
+      name: "move",
+      message: "Which move do you want to make?",
+      choices: choices,
+      default: "Move to space"
+    });
+    const answers = await inquirer.prompt(questions);
+    switch (answers.move) {
+      case "Move to space":
+        await moveToSpace(gameID);
+        break;
+      case "Setup camp":
+        await setupCamp(gameID);
+        break;
+      case "Dig":
+        await dig(gameID);
+        break;
+      case "Rest":
+        await rest(gameID);
+        break;
+      case "Break down camp":
+        await breakDownCamp(gameID);
+        break;
+      case "Equip item":
+        await equipItem(gameID);
+        break;
+      case "Trade items":
+        await tradeItems();
+        break;
+      case "Pick up items":
+        await pickUpItems();
+        break;
+      case "Cancel":
+      default:
+        console.log("Cancel move.");
+        break;
+    }
+  } else {
+    console.log("Not submission phase.");
   }
 }
