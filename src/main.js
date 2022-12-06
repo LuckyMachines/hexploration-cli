@@ -90,26 +90,25 @@ async function registerPlayerIfNeeded(gameID) {
     console.log(`Registering player: ${currentAccount}`);
     try {
       let tx = await gameController.registerForGame(gameID, gameBoard._address);
-      await tx.wait();
-      // const gasUsed = tx.gasUsed;
-      // console.log("Registered player with gas:", gasUsed);
+      let receipt = await tx.wait();
+      // console.log("Registered player with gas:", receipt.gasUsed.toString());
+      isRegistered = await playerSummary.methods
+        .isRegistered(gameBoard._address, gameID, currentAccount)
+        .call();
+      console.log("Player registered. Entering game.");
+      console.log(`${chalk.cyan.bold("\nPlaying Hexploration via CLI")}`);
+      console.log(`${chalk.green.bold("Game ID:")} ${gameID}`);
+      console.log(`${chalk.blue.bold("Player:")} ${currentAccount}`);
+      console.log(`${adminMode ? chalk.red.bold("Admin mode enabled") : ""}`);
     } catch (err) {
       console.log("Error registering:", err.message);
     }
-  }
-
-  isRegistered = await playerSummary.methods
-    .isRegistered(gameBoard._address, gameID, currentAccount)
-    .call();
-  if (isRegistered) {
+  } else {
     console.log("Player registered. Entering game.");
     console.log(`${chalk.cyan.bold("\nPlaying Hexploration via CLI")}`);
     console.log(`${chalk.green.bold("Game ID:")} ${gameID}`);
     console.log(`${chalk.blue.bold("Player:")} ${currentAccount}`);
     console.log(`${adminMode ? chalk.red.bold("Admin mode enabled") : ""}`);
-  } else {
-    console.log("Unable to register player.");
-    process.exit();
   }
 }
 
@@ -129,7 +128,7 @@ async function registerNewGame() {
     gameRegistry._address,
     gameBoard._address
   );
-  await tx.wait();
+  let receipt = await tx.wait();
 
   let newGameID = await gameController.latestGame(
     gameRegistry._address,
