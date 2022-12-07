@@ -93,6 +93,10 @@ function getAvailableSpaceChoices(currentSpace, allSpaces, maxMovement) {
   return availablePossibleChoices;
 }
 
+async function idle(gameID) {
+  await submitAction("Idle", [""], gameID);
+}
+
 async function moveToSpace(gameID) {
   let playerStats = await playerSummary.methods
     .currentPlayerStats(hexplorationBoard._address, gameID)
@@ -295,7 +299,7 @@ export async function submitMoves(gameID, provider, account) {
     .activeInventory(hexplorationBoard._address, gameID)
     .call({ from: currentAccount });
 
-  let choices = ["Move to space"];
+  let choices = ["Idle", "Move to space"];
 
   const _queueID = await summary.methods
     .currentGameplayQueue(hexplorationBoard._address, gameID)
@@ -361,10 +365,13 @@ export async function submitMoves(gameID, provider, account) {
       name: "move",
       message: "Which move do you want to make?",
       choices: choices,
-      default: "Move to space"
+      default: "Idle"
     });
     const answers = await inquirer.prompt(questions);
     switch (answers.move) {
+      case "Idle":
+        await idle(gameID);
+        break;
       case "Move to space":
         await moveToSpace(gameID);
         break;

@@ -38,6 +38,12 @@ export async function showMap(gameID, provider, account) {
   const playerID = await playerSummary.methods
     .getPlayerID(board._address, gameID, currentAccount)
     .call();
+  const artifacts = await summary.methods
+    .recoveredArtifacts(board._address, gameID)
+    .call();
+  const totalPlayers = await summary.methods
+    .totalPlayers(board._address, gameID)
+    .call();
   console.log(`Current Player: P${playerID}`);
   await drawMap(
     Number(mapSize.rows),
@@ -47,6 +53,8 @@ export async function showMap(gameID, provider, account) {
     currentPlayerZone,
     allPlayerZones,
     gamePhase,
-    dayNumber
+    dayNumber,
+    artifacts,
+    totalPlayers
   );
 }
