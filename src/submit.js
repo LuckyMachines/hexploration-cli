@@ -256,6 +256,34 @@ async function rest(gameID) {
   await submitAction("Rest", [answers.restAttribute], gameID);
 }
 
+async function help(gameID) {
+  // TODO: limit choices to stats > 1
+  // TODO: get available players
+  let availablePlayers = ["1", "2", "3", "4"];
+  let questions = [];
+  questions.push({
+    type: "list",
+    name: "helpPlayer",
+    message: "Which player to heal?",
+    choices: availablePlayers,
+    default: availablePlayers[0]
+  });
+  questions.push({
+    type: "list",
+    name: "helpAttribute",
+    message: "Which attribute to heal?",
+    choices: ["Movement", "Agility", "Dexterity"],
+    default: "Movement"
+  });
+
+  let answers = await inquirer.prompt(questions);
+  await submitAction(
+    "Help",
+    [answers.helpPlayer, answers.helpAttribute],
+    gameID
+  );
+}
+
 /*
 async function tradeItems() {
   console.log("Trade items...");
@@ -336,6 +364,9 @@ export async function submitMoves(gameID, provider, account) {
 
   let hasCampsiteInInventory = activeInventory.campsite;
 
+  // TODO: check if this is actually true
+  let canHelpPlayer = true;
+
   //////////////////////////
   // Not doing these yet
   let canTrade = false;
@@ -351,6 +382,9 @@ export async function submitMoves(gameID, provider, account) {
       choices.push("Break down camp");
     } else if (hasCampsiteInInventory && !isOnLandingZone && !isOnRelicZone) {
       choices.push("Setup camp");
+    }
+    if (canHelpPlayer) {
+      choices.push("Help");
     }
     if (canPickupItems) {
       choices.push("Pick up items");
@@ -383,6 +417,9 @@ export async function submitMoves(gameID, provider, account) {
         break;
       case "Rest":
         await rest(gameID);
+        break;
+      case "Help":
+        await help(gameID);
         break;
       case "Break down camp":
         await breakDownCamp(gameID);
