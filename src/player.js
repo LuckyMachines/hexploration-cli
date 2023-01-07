@@ -65,28 +65,22 @@ export async function playerInfo(gameID, provider, account) {
     .lastPlayerActions(board._address, gameID)
     .call();
   // console.log(lastActions);
-  let lastActionData = [];
-  for (let i = 0; i < lastActions.playerIDs.length; i++) {
-    const inventoryChanges = lastActions.activeActionCardInventoryChanges[i];
-    const inventoryChange =
-      inventoryChanges[0] != ""
-        ? `Item loss: ${inventoryChanges[0]}`
-        : inventoryChanges[1] != ""
-        ? `Item gain: ${inventoryChanges[1]}`
-        : inventoryChanges[2] != ""
-        ? `Item loss: ${inventoryChanges[2]}`
-        : "";
-    lastActionData.push({
-      "Player ID": lastActions.playerIDs[i].toString(),
-      "Card Type": lastActions.activeActionCardTypes[i],
-      "Card Drawn": lastActions.activeActionCardsDrawn[i],
-      Action: ACTION[Number(lastActions.currentActiveActions[i])],
-      Result: lastActions.activeActionCardResults[i],
-      Inventory: inventoryChange,
-      "Stat Updates": lastActions.activeActionStatUpdates[i]
-    });
-  }
-  console.table(lastActionData);
+  let displayData = [];
+  // console.log("Player Actions:", playerActions);
+  lastActions.forEach((summary) => {
+    let cleanSummary = {
+      playerID: summary.playerID.toString(),
+      cardType: summary.cardType,
+      cardDrawn: summary.cardDrawn,
+      currentAction: summary.currentAction,
+      cardResult: summary.cardResult,
+      inventoryChanges: summary.inventoryChanges,
+      statUpdates: summary.statUpdates,
+      movementPath: summary.movementPath
+    };
+    displayData.push(cleanSummary);
+  });
+  console.table(displayData);
 
   const lastDayEvents = await summary.methods
     .lastDayPhaseEvents(board._address, gameID)
