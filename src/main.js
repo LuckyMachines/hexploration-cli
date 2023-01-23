@@ -130,10 +130,14 @@ async function checkForLandingSite(gameID) {
   }
 }
 
-async function registerNewGame() {
-  let tx = await gameController.requestNewGame(
+async function registerNewGame(numberPlayers) {
+  // console.log(gameController);
+  // TODO: prompt for how many players
+  const numPlayers = numberPlayers ? numberPlayers : 4;
+  let tx = await gameController["requestNewGame(address,address,uint256)"](
     gameRegistry._address,
-    gameBoard._address
+    gameBoard._address,
+    numPlayers
   );
   let receipt = await tx.wait();
 
@@ -171,8 +175,20 @@ export async function runCLI(options) {
   gameController = await Contract("controller", ethers.provider, ethers.wallet);
 
   let gameID;
+  // Create new game if requested
+  let questions = {
+    type: "list",
+    name: "choice",
+    message: `\n${chalk.blue.underline("Number of players")}`,
+    choices: ["1", "2", "3", "4"],
+    default: "4"
+  };
+
+  const answers = await inquirer.prompt(questions);
+  const numPlayers = answers.choice;
+
   if (options.newGame) {
-    gameID = await registerNewGame();
+    gameID = await registerNewGame(numPlayers);
   } else {
     gameID = options.gameID;
   }
