@@ -184,10 +184,9 @@ export async function runCLI(options) {
     default: "4"
   };
 
-  const answers = await inquirer.prompt(questions);
-  const numPlayers = answers.choice;
-
   if (options.newGame) {
+    const answers = await inquirer.prompt(questions);
+    const numPlayers = answers.choice;
     gameID = await registerNewGame(numPlayers);
   } else {
     gameID = options.gameID;
