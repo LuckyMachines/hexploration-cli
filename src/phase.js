@@ -29,10 +29,12 @@ export async function progressPhase(gameID, provider, account) {
 
   let upkeep = await gameplay.methods
     .checkUpkeep("0x")
-    .call({ from: currentAccount, gas: "5000000" });
+    .call({ from: currentAccount });
   let { 0: upkeepNeeded, 1: performData } = upkeep;
 
   if (upkeepNeeded) {
+    console.log("Upkeep needed. Attempting perform upkeep...");
+    console.log("Perform data:", performData);
     let tx = await gameplay.methods
       .performUpkeep(performData)
       .send({ from: currentAccount, gas: "5000000" });
