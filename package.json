@@ -22,7 +22,7 @@
   "author": "Max Meier",
   "license": "GPL-3.0",
   "dependencies": {
-    "@luckymachines/game-core": "0.0.27",
+    "@luckymachines/game-core": "0.0.30",
     "@truffle/hdwallet-provider": "^2.0.8",
     "arg": "^5.0.1",
     "chalk": "^4.1.0",
