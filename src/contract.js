@@ -18,10 +18,10 @@ import Addresses from "../settings/ContractAddresses.json";
 
 //UNCOMMENT SELECTED CHAIN
 // const selectedChain = 0; //Ganache
-const selectedChain = 1; //Mumbai
+// const selectedChain = 1; //Mumbai
 // const selectedChain = 2; //Binance Test
 
-// const selectedChain = 3; // Hardhat
+const selectedChain = 3; // hardhat
 // const selectedChain = 4; // Goerli
 // const selectedChain = 5; // Polygon
 
@@ -29,7 +29,7 @@ const boardAddresses = [
   Addresses.ganache.HEXPLORATION_BOARD,
   Addresses.mumbai.HEXPLORATION_BOARD,
   Addresses.bnbTest.HEXPLORATION_BOARD,
-  Addresses.hardhat.HEXPLORATION_BOARD,
+  Addresses.hh.HEXPLORATION_BOARD,
   Addresses.goerli.HEXPLORATION_BOARD,
   Addresses.polygon.HEXPLORATION_BOARD
 ];
@@ -38,7 +38,7 @@ const controllerAddresses = [
   Addresses.ganache.HEXPLORATION_CONTROLLER,
   Addresses.mumbai.HEXPLORATION_CONTROLLER,
   Addresses.bnbTest.HEXPLORATION_CONTROLLER,
-  Addresses.hardhat.HEXPLORATION_CONTROLLER,
+  Addresses.hh.HEXPLORATION_CONTROLLER,
   Addresses.goerli.HEXPLORATION_CONTROLLER,
   Addresses.polygon.HEXPLORATION_CONTROLLER
 ];
@@ -47,7 +47,7 @@ const summaryAddresses = [
   Addresses.ganache.GAME_SUMMARY,
   Addresses.mumbai.GAME_SUMMARY,
   Addresses.bnbTest.GAME_SUMMARY,
-  Addresses.hardhat.GAME_SUMMARY,
+  Addresses.hh.GAME_SUMMARY,
   Addresses.goerli.GAME_SUMMARY,
   Addresses.polygon.GAME_SUMMARY
 ];
@@ -56,7 +56,7 @@ const playerSummaryAddresses = [
   Addresses.ganache.PLAYER_SUMMARY,
   Addresses.mumbai.PLAYER_SUMMARY,
   Addresses.bnbTest.PLAYER_SUMMARY,
-  Addresses.hardhat.PLAYER_SUMMARY,
+  Addresses.hh.PLAYER_SUMMARY,
   Addresses.goerli.PLAYER_SUMMARY,
   Addresses.polygon.PLAYER_SUMMARY
 ];
@@ -65,7 +65,7 @@ const registryAddresses = [
   Addresses.ganache.GAME_REGISTRY,
   Addresses.mumbai.GAME_REGISTRY,
   Addresses.bnbTest.GAME_REGISTRY,
-  Addresses.hardhat.GAME_REGISTRY,
+  Addresses.hh.GAME_REGISTRY,
   Addresses.goerli.GAME_REGISTRY,
   Addresses.polygon.GAME_REGISTRY
 ];
@@ -74,7 +74,7 @@ const queueAddresses = [
   Addresses.ganache.GAME_QUEUE,
   Addresses.mumbai.GAME_QUEUE,
   Addresses.bnbTest.GAME_QUEUE,
-  Addresses.hardhat.GAME_QUEUE,
+  Addresses.hh.GAME_QUEUE,
   Addresses.goerli.GAME_QUEUE,
   Addresses.polygon.GAME_QUEUE
 ];
@@ -83,7 +83,7 @@ const gameplayAddresses = [
   Addresses.ganache.GAMEPLAY,
   Addresses.mumbai.GAMEPLAY,
   Addresses.bnbTest.GAMEPLAY,
-  Addresses.hardhat.GAMEPLAY,
+  Addresses.hh.GAMEPLAY,
   Addresses.goerli.GAMEPLAY,
   Addresses.polygon.GAMEPLAY
 ];
