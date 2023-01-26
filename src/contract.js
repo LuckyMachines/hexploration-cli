@@ -18,10 +18,10 @@ import Addresses from "../settings/ContractAddresses.json";
 
 //UNCOMMENT SELECTED CHAIN
 // const selectedChain = 0; //Ganache
-// const selectedChain = 1; //Mumbai
+const selectedChain = 1; //Mumbai
 // const selectedChain = 2; //Binance Test
 
-const selectedChain = 3; // hardhat
+// const selectedChain = 3; // hardhat
 // const selectedChain = 4; // Goerli
 // const selectedChain = 5; // Polygon
 
