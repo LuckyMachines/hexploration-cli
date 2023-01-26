@@ -44,28 +44,39 @@ async function promptForMissingOptions(options) {
     .call();
 
   const questions = [];
-  if (!options.gameID) {
+  if (!options.gameID && availableGames.gameIDs.length > 0) {
     questions.push({
       type: "number",
       name: "gameID",
       message: "Which game ID shall we play?",
       default: 0
     });
+    console.log("Available games:");
+    let gameData = [];
+    for (let i = 0; i < availableGames.gameIDs.length; i++) {
+      gameData.push({
+        "Game ID": availableGames.gameIDs[i].toString(),
+        Players: `${availableGames.currentRegistrations[i]} / ${availableGames.maxPlayers[i]}`
+      });
+    }
+    console.table(gameData);
+    const answers = await inquirer.prompt(questions);
+    return {
+      ...options,
+      gameID: answers.gameID,
+      newGame: false
+    };
+  } else if (options.gameID) {
+    return {
+      ...options,
+      gameID: options.gameID
+    };
+  } else {
+    return {
+      ...options,
+      newGame: true
+    };
   }
-  console.log("Available games:");
-  let gameData = [];
-  for (let i = 0; i < availableGames.gameIDs.length; i++) {
-    gameData.push({
-      "Game ID": availableGames.gameIDs[i].toString(),
-      Players: `${availableGames.currentRegistrations[i]} / ${availableGames.maxPlayers[i]}`
-    });
-  }
-  console.table(gameData);
-  const answers = await inquirer.prompt(questions);
-  return {
-    ...options,
-    gameID: options.gameID || answers.gameID
-  };
 }
 
 export async function cli(args) {

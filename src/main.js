@@ -174,6 +174,10 @@ export async function runCLI(options) {
   gameRegistry = await Contract("registry", web3);
   gameController = await Contract("controller", ethers.provider, ethers.wallet);
 
+  let availableGames = await gameSummary.methods
+    .getAvailableGames(gameBoard._address, gameRegistry._address)
+    .call();
+
   let gameID;
   // Create new game if requested
   let questions = {
