@@ -13,162 +13,62 @@ import Queue from "hexploration/abi/HexplorationQueue.json";
 import Gameplay from "hexploration/abi/HexplorationGameplay.json";
 
 import Addresses from "../settings/ContractAddresses.json";
+import Network from "../settings/Network.json";
 // const Addresses = require(`${process.cwd()}/settings/ContractAddresses.json`);
 // console.log("Addresses", Addresses);
 
-//UNCOMMENT SELECTED CHAIN
-// const selectedChain = 0; //Ganache
-const selectedChain = 1; //Mumbai
-// const selectedChain = 2; //Binance Test
+const network = Network.network == "hardhat" ? "hh" : Network.network;
 
-// const selectedChain = 3; // hardhat
-// const selectedChain = 4; // Goerli
-// const selectedChain = 5; // Polygon
-
-const boardAddresses = [
-  Addresses.ganache.HEXPLORATION_BOARD,
-  Addresses.mumbai.HEXPLORATION_BOARD,
-  Addresses.bnbTest.HEXPLORATION_BOARD,
-  Addresses.hh.HEXPLORATION_BOARD,
-  Addresses.goerli.HEXPLORATION_BOARD,
-  Addresses.polygon.HEXPLORATION_BOARD
-];
-
-const controllerAddresses = [
-  Addresses.ganache.HEXPLORATION_CONTROLLER,
-  Addresses.mumbai.HEXPLORATION_CONTROLLER,
-  Addresses.bnbTest.HEXPLORATION_CONTROLLER,
-  Addresses.hh.HEXPLORATION_CONTROLLER,
-  Addresses.goerli.HEXPLORATION_CONTROLLER,
-  Addresses.polygon.HEXPLORATION_CONTROLLER
-];
-
-const summaryAddresses = [
-  Addresses.ganache.GAME_SUMMARY,
-  Addresses.mumbai.GAME_SUMMARY,
-  Addresses.bnbTest.GAME_SUMMARY,
-  Addresses.hh.GAME_SUMMARY,
-  Addresses.goerli.GAME_SUMMARY,
-  Addresses.polygon.GAME_SUMMARY
-];
-
-const playerSummaryAddresses = [
-  Addresses.ganache.PLAYER_SUMMARY,
-  Addresses.mumbai.PLAYER_SUMMARY,
-  Addresses.bnbTest.PLAYER_SUMMARY,
-  Addresses.hh.PLAYER_SUMMARY,
-  Addresses.goerli.PLAYER_SUMMARY,
-  Addresses.polygon.PLAYER_SUMMARY
-];
-
-const registryAddresses = [
-  Addresses.ganache.GAME_REGISTRY,
-  Addresses.mumbai.GAME_REGISTRY,
-  Addresses.bnbTest.GAME_REGISTRY,
-  Addresses.hh.GAME_REGISTRY,
-  Addresses.goerli.GAME_REGISTRY,
-  Addresses.polygon.GAME_REGISTRY
-];
-
-const queueAddresses = [
-  Addresses.ganache.GAME_QUEUE,
-  Addresses.mumbai.GAME_QUEUE,
-  Addresses.bnbTest.GAME_QUEUE,
-  Addresses.hh.GAME_QUEUE,
-  Addresses.goerli.GAME_QUEUE,
-  Addresses.polygon.GAME_QUEUE
-];
-
-const gameplayAddresses = [
-  Addresses.ganache.GAMEPLAY,
-  Addresses.mumbai.GAMEPLAY,
-  Addresses.bnbTest.GAMEPLAY,
-  Addresses.hh.GAMEPLAY,
-  Addresses.goerli.GAMEPLAY,
-  Addresses.polygon.GAMEPLAY
-];
+const boardAddress = Addresses[network].HEXPLORATION_BOARD;
+const controllerAddress = Addresses[network].HEXPLORATION_CONTROLLER;
+const summaryAddress = Addresses[network].GAME_SUMMARY;
+const playerSummaryAddress = Addresses[network].PLAYER_SUMMARY;
+const registryAddress = Addresses[network].GAME_REGISTRY;
+const queueAddress = Addresses[network].GAME_QUEUE;
+const gameplayAddress = Addresses[network].GAMEPLAY;
 
 const contract = async (contractName, provider, ethersWallet) => {
   let c;
   switch (contractName) {
     case "board":
       c = ethersWallet
-        ? new Ethers.Contract(
-            boardAddresses[selectedChain],
-            HexplorationBoard,
-            ethersWallet
-          )
-        : new provider.eth.Contract(
-            HexplorationBoard,
-            boardAddresses[selectedChain]
-          );
+        ? new Ethers.Contract(boardAddress, HexplorationBoard, ethersWallet)
+        : new provider.eth.Contract(HexplorationBoard, boardAddress);
       break;
     case "controller":
       c = ethersWallet
         ? new Ethers.Contract(
-            controllerAddresses[selectedChain],
+            controllerAddress,
             HexplorationController,
             ethersWallet
           )
-        : new provider.eth.Contract(
-            HexplorationController,
-            controllerAddresses[selectedChain]
-          );
+        : new provider.eth.Contract(HexplorationController, controllerAddress);
       break;
     case "summary":
     case "gameSummary":
       c = ethersWallet
-        ? new Ethers.Contract(
-            summaryAddresses[selectedChain],
-            GameSummary,
-            ethersWallet
-          )
-        : new provider.eth.Contract(
-            GameSummary,
-            summaryAddresses[selectedChain]
-          );
+        ? new Ethers.Contract(summaryAddress, GameSummary, ethersWallet)
+        : new provider.eth.Contract(GameSummary, summaryAddress);
       break;
     case "playerSummary":
       c = ethersWallet
-        ? new Ethers.Contract(
-            playerSummaryAddresses[selectedChain],
-            PlayerSummary,
-            ethersWallet
-          )
-        : new provider.eth.Contract(
-            PlayerSummary,
-            playerSummaryAddresses[selectedChain]
-          );
+        ? new Ethers.Contract(playerSummaryAddress, PlayerSummary, ethersWallet)
+        : new provider.eth.Contract(PlayerSummary, playerSummaryAddress);
       break;
     case "registry":
       c = ethersWallet
-        ? new Ethers.Contract(
-            registryAddresses[selectedChain],
-            GameRegistry,
-            ethersWallet
-          )
-        : new provider.eth.Contract(
-            GameRegistry,
-            registryAddresses[selectedChain]
-          );
+        ? new Ethers.Contract(registryAddress, GameRegistry, ethersWallet)
+        : new provider.eth.Contract(GameRegistry, registryAddress);
       break;
     case "queue":
       c = ethersWallet
-        ? new Ethers.Contract(
-            queueAddresses[selectedChain],
-            Queue,
-            ethersWallet
-          )
-        : new provider.eth.Contract(Queue, queueAddresses[selectedChain]);
+        ? new Ethers.Contract(queueAddress, Queue, ethersWallet)
+        : new provider.eth.Contract(Queue, queueAddress);
       break;
     case "gameplay":
       c = ethersWallet
-        ? new Ethers.Contract(
-            gameplayAddresses[selectedChain],
-            Gameplay,
-            ethersWallet
-          )
-        : new provider.eth.Contract(Gameplay, gameplayAddresses[selectedChain]);
+        ? new Ethers.Contract(gameplayAddress, Gameplay, ethersWallet)
+        : new provider.eth.Contract(Gameplay, gameplayAddress);
       break;
     default:
       break;

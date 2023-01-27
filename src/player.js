@@ -87,7 +87,7 @@ export async function playerInfo(gameID, provider, account) {
     .call();
 
   let lastDayEventData = [];
-  for (let i = 0; i < lastActions.playerIDs.length; i++) {
+  for (let i = 0; i < lastDayEvents.playerIDs.length; i++) {
     const inventoryChanges = lastDayEvents.inventoryChanges[i];
     const inventoryChange =
       inventoryChanges[0] != ""
