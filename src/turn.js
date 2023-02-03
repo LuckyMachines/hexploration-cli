@@ -15,6 +15,8 @@ export async function progressTurn(gameID, provider, account) {
   let { 0: upkeepNeeded, 1: performData } = upkeep;
 
   if (upkeepNeeded) {
+    console.log("Upkeep needed. Attempting to progress turn...");
+    console.log("Perform data:", performData);
     let tx = await controller.methods
       .performUpkeep(performData)
       .send({ from: currentAccount, gas: "5000000" });
