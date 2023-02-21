@@ -21,6 +21,9 @@ switch (Network.network) {
     break;
   case "bnbTest":
     PROVIDER_URL = process.env.RPC_URL_BINANCE_TEST;
+  case "hh-lan":
+    PROVIDER_URL = "http://Maxs-Mac-mini.local";
+    break;
   case "hardhat":
   case "hh":
   default:

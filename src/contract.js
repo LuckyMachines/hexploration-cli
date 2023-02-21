@@ -17,7 +17,12 @@ import Network from "../settings/Network.json";
 // const Addresses = require(`${process.cwd()}/settings/ContractAddresses.json`);
 // console.log("Addresses", Addresses);
 
-const network = Network.network == "hardhat" ? "hh" : Network.network;
+const network =
+  Network.network == "hardhat"
+    ? "hh"
+    : Network.network == "hh-lan"
+    ? "hh"
+    : Network.network;
 
 const boardAddress = Addresses[network].HEXPLORATION_BOARD;
 const controllerAddress = Addresses[network].HEXPLORATION_CONTROLLER;
