@@ -52,6 +52,21 @@ if (network == "all" || network == "hh" || network == "hardhat") {
   addressesDestination.hh.GAMEPLAY = DeploymentSource.hh.GAMEPLAY;
 }
 
+if (network == "all" || network == "ganache") {
+  addressesDestination.ganache.GAME_REGISTRY =
+    DeploymentSource.ganache.GAME_REGISTRY;
+  addressesDestination.ganache.HEXPLORATION_BOARD =
+    DeploymentSource.ganache.HEXPLORATION_BOARD;
+  addressesDestination.ganache.HEXPLORATION_CONTROLLER =
+    DeploymentSource.ganache.HEXPLORATION_CONTROLLER;
+  addressesDestination.ganache.GAME_SUMMARY =
+    DeploymentSource.ganache.GAME_SUMMARY;
+  addressesDestination.ganache.PLAYER_SUMMARY =
+    DeploymentSource.ganache.PLAYER_SUMMARY;
+  addressesDestination.ganache.GAME_QUEUE = DeploymentSource.ganache.GAME_QUEUE;
+  addressesDestination.ganache.GAMEPLAY = DeploymentSource.ganache.GAMEPLAY;
+}
+
 const finalAddresses = JSON.stringify(addressesDestination, null, 4);
 
 fs.writeFile(addressesPath, finalAddresses, (err) => {

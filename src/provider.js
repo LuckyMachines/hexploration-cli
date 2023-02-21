@@ -11,7 +11,7 @@ const Network = require("../settings/Network.json");
 let PROVIDER_URL;
 switch (Network.network) {
   case "ganache":
-    PROVIDER_URL = "http://127.0.0.1:7545";
+    PROVIDER_URL = "http://192.168.132.44:7545";
     break;
   case "goerli":
     PROVIDER_URL = process.env.RPC_URL_GOERLI;
@@ -22,7 +22,7 @@ switch (Network.network) {
   case "bnbTest":
     PROVIDER_URL = process.env.RPC_URL_BINANCE_TEST;
   case "hh-lan":
-    PROVIDER_URL = "http://Maxs-Mac-mini.local";
+    PROVIDER_URL = "http://192.168.132.44:8545";
     break;
   case "hardhat":
   case "hh":
