@@ -7,6 +7,7 @@ import { playerInfo } from "./player";
 import { chooseLandingSite } from "./landingSite";
 import { viewQueue } from "./queue";
 import { progressTurn } from "./turn";
+import { runServices } from "./services";
 import Provider from "./provider";
 import Contract from "./contract.js";
 
@@ -28,6 +29,7 @@ async function mainMenu(gameID) {
     ? ["Submit Move", "View Map", "Player Info"]
     : ["View Map"];
   if (adminMode) {
+    choices.push("Run Services");
     choices.push("Progress Phase");
     choices.push("Progress Turn");
     choices.push("View Queue");
@@ -65,6 +67,11 @@ async function mainMenu(gameID) {
       break;
     case "Progress Turn":
       await progressTurn(gameID, web3, currentAccount);
+      await checkForLandingSite(gameID);
+      await mainMenu(gameID);
+      break;
+    case "Run Services":
+      await runServices(gameID, ethers.provider, ethers.wallet);
       await checkForLandingSite(gameID);
       await mainMenu(gameID);
       break;

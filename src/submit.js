@@ -17,7 +17,7 @@ let submitLeftHand;
 let submitRightHand;
 
 let currentSpace;
-//let web3;
+let web3;
 
 async function submitAction(action, options, gameID) {
   const lh = submitLeftHand ? submitLeftHand : "";
@@ -40,6 +40,7 @@ async function submitAction(action, options, gameID) {
   console.log(
     `playerID: ${pid}\nactionIndex:${actionEnum}\noptions:${options}\nlh:${lh} rh:${rh}`
   );
+  let nonce = await web3.eth.getTransactionCount(currentAccount);
   await hexplorationController.methods
     .submitAction(
       pid,
@@ -50,7 +51,7 @@ async function submitAction(action, options, gameID) {
       gameID,
       hexplorationBoard._address
     )
-    .send({ from: currentAccount, gas: "5000000" });
+    .send({ from: currentAccount, gas: "5000000", nonce: nonce });
   console.log(`${action} action submitted to queue`);
 }
 
@@ -297,7 +298,7 @@ async function pickUpItems() {
 */
 
 export async function submitMoves(gameID, provider, account) {
-  //web3 = provider;
+  web3 = provider;
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
 

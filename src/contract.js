@@ -11,6 +11,7 @@ import HexplorationController from "@luckymachines/game-core/games/hexploration/
 import HexplorationBoard from "hexploration/abi/HexplorationBoard.json";
 import Queue from "hexploration/abi/HexplorationQueue.json";
 import Gameplay from "hexploration/abi/HexplorationGameplay.json";
+import GameSetup from "hexploration/abi/GameSetup.json";
 
 import Addresses from "../settings/ContractAddresses.json";
 import Network from "../settings/Network.json";
@@ -31,6 +32,7 @@ const playerSummaryAddress = Addresses[network].PLAYER_SUMMARY;
 const registryAddress = Addresses[network].GAME_REGISTRY;
 const queueAddress = Addresses[network].GAME_QUEUE;
 const gameplayAddress = Addresses[network].GAMEPLAY;
+const gameSetupAddress = Addresses[network].GAME_SETUP;
 
 const contract = async (contractName, provider, ethersWallet) => {
   let c;
@@ -48,6 +50,11 @@ const contract = async (contractName, provider, ethersWallet) => {
             ethersWallet
           )
         : new provider.eth.Contract(HexplorationController, controllerAddress);
+      break;
+    case "gameSetup":
+      c = ethersWallet
+        ? new Ethers.Contract(gameSetupAddress, GameSetup, ethersWallet)
+        : new provider.eth.Contract(GameSetup, gameSetupAddress);
       break;
     case "summary":
     case "gameSummary":
