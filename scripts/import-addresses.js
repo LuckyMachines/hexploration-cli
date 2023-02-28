@@ -23,6 +23,7 @@ if (network == "all" || network == "goerli") {
     DeploymentSource.goerli.PLAYER_SUMMARY;
   addressesDestination.goerli.GAME_QUEUE = DeploymentSource.goerli.GAME_QUEUE;
   addressesDestination.goerli.GAMEPLAY = DeploymentSource.goerli.GAMEPLAY;
+  addressesDestination.goerli.GAME_SETUP = DeploymentSource.goerli.GAME_SETUP;
 }
 
 if (network == "all" || network == "mumbai") {
@@ -38,6 +39,7 @@ if (network == "all" || network == "mumbai") {
     DeploymentSource.mumbai.PLAYER_SUMMARY;
   addressesDestination.mumbai.GAME_QUEUE = DeploymentSource.mumbai.GAME_QUEUE;
   addressesDestination.mumbai.GAMEPLAY = DeploymentSource.mumbai.GAMEPLAY;
+  addressesDestination.mumbai.GAME_SETUP = DeploymentSource.mumbai.GAME_SETUP;
 }
 
 if (network == "all" || network == "hh" || network == "hardhat") {
@@ -50,6 +52,7 @@ if (network == "all" || network == "hh" || network == "hardhat") {
   addressesDestination.hh.PLAYER_SUMMARY = DeploymentSource.hh.PLAYER_SUMMARY;
   addressesDestination.hh.GAME_QUEUE = DeploymentSource.hh.GAME_QUEUE;
   addressesDestination.hh.GAMEPLAY = DeploymentSource.hh.GAMEPLAY;
+  addressesDestination.hh.GAME_SETUP = DeploymentSource.hh.GAME_SETUP;
 }
 
 if (network == "all" || network == "ganache") {
@@ -65,6 +68,7 @@ if (network == "all" || network == "ganache") {
     DeploymentSource.ganache.PLAYER_SUMMARY;
   addressesDestination.ganache.GAME_QUEUE = DeploymentSource.ganache.GAME_QUEUE;
   addressesDestination.ganache.GAMEPLAY = DeploymentSource.ganache.GAMEPLAY;
+  addressesDestination.ganache.GAME_SETUP = DeploymentSource.ganache.GAME_SETUP;
 }
 
 const finalAddresses = JSON.stringify(addressesDestination, null, 4);
