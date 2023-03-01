@@ -11,7 +11,7 @@ const Network = require("../settings/Network.json");
 let PROVIDER_URL;
 switch (Network.network) {
   case "ganache":
-    PROVIDER_URL = "http://10.0.0.133:7545";
+    PROVIDER_URL = "http://10.0.0.134:7545";
     break;
   case "goerli":
     PROVIDER_URL = process.env.RPC_URL_GOERLI;
