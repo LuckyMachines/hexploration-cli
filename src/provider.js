@@ -13,6 +13,12 @@ switch (Network.network) {
   case "ganache":
     PROVIDER_URL = "http://10.0.0.133:7545";
     break;
+  case "godwoken":
+    PROVIDER_URL = process.env.RPC_URL_GODWOKEN;
+    break;
+  case "godwoken_test":
+    PROVIDER_URL = process.env.RPC_URL_GODWOKEN_TEST;
+    break;
   case "goerli":
     PROVIDER_URL = process.env.RPC_URL_GOERLI;
     break;
@@ -51,7 +57,7 @@ const provider = async (providerUrl, web3OrEthers, walletIndex) => {
   } else {
     const wallet = new HDWalletProvider({
       privateKeys: keys,
-      providerOrUrl: providerUrl ? providerUrl : PROVIDER_URL,
+      providerOrUrl: providerUrl ? providerUrl : PROVIDER_URL
     });
     provider = new Web3(wallet);
     return provider;

@@ -71,6 +71,25 @@ if (network == "all" || network == "ganache") {
   addressesDestination.ganache.GAME_SETUP = DeploymentSource.ganache.GAME_SETUP;
 }
 
+if (network == "all" || network == "godwoken_test") {
+  addressesDestination.godwoken_test.GAME_REGISTRY =
+    DeploymentSource.godwoken_test.GAME_REGISTRY;
+  addressesDestination.godwoken_test.HEXPLORATION_BOARD =
+    DeploymentSource.godwoken_test.HEXPLORATION_BOARD;
+  addressesDestination.godwoken_test.HEXPLORATION_CONTROLLER =
+    DeploymentSource.godwoken_test.HEXPLORATION_CONTROLLER;
+  addressesDestination.godwoken_test.GAME_SUMMARY =
+    DeploymentSource.godwoken_test.GAME_SUMMARY;
+  addressesDestination.godwoken_test.PLAYER_SUMMARY =
+    DeploymentSource.godwoken_test.PLAYER_SUMMARY;
+  addressesDestination.godwoken_test.GAME_QUEUE =
+    DeploymentSource.godwoken_test.GAME_QUEUE;
+  addressesDestination.godwoken_test.GAMEPLAY =
+    DeploymentSource.godwoken_test.GAMEPLAY;
+  addressesDestination.godwoken_test.GAME_SETUP =
+    DeploymentSource.godwoken_test.GAME_SETUP;
+}
+
 const finalAddresses = JSON.stringify(addressesDestination, null, 4);
 
 fs.writeFile(addressesPath, finalAddresses, (err) => {
