@@ -22,6 +22,9 @@ switch (Network.network) {
   case "goerli":
     PROVIDER_URL = process.env.RPC_URL_GOERLI;
     break;
+  case "sepolia":
+    PROVIDER_URL = process.env.RPC_URL_SEPOLIA;
+    break;
   case "mumbai":
     PROVIDER_URL = process.env.RPC_URL_MUMBAI;
     break;

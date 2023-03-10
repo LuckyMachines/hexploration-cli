@@ -90,6 +90,22 @@ if (network == "all" || network == "godwoken_test") {
     DeploymentSource.godwoken_test.GAME_SETUP;
 }
 
+if (network == "all" || network == "sepolia") {
+  addressesDestination.sepolia.GAME_REGISTRY =
+    DeploymentSource.sepolia.GAME_REGISTRY;
+  addressesDestination.sepolia.HEXPLORATION_BOARD =
+    DeploymentSource.sepolia.HEXPLORATION_BOARD;
+  addressesDestination.sepolia.HEXPLORATION_CONTROLLER =
+    DeploymentSource.sepolia.HEXPLORATION_CONTROLLER;
+  addressesDestination.sepolia.GAME_SUMMARY =
+    DeploymentSource.sepolia.GAME_SUMMARY;
+  addressesDestination.sepolia.PLAYER_SUMMARY =
+    DeploymentSource.sepolia.PLAYER_SUMMARY;
+  addressesDestination.sepolia.GAME_QUEUE = DeploymentSource.sepolia.GAME_QUEUE;
+  addressesDestination.sepolia.GAMEPLAY = DeploymentSource.sepolia.GAMEPLAY;
+  addressesDestination.sepolia.GAME_SETUP = DeploymentSource.sepolia.GAME_SETUP;
+}
+
 const finalAddresses = JSON.stringify(addressesDestination, null, 4);
 
 fs.writeFile(addressesPath, finalAddresses, (err) => {
