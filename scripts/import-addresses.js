@@ -21,6 +21,8 @@ if (network == "all" || network == "goerli") {
     DeploymentSource.goerli.GAME_SUMMARY;
   addressesDestination.goerli.PLAYER_SUMMARY =
     DeploymentSource.goerli.PLAYER_SUMMARY;
+  addressesDestination.goerli.PLAY_ZONE_SUMMARY =
+    DeploymentSource.goerli.PLAY_ZONE_SUMMARY;
   addressesDestination.goerli.GAME_QUEUE = DeploymentSource.goerli.GAME_QUEUE;
   addressesDestination.goerli.GAMEPLAY = DeploymentSource.goerli.GAMEPLAY;
   addressesDestination.goerli.GAME_SETUP = DeploymentSource.goerli.GAME_SETUP;
@@ -37,6 +39,8 @@ if (network == "all" || network == "mumbai") {
     DeploymentSource.mumbai.GAME_SUMMARY;
   addressesDestination.mumbai.PLAYER_SUMMARY =
     DeploymentSource.mumbai.PLAYER_SUMMARY;
+  addressesDestination.mumbai.PLAY_ZONE_SUMMARY =
+    DeploymentSource.mumbai.PLAY_ZONE_SUMMARY;
   addressesDestination.mumbai.GAME_QUEUE = DeploymentSource.mumbai.GAME_QUEUE;
   addressesDestination.mumbai.GAMEPLAY = DeploymentSource.mumbai.GAMEPLAY;
   addressesDestination.mumbai.GAME_SETUP = DeploymentSource.mumbai.GAME_SETUP;
@@ -50,6 +54,8 @@ if (network == "all" || network == "hh" || network == "hardhat") {
     DeploymentSource.hh.HEXPLORATION_CONTROLLER;
   addressesDestination.hh.GAME_SUMMARY = DeploymentSource.hh.GAME_SUMMARY;
   addressesDestination.hh.PLAYER_SUMMARY = DeploymentSource.hh.PLAYER_SUMMARY;
+  addressesDestination.hh.PLAY_ZONE_SUMMARY =
+    DeploymentSource.hh.PLAY_ZONE_SUMMARY;
   addressesDestination.hh.GAME_QUEUE = DeploymentSource.hh.GAME_QUEUE;
   addressesDestination.hh.GAMEPLAY = DeploymentSource.hh.GAMEPLAY;
   addressesDestination.hh.GAME_SETUP = DeploymentSource.hh.GAME_SETUP;
@@ -66,6 +72,8 @@ if (network == "all" || network == "ganache") {
     DeploymentSource.ganache.GAME_SUMMARY;
   addressesDestination.ganache.PLAYER_SUMMARY =
     DeploymentSource.ganache.PLAYER_SUMMARY;
+  addressesDestination.ganache.PLAY_ZONE_SUMMARY =
+    DeploymentSource.ganache.PLAY_ZONE_SUMMARY;
   addressesDestination.ganache.GAME_QUEUE = DeploymentSource.ganache.GAME_QUEUE;
   addressesDestination.ganache.GAMEPLAY = DeploymentSource.ganache.GAMEPLAY;
   addressesDestination.ganache.GAME_SETUP = DeploymentSource.ganache.GAME_SETUP;
@@ -82,6 +90,8 @@ if (network == "all" || network == "godwoken_test") {
     DeploymentSource.godwoken_test.GAME_SUMMARY;
   addressesDestination.godwoken_test.PLAYER_SUMMARY =
     DeploymentSource.godwoken_test.PLAYER_SUMMARY;
+  addressesDestination.godwoken_test.PLAY_ZONE_SUMMARY =
+    DeploymentSource.godwoken_test.PLAY_ZONE_SUMMARY;
   addressesDestination.godwoken_test.GAME_QUEUE =
     DeploymentSource.godwoken_test.GAME_QUEUE;
   addressesDestination.godwoken_test.GAMEPLAY =
@@ -101,6 +111,8 @@ if (network == "all" || network == "sepolia") {
     DeploymentSource.sepolia.GAME_SUMMARY;
   addressesDestination.sepolia.PLAYER_SUMMARY =
     DeploymentSource.sepolia.PLAYER_SUMMARY;
+  addressesDestination.sepolia.PLAY_ZONE_SUMMARY =
+    DeploymentSource.sepolia.PLAY_ZONE_SUMMARY;
   addressesDestination.sepolia.GAME_QUEUE = DeploymentSource.sepolia.GAME_QUEUE;
   addressesDestination.sepolia.GAMEPLAY = DeploymentSource.sepolia.GAMEPLAY;
   addressesDestination.sepolia.GAME_SETUP = DeploymentSource.sepolia.GAME_SETUP;

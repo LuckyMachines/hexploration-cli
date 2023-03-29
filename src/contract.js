@@ -5,6 +5,7 @@ import GameRegistry from "@luckymachines/game-core/contracts/abi/v0.0/GameRegist
 // Game-core ABIs
 import GameSummary from "@luckymachines/game-core/games/hexploration/abi/GameSummary.json";
 import PlayerSummary from "@luckymachines/game-core/games/hexploration/abi/PlayerSummary.json";
+import PlayZoneSummary from "@luckymachines/game-core/games/hexploration/abi/PlayZoneSummary.json";
 import HexplorationController from "@luckymachines/game-core/games/hexploration/abi/HexplorationController.json";
 
 // Extra ABIs for admin functionality
@@ -29,6 +30,7 @@ const boardAddress = Addresses[network].HEXPLORATION_BOARD;
 const controllerAddress = Addresses[network].HEXPLORATION_CONTROLLER;
 const summaryAddress = Addresses[network].GAME_SUMMARY;
 const playerSummaryAddress = Addresses[network].PLAYER_SUMMARY;
+const playZoneSummaryAddress = Addresses[network].PLAY_ZONE_SUMMARY;
 const registryAddress = Addresses[network].GAME_REGISTRY;
 const queueAddress = Addresses[network].GAME_QUEUE;
 const gameplayAddress = Addresses[network].GAMEPLAY;
@@ -66,6 +68,15 @@ const contract = async (contractName, provider, ethersWallet) => {
       c = ethersWallet
         ? new Ethers.Contract(playerSummaryAddress, PlayerSummary, ethersWallet)
         : new provider.eth.Contract(PlayerSummary, playerSummaryAddress);
+      break;
+    case "playZoneSummary":
+      c = ethersWallet
+        ? new Ethers.Contract(
+            playZoneSummaryAddress,
+            PlayZoneSummary,
+            ethersWallet
+          )
+        : new provider.eth.Contract(PlayZoneSummary, playZoneSummaryAddress);
       break;
     case "registry":
       c = ethersWallet

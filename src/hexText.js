@@ -66,7 +66,7 @@ function tileType(zoneToCheck, activeZones) {
     */
     switch (tileEnum) {
       case "0":
-        type = "?";
+        type = " ";
         break;
       case "1":
         type = "J";
@@ -84,7 +84,7 @@ function tileType(zoneToCheck, activeZones) {
         type = "L";
         break;
       case "6":
-        type = "!";
+        type = "?";
         break;
       case "7":
         type = "1";
@@ -101,12 +101,15 @@ function tileType(zoneToCheck, activeZones) {
       case "11":
         type = "5";
         break;
+      case "12":
+        type = "!";
+        break;
       default:
         type = "*";
         break;
     }
   } else {
-    type = "-";
+    type = " ";
   }
   return type;
 }

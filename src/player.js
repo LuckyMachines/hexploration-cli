@@ -30,6 +30,11 @@ export async function playerInfo(gameID, provider, account) {
   let activeInventory = await playerSummary.methods
     .activeInventory(board._address, gameID)
     .call({ from: currentAccount });
+  // console.log(activeInventory);
+  // let inactiveInventory = await playerSummary.methods
+  //   .inactiveInventory(board._address, gameID)
+  //   .call({ from: currentAccount });
+  // console.log(inactiveInventory);
   let handInventory = await playerSummary.methods
     .currentHandInventory(board._address, gameID)
     .call({ from: currentAccount });

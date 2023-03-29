@@ -44,7 +44,7 @@ export async function runServices(gameID, ethersProvider, ethersWallet) {
   );
   if (setupMockRandomnessRequests.length > 0) {
     console.log("Delivering mock randomness to game setup...");
-    let tx = await gameSetup.fulfillMockRandomness();
+    let tx = await gameSetup.fulfillMockRandomness({ gasLimit: "7000000" });
     let receipt = await tx.wait();
     console.log("delivered with gas:", receipt.gasUsed.toString());
   }
