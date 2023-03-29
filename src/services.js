@@ -9,7 +9,15 @@ let gameplay;
 let gameSetup;
 let gameQueue;
 
-export async function runServices(gameID, ethersProvider, ethersWallet) {
+let showGas = false;
+
+export async function runServices(
+  gameID,
+  ethersProvider,
+  ethersWallet,
+  _showGas
+) {
+  showGas = _showGas;
   // const accounts = await provider.eth.getAccounts();
   // currentAccount = account ? account : accounts[0];
   summary = await Contract("summary", ethersProvider, ethersWallet);
@@ -31,7 +39,10 @@ export async function runServices(gameID, ethersProvider, ethersWallet) {
     console.log("Perform data:", turnPerformData);
     let tx = await controller.performUpkeep(turnPerformData);
     let receipt = await tx.wait();
-    console.log("Turn progressed. Gas used:", receipt.gasUsed.toString());
+    console.log("Turn progressed.");
+    if (showGas) {
+      console.log("Gas used:", receipt.gasUsed.toString());
+    }
   } else {
     console.log("Turn not ready to progress");
   }
@@ -46,7 +57,10 @@ export async function runServices(gameID, ethersProvider, ethersWallet) {
     console.log("Delivering mock randomness to game setup...");
     let tx = await gameSetup.fulfillMockRandomness({ gasLimit: "7000000" });
     let receipt = await tx.wait();
-    console.log("delivered with gas:", receipt.gasUsed.toString());
+    console.log("delivered mock randomness");
+    if (showGas) {
+      "gas used: ", receipt.gasUsed.toString();
+    }
   }
 
   let queueMockRandomnessRequests = await gameQueue.getMockRequests();
@@ -58,7 +72,10 @@ export async function runServices(gameID, ethersProvider, ethersWallet) {
     console.log("Delivering mock randomness to game queue...");
     let tx = await gameQueue.fulfillMockRandomness();
     let receipt = await tx.wait();
-    console.log("delivered with gas:", receipt.gasUsed.toString());
+    console.log("mock randomness delivered");
+    if (showGas) {
+      console.log("gas: ", receipt.gasUsed.toString());
+    }
   }
 
   // Perform Player action upkeep
@@ -70,7 +87,10 @@ export async function runServices(gameID, ethersProvider, ethersWallet) {
     console.log("Perform data:", performData);
     let tx = await gameplay.performUpkeep(performData);
     let receipt = await tx.wait();
-    console.log("1st upkeep performed. Gas used:", receipt.gasUsed.toString());
+    console.log("1st upkeep performed.");
+    if (showGas) {
+      console.log("Gas used: ", receipt.gasUsed.toString());
+    }
   } else {
     console.log("No 1st upkeep needed");
   }
@@ -84,7 +104,10 @@ export async function runServices(gameID, ethersProvider, ethersWallet) {
     console.log("Perform data:", performData2);
     let tx = await gameplay.performUpkeep(performData2);
     let receipt = await tx.wait();
-    console.log("2nd upkeep performed. Gas used:", receipt.gasUsed.toString());
+    console.log("2nd upkeep performed.");
+    if (showGas) {
+      console.log("Gas used:", receipt.gasUsed.toString());
+    }
   } else {
     console.log("No 2nd upkeep needed");
   }

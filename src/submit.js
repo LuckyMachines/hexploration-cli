@@ -19,6 +19,8 @@ let submitRightHand;
 let currentSpace;
 let web3;
 
+let showGas = false;
+
 async function submitAction(action, options, gameID) {
   const lh = submitLeftHand ? submitLeftHand : "";
   const rh = submitRightHand ? submitRightHand : "";
@@ -41,7 +43,7 @@ async function submitAction(action, options, gameID) {
     `playerID: ${pid}\nactionIndex:${actionEnum}\noptions:${options}\nlh:${lh} rh:${rh}`
   );
   let nonce = await web3.eth.getTransactionCount(currentAccount);
-  await hexplorationController.methods
+  let tx = await hexplorationController.methods
     .submitAction(
       pid,
       actionEnum,
@@ -53,6 +55,9 @@ async function submitAction(action, options, gameID) {
     )
     .send({ from: currentAccount, gas: "5000000", nonce: nonce });
   console.log(`${action} action submitted to queue`);
+  if (showGas) {
+    console.log("Gas used:", tx.gasUsed);
+  }
 }
 
 function getAvailableSpaceChoices(currentSpace, allSpaces, maxMovement) {
@@ -297,10 +302,11 @@ async function pickUpItems() {
 }
 */
 
-export async function submitMoves(gameID, provider, account) {
+export async function submitMoves(gameID, provider, account, _showGas) {
   web3 = provider;
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
+  showGas = _showGas;
 
   hexplorationBoard = await Contract("board", provider);
   hexplorationController = await Contract("controller", provider);

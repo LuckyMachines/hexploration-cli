@@ -11,6 +11,7 @@ import Contract from "./contract.js";
 let currentAccount;
 let controller;
 let board;
+let showGas = false;
 
 const startPlayersOnLandingSite = async (gameID) => {
   //console.log("Checking game needs update");
@@ -19,7 +20,9 @@ const startPlayersOnLandingSite = async (gameID) => {
       .startGame(gameID, board._address)
       .send({ from: currentAccount, gas: "5000000" });
     console.log("Players moved to landing site. The game has begun.");
-    //console.log("Gas used:", tx.gasUsed);
+    if (showGas) {
+      console.log("Gas used:", tx.gasUsed);
+    }
   } catch (err) {
     console.log(err.message);
   }
@@ -28,7 +31,8 @@ const startPlayersOnLandingSite = async (gameID) => {
   // // but new players can't join an already started game.
 };
 
-export async function chooseLandingSite(gameID, provider, account) {
+export async function chooseLandingSite(gameID, provider, account, _showGas) {
+  showGas = _showGas;
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
   controller = await Contract("controller", provider);
@@ -52,7 +56,9 @@ export async function chooseLandingSite(gameID, provider, account) {
       .chooseLandingSite(answers.landingZone, gameID, board._address)
       .send({ from: currentAccount, gas: "2000000" });
     console.log(`Landing zone set to ${answers.landingZone}`);
-    //console.log("gas used:", tx.gasUsed);
+    if (showGas) {
+      console.log("gas used:", tx.gasUsed);
+    }
 
     await startPlayersOnLandingSite(gameID);
   } catch (err) {

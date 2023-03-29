@@ -7,8 +7,10 @@ let summary;
 let playerSummary;
 let board;
 let gameplay;
+let showGas = false;
 
-export async function progressPhase(gameID, provider, account) {
+export async function progressPhase(gameID, provider, account, _showGas) {
+  showGas = _showGas;
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
   summary = await Contract("summary", provider);
@@ -38,7 +40,10 @@ export async function progressPhase(gameID, provider, account) {
     let tx = await gameplay.methods
       .performUpkeep(performData)
       .send({ from: currentAccount, gas: "5000000" });
-    console.log("Upkeep performed. Gas used:", tx.gasUsed);
+    console.log("Upkeep performed.");
+    if (showGas) {
+      console.log("Gas used:", tx.gasUsed);
+    }
     // await tx.wait();
     // let processingPhase = await GAME_QUEUE.currentPhase(qid);
     // expect(processingPhase).to.equal(PROCESSING_PHASE_PLAY_THROUGH);

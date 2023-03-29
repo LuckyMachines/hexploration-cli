@@ -5,7 +5,10 @@ import Contract from "./contract";
 let currentAccount;
 let controller;
 
-export async function progressTurn(gameID, provider, account) {
+let showGas = false;
+
+export async function progressTurn(gameID, provider, account, _showGas) {
+  showGas = _showGas;
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
   controller = await Contract("controller", provider);
@@ -20,7 +23,10 @@ export async function progressTurn(gameID, provider, account) {
     let tx = await controller.methods
       .performUpkeep(performData)
       .send({ from: currentAccount, gas: "5000000" });
-    console.log("Turn progressed. Gas used:", tx.gasUsed);
+    console.log("Turn progressed.");
+    if (showGas) {
+      console.log("Gas used:", tx.gasUsed);
+    }
     // await tx.wait();
     // let processingPhase = await GAME_QUEUE.currentPhase(qid);
     // expect(processingPhase).to.equal(PROCESSING_PHASE_PLAY_THROUGH);

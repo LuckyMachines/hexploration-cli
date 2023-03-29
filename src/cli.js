@@ -16,8 +16,10 @@ function parseArgumentsIntoOptions(rawArgs) {
     {
       "--newGame": Boolean,
       "--adminMode": Boolean,
+      "--showGas": Boolean,
       "-n": "--newGame",
-      "-a": "--adminMode"
+      "-a": "--adminMode",
+      "-g": "--showGas"
     },
     {
       argv: rawArgs.slice(2)
@@ -27,7 +29,8 @@ function parseArgumentsIntoOptions(rawArgs) {
     newGame: args["--newGame"] || false,
     adminMode: args["--adminMode"] || false,
     gameID: args._[0],
-    walletIndex: args._[1]
+    walletIndex: args._[1],
+    showGas: args["--showGas"] || false
   };
 }
 

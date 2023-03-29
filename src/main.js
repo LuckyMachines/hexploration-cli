@@ -22,6 +22,7 @@ let gameSummary;
 let playerSummary;
 let landingSiteSet;
 let adminMode = false;
+let showGas = false;
 
 async function mainMenu(gameID) {
   const questions = [];
@@ -46,7 +47,7 @@ async function mainMenu(gameID) {
   const answers = await inquirer.prompt(questions);
   switch (answers.choice) {
     case "Submit Move":
-      await submitMoves(gameID, web3, currentAccount);
+      await submitMoves(gameID, web3, currentAccount, showGas);
       await checkForLandingSite(gameID);
       await mainMenu(gameID);
       break;
@@ -61,22 +62,22 @@ async function mainMenu(gameID) {
       await mainMenu(gameID);
       break;
     case "Progress Phase":
-      await progressPhase(gameID, web3, currentAccount);
+      await progressPhase(gameID, web3, currentAccount, showGas);
       await checkForLandingSite(gameID);
       await mainMenu(gameID);
       break;
     case "Progress Turn":
-      await progressTurn(gameID, web3, currentAccount);
+      await progressTurn(gameID, web3, currentAccount, showGas);
       await checkForLandingSite(gameID);
       await mainMenu(gameID);
       break;
     case "Run Services":
-      await runServices(gameID, ethers.provider, ethers.wallet);
+      await runServices(gameID, ethers.provider, ethers.wallet, showGas);
       await checkForLandingSite(gameID);
       await mainMenu(gameID);
       break;
     case "Choose Landing Site":
-      await chooseLandingSite(gameID, web3, currentAccount);
+      await chooseLandingSite(gameID, web3, currentAccount, showGas);
       await checkForLandingSite(gameID);
       await mainMenu(gameID);
       break;
@@ -111,7 +112,9 @@ async function registerPlayerIfNeeded(gameID) {
       //   { gasLimit: "4000000" }
       // );
       let receipt = await tx.wait();
-      console.log("Registered player with gas:", receipt.gasUsed.toString());
+      if (showGas) {
+        console.log("Registered player with gas:", receipt.gasUsed.toString());
+      }
       isRegistered = await playerSummary.methods
         .isRegistered(gameBoard._address, gameID, currentAccount)
         .call();
@@ -153,6 +156,9 @@ async function registerNewGame(numberPlayers) {
     numPlayers
   );
   let receipt = await tx.wait();
+  if (showGas) {
+    console.log(`Registered ${numPlayers} game with gas: ${receipt.gasUsed}`);
+  }
 
   let newGameID = await gameController.latestGame(
     gameRegistry._address,
@@ -208,6 +214,8 @@ export async function runCLI(options) {
   } else {
     gameID = options.gameID;
   }
+
+  showGas = options.showGas;
 
   // check that game is registered
   const latestGame = await gameRegistry.methods
