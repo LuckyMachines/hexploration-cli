@@ -1,6 +1,7 @@
 const Ethers = require("ethers");
 
 import GameRegistry from "@luckymachines/game-core/contracts/abi/v0.0/GameRegistry.json";
+import PlayerRegistry from "@luckymachines/game-core/contracts/abi/v0.0/PlayerRegistry.json";
 
 // Game-core ABIs
 import GameSummary from "@luckymachines/game-core/games/hexploration/abi/GameSummary.json";
@@ -35,6 +36,7 @@ const registryAddress = Addresses[network].GAME_REGISTRY;
 const queueAddress = Addresses[network].GAME_QUEUE;
 const gameplayAddress = Addresses[network].GAMEPLAY;
 const gameSetupAddress = Addresses[network].GAME_SETUP;
+const playerRegistryAddress = Addresses[network].PLAYER_REGISTRY;
 
 const contract = async (contractName, provider, ethersWallet) => {
   let c;
@@ -82,6 +84,15 @@ const contract = async (contractName, provider, ethersWallet) => {
       c = ethersWallet
         ? new Ethers.Contract(registryAddress, GameRegistry, ethersWallet)
         : new provider.eth.Contract(GameRegistry, registryAddress);
+      break;
+    case "playerRegistry":
+      c = ethersWallet
+        ? new Ethers.Contract(
+            playerRegistryAddress,
+            PlayerRegistry,
+            ethersWallet
+          )
+        : new provider.eth.Contract(PlayerRegistry, playerRegistryAddress);
       break;
     case "queue":
       c = ethersWallet

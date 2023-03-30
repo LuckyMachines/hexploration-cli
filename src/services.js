@@ -10,14 +10,17 @@ let gameSetup;
 let gameQueue;
 
 let showGas = false;
+let saveGas;
 
 export async function runServices(
   gameID,
   ethersProvider,
   ethersWallet,
-  _showGas
+  _showGas,
+  _saveGas
 ) {
   showGas = _showGas;
+  saveGas = _saveGas;
   // const accounts = await provider.eth.getAccounts();
   // currentAccount = account ? account : accounts[0];
   summary = await Contract("summary", ethersProvider, ethersWallet);
@@ -42,6 +45,7 @@ export async function runServices(
     console.log("Turn progressed.");
     if (showGas) {
       console.log("Gas used:", receipt.gasUsed.toString());
+      saveGas("progressTurn", receipt.gasUsed);
     }
   } else {
     console.log("Turn not ready to progress");
@@ -55,11 +59,12 @@ export async function runServices(
   );
   if (setupMockRandomnessRequests.length > 0) {
     console.log("Delivering mock randomness to game setup...");
-    let tx = await gameSetup.fulfillMockRandomness({ gasLimit: "7000000" });
+    let tx = await gameSetup.fulfillMockRandomness({ gasLimit: "10000000" });
     let receipt = await tx.wait();
     console.log("delivered mock randomness");
     if (showGas) {
-      "gas used: ", receipt.gasUsed.toString();
+      console.log("gas used: ", receipt.gasUsed.toString());
+      saveGas("start", receipt.gasUsed);
     }
   }
 
@@ -75,6 +80,7 @@ export async function runServices(
     console.log("mock randomness delivered");
     if (showGas) {
       console.log("gas: ", receipt.gasUsed.toString());
+      saveGas("deliverRandomness", receipt.gasUsed);
     }
   }
 
@@ -90,6 +96,7 @@ export async function runServices(
     console.log("1st upkeep performed.");
     if (showGas) {
       console.log("Gas used: ", receipt.gasUsed.toString());
+      saveGas("processing1", receipt.gasUsed);
     }
   } else {
     console.log("No 1st upkeep needed");
@@ -107,6 +114,7 @@ export async function runServices(
     console.log("2nd upkeep performed.");
     if (showGas) {
       console.log("Gas used:", receipt.gasUsed.toString());
+      saveGas("processing2", receipt.gasUsed);
     }
   } else {
     console.log("No 2nd upkeep needed");

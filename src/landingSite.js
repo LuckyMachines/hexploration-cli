@@ -12,6 +12,7 @@ let currentAccount;
 let controller;
 let board;
 let showGas = false;
+let saveGas;
 
 const startPlayersOnLandingSite = async (gameID) => {
   //console.log("Checking game needs update");
@@ -31,8 +32,15 @@ const startPlayersOnLandingSite = async (gameID) => {
   // // but new players can't join an already started game.
 };
 
-export async function chooseLandingSite(gameID, provider, account, _showGas) {
+export async function chooseLandingSite(
+  gameID,
+  provider,
+  account,
+  _showGas,
+  _saveGas
+) {
   showGas = _showGas;
+  saveGas = _saveGas;
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
   controller = await Contract("controller", provider);

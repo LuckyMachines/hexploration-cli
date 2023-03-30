@@ -8,9 +8,17 @@ let playerSummary;
 let board;
 let gameplay;
 let showGas = false;
+let saveGas;
 
-export async function progressPhase(gameID, provider, account, _showGas) {
+export async function progressPhase(
+  gameID,
+  provider,
+  account,
+  _showGas,
+  _saveGas
+) {
   showGas = _showGas;
+  saveGas = _saveGas;
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
   summary = await Contract("summary", provider);

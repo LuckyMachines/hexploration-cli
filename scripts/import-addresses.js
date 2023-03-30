@@ -26,6 +26,8 @@ if (network == "all" || network == "goerli") {
   addressesDestination.goerli.GAME_QUEUE = DeploymentSource.goerli.GAME_QUEUE;
   addressesDestination.goerli.GAMEPLAY = DeploymentSource.goerli.GAMEPLAY;
   addressesDestination.goerli.GAME_SETUP = DeploymentSource.goerli.GAME_SETUP;
+  addressesDestination.goerli.PLAYER_REGISTRY =
+    DeploymentSource.goerli.PLAYER_REGISTRY;
 }
 
 if (network == "all" || network == "mumbai") {
@@ -44,6 +46,8 @@ if (network == "all" || network == "mumbai") {
   addressesDestination.mumbai.GAME_QUEUE = DeploymentSource.mumbai.GAME_QUEUE;
   addressesDestination.mumbai.GAMEPLAY = DeploymentSource.mumbai.GAMEPLAY;
   addressesDestination.mumbai.GAME_SETUP = DeploymentSource.mumbai.GAME_SETUP;
+  addressesDestination.mumbai.PLAYER_REGISTRY =
+    DeploymentSource.mumbai.PLAYER_REGISTRY;
 }
 
 if (network == "all" || network == "hh" || network == "hardhat") {
@@ -59,6 +63,7 @@ if (network == "all" || network == "hh" || network == "hardhat") {
   addressesDestination.hh.GAME_QUEUE = DeploymentSource.hh.GAME_QUEUE;
   addressesDestination.hh.GAMEPLAY = DeploymentSource.hh.GAMEPLAY;
   addressesDestination.hh.GAME_SETUP = DeploymentSource.hh.GAME_SETUP;
+  addressesDestination.hh.PLAYER_REGISTRY = DeploymentSource.hh.PLAYER_REGISTRY;
 }
 
 if (network == "all" || network == "ganache") {
@@ -77,6 +82,8 @@ if (network == "all" || network == "ganache") {
   addressesDestination.ganache.GAME_QUEUE = DeploymentSource.ganache.GAME_QUEUE;
   addressesDestination.ganache.GAMEPLAY = DeploymentSource.ganache.GAMEPLAY;
   addressesDestination.ganache.GAME_SETUP = DeploymentSource.ganache.GAME_SETUP;
+  addressesDestination.ganache.PLAYER_REGISTRY =
+    DeploymentSource.ganache.PLAYER_REGISTRY;
 }
 
 if (network == "all" || network == "godwoken_test") {
@@ -98,6 +105,8 @@ if (network == "all" || network == "godwoken_test") {
     DeploymentSource.godwoken_test.GAMEPLAY;
   addressesDestination.godwoken_test.GAME_SETUP =
     DeploymentSource.godwoken_test.GAME_SETUP;
+  addressesDestination.godwoken_test.PLAYER_REGISTRY =
+    DeploymentSource.godwoken_test.PLAYER_REGISTRY;
 }
 
 if (network == "all" || network == "sepolia") {
@@ -116,6 +125,8 @@ if (network == "all" || network == "sepolia") {
   addressesDestination.sepolia.GAME_QUEUE = DeploymentSource.sepolia.GAME_QUEUE;
   addressesDestination.sepolia.GAMEPLAY = DeploymentSource.sepolia.GAMEPLAY;
   addressesDestination.sepolia.GAME_SETUP = DeploymentSource.sepolia.GAME_SETUP;
+  addressesDestination.sepolia.PLAYER_REGISTRY =
+    DeploymentSource.sepolia.PLAYER_REGISTRY;
 }
 
 const finalAddresses = JSON.stringify(addressesDestination, null, 4);

@@ -10,12 +10,15 @@ import { progressTurn } from "./turn";
 import { runServices } from "./services";
 import Provider from "./provider";
 import Contract from "./contract.js";
+import fs from "fs";
+import gasReport from "../gas-report.json";
 
 let web3; // provider
 let ethers; // ethers provider
 let accounts;
 let currentAccount;
 let gameRegistry;
+let playerRegistry;
 let gameBoard;
 let gameController;
 let gameSummary;
@@ -23,6 +26,7 @@ let playerSummary;
 let landingSiteSet;
 let adminMode = false;
 let showGas = false;
+let gameType = "1p";
 
 async function mainMenu(gameID) {
   const questions = [];
@@ -47,7 +51,13 @@ async function mainMenu(gameID) {
   const answers = await inquirer.prompt(questions);
   switch (answers.choice) {
     case "Submit Move":
-      await submitMoves(gameID, web3, currentAccount, showGas);
+      await submitMoves(
+        gameID,
+        web3,
+        currentAccount,
+        showGas,
+        addValueToGasReport
+      );
       await checkForLandingSite(gameID);
       await mainMenu(gameID);
       break;
@@ -62,22 +72,46 @@ async function mainMenu(gameID) {
       await mainMenu(gameID);
       break;
     case "Progress Phase":
-      await progressPhase(gameID, web3, currentAccount, showGas);
+      await progressPhase(
+        gameID,
+        web3,
+        currentAccount,
+        showGas,
+        addValueToGasReport
+      );
       await checkForLandingSite(gameID);
       await mainMenu(gameID);
       break;
     case "Progress Turn":
-      await progressTurn(gameID, web3, currentAccount, showGas);
+      await progressTurn(
+        gameID,
+        web3,
+        currentAccount,
+        showGas,
+        addValueToGasReport
+      );
       await checkForLandingSite(gameID);
       await mainMenu(gameID);
       break;
     case "Run Services":
-      await runServices(gameID, ethers.provider, ethers.wallet, showGas);
+      await runServices(
+        gameID,
+        ethers.provider,
+        ethers.wallet,
+        showGas,
+        addValueToGasReport
+      );
       await checkForLandingSite(gameID);
       await mainMenu(gameID);
       break;
     case "Choose Landing Site":
-      await chooseLandingSite(gameID, web3, currentAccount, showGas);
+      await chooseLandingSite(
+        gameID,
+        web3,
+        currentAccount,
+        showGas,
+        addValueToGasReport
+      );
       await checkForLandingSite(gameID);
       await mainMenu(gameID);
       break;
@@ -97,6 +131,7 @@ async function mainMenu(gameID) {
 }
 
 async function registerPlayerIfNeeded(gameID) {
+  // console.log("Register player if needed. Game type:", gameType);
   let isRegistered = await playerSummary.methods
     .isRegistered(gameBoard._address, gameID, currentAccount)
     .call();
@@ -104,6 +139,20 @@ async function registerPlayerIfNeeded(gameID) {
   if (!isRegistered) {
     console.log(`Registering player: ${currentAccount}`);
     try {
+      // get available registrations...
+      // if last player to register, save to registerAndPreStart
+      let gasValue = "register";
+      const totalRegistrations = await playerRegistry.methods
+        .totalRegistrations(gameID)
+        .call();
+      const registrationLimit = await playerRegistry.methods
+        .registrationLimit(gameID)
+        .call();
+      if (Number(registrationLimit) == Number(totalRegistrations) + 1) {
+        // this is the last player to register
+        gasValue = "registerAndPreStart";
+      }
+
       let tx = await gameController.registerForGame(gameID, gameBoard._address);
       // uncomment to force revert when ethers preventing execution
       // let tx = await gameController.registerForGame(
@@ -114,6 +163,7 @@ async function registerPlayerIfNeeded(gameID) {
       let receipt = await tx.wait();
       if (showGas) {
         console.log("Registered player with gas:", receipt.gasUsed.toString());
+        addValueToGasReport(gasValue, receipt.gasUsed);
       }
       isRegistered = await playerSummary.methods
         .isRegistered(gameBoard._address, gameID, currentAccount)
@@ -157,7 +207,8 @@ async function registerNewGame(numberPlayers) {
   );
   let receipt = await tx.wait();
   if (showGas) {
-    console.log(`Registered ${numPlayers} game with gas: ${receipt.gasUsed}`);
+    console.log(`Created ${gameType} game with gas: ${receipt.gasUsed}`);
+    addValueToGasReport("createGame", receipt.gasUsed);
   }
 
   let newGameID = await gameController.latestGame(
@@ -167,10 +218,62 @@ async function registerNewGame(numberPlayers) {
   return newGameID;
 }
 
+function addValueToGasReport(valueName, gasAmount) {
+  const gameValues = [
+    "preStart",
+    "start",
+    "progressTurn",
+    "deliverRandomness",
+    "processing1",
+    "processing2",
+    "createGame"
+  ];
+  const playerValues = ["register", "registerAndPreStart", "submitMove"];
+  let category;
+  if (gameValues.indexOf(valueName) >= 0) {
+    category = "gameActions";
+  }
+  if (playerValues.indexOf(valueName) >= 0) {
+    category = "playerActions";
+  }
+  if (category) {
+    console.log("Saving to category:", category);
+    console.log("Value", valueName);
+    console.log("Game Type:", gameType);
+    if (
+      Number(gasAmount) < gasReport[category][valueName][gameType].low ||
+      gasReport[category][valueName][gameType].low == 0
+    ) {
+      gasReport[category][valueName][gameType].low = Number(gasAmount);
+    }
+    if (
+      Number(gasAmount) > gasReport[category][valueName][gameType].high ||
+      gasReport[category][valueName][gameType].high == 0
+    ) {
+      gasReport[category][valueName][gameType].high = Number(gasAmount);
+    }
+    saveGasReport();
+  } else {
+    console.log("Error: gas report value not found:", valueName);
+  }
+}
+
+function saveGasReport() {
+  const savePath = `${process.cwd()}/gas-report.json`;
+  fs.writeFileSync(savePath, JSON.stringify(gasReport, null, 4), (err) => {
+    if (err) {
+      console.log("error: unable to save gas report", err.message);
+    } else {
+      console.log("Saved gas to report");
+    }
+  });
+}
+
 export async function runCLI(options) {
+  // console.log(gasReport);
   web3 = await Provider();
   accounts = await web3.eth.getAccounts();
-
+  showGas = options.showGas;
   let overrideWallet = false;
   if (options.walletIndex) {
     if (options.walletIndex < accounts.length) {
@@ -192,6 +295,7 @@ export async function runCLI(options) {
   gameBoard = await Contract("board", web3);
   gameRegistry = await Contract("registry", web3);
   gameController = await Contract("controller", ethers.provider, ethers.wallet);
+  playerRegistry = await Contract("playerRegistry", web3);
 
   let availableGames = await gameSummary.methods
     .getAvailableGames(gameBoard._address, gameRegistry._address)
@@ -210,23 +314,26 @@ export async function runCLI(options) {
   if (options.newGame) {
     const answers = await inquirer.prompt(questions);
     const numPlayers = answers.choice;
+    gameType = `${numPlayers}p`;
     gameID = await registerNewGame(numPlayers);
   } else {
     gameID = options.gameID;
+    const registrationLimit = await playerRegistry.methods
+      .registrationLimit(gameID)
+      .call();
+    gameType = `${Number(registrationLimit)}p`;
   }
-
-  showGas = options.showGas;
 
   // check that game is registered
   const latestGame = await gameRegistry.methods
     .latestGame(gameBoard._address)
     .call();
-  //console.log("Latest Game:", latestGame);
 
+  //console.log("Latest Game:", latestGame);
+  console.log("0");
   if (gameID != 0 && Number(latestGame) >= Number(gameID)) {
     await registerPlayerIfNeeded(gameID);
     await checkForLandingSite(gameID);
-
     await mainMenu(gameID);
   } else {
     console.log("Game ID not found.");

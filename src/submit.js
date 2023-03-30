@@ -20,6 +20,7 @@ let currentSpace;
 let web3;
 
 let showGas = false;
+let saveGas;
 
 async function submitAction(action, options, gameID) {
   const lh = submitLeftHand ? submitLeftHand : "";
@@ -57,6 +58,7 @@ async function submitAction(action, options, gameID) {
   console.log(`${action} action submitted to queue`);
   if (showGas) {
     console.log("Gas used:", tx.gasUsed);
+    saveGas("submitMove", tx.gasUsed);
   }
 }
 
@@ -302,11 +304,18 @@ async function pickUpItems() {
 }
 */
 
-export async function submitMoves(gameID, provider, account, _showGas) {
+export async function submitMoves(
+  gameID,
+  provider,
+  account,
+  _showGas,
+  _saveGas
+) {
   web3 = provider;
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
   showGas = _showGas;
+  saveGas = _saveGas; // function to call with ("value", gas used);
 
   hexplorationBoard = await Contract("board", provider);
   hexplorationController = await Contract("controller", provider);
