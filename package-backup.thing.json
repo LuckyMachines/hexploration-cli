@@ -2,7 +2,7 @@
   "name": "@luckymachines/hexploration-cli",
   "version": "0.0.1",
   "description": "A CLI to play Hexploration",
-  "main": "src/cli.js",
+  "main": "src/index.js",
   "bin": {
     "@luckymachines/hexploration-cli": "bin/hexploration-cli",
     "hexploration-cli": "bin/hexploration-cli"
@@ -14,11 +14,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "import-addresses": "node scripts/import-addresses.js"
   },
-  "keywords": [
-    "cli",
-    "hexploration-cli",
-    "hexploration"
-  ],
+  "keywords": ["cli", "hexploration-cli", "hexploration"],
   "author": "Max Meier",
   "license": "GPL-3.0",
   "dependencies": {
@@ -29,16 +25,8 @@
     "dotenv": "^16.0.3",
     "esm": "^3.2.25",
     "ethers": "^5.7.2",
-    "hexploration": "file:../hexploration",
+    "hexploration": "../hexploration",
     "inquirer": "^8.2.4",
     "web3": "^1.7.3"
-  },
-  "pkg": {
-    "assets": [
-      "../hexploration/**",
-      "scripts/**",
-      "settings/**"
-    ],
-    "outputPath": "dist"
   }
 }
