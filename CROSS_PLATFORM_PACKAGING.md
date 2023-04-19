@@ -53,6 +53,7 @@ solutions:
   - use esbuild like this comment https://github.com/vercel/pkg/issues/1291#issuecomment-1295792641
     - their command will need adjusting and won't work verbatim.
       - note: we may also need to transpile the /hexploration repository
+  - also maybe rollup https://github.com/vercel/pkg/issues/1291#issuecomment-1340392881
 
 ## dynamic routes that are causing issues
 
