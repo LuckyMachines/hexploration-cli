@@ -8,17 +8,16 @@ import GameSummary from "@luckymachines/game-core/games/hexploration/abi/GameSum
 import PlayerSummary from "@luckymachines/game-core/games/hexploration/abi/PlayerSummary.json";
 import PlayZoneSummary from "@luckymachines/game-core/games/hexploration/abi/PlayZoneSummary.json";
 import HexplorationController from "@luckymachines/game-core/games/hexploration/abi/HexplorationController.json";
-
 // Extra ABIs for admin functionality
-import HexplorationBoard from "hexploration/abi/HexplorationBoard.json";
-import Queue from "hexploration/abi/HexplorationQueue.json";
-import Gameplay from "hexploration/abi/HexplorationGameplay.json";
-import GameSetup from "hexploration/abi/GameSetup.json";
+// TODO: add these ABIs into game-core
+import HexplorationBoard from "@luckymachines/game-core/games/hexploration/abi/HexplorationBoard.json";
+import Queue from "@luckymachines/game-core/games/hexploration/abi/HexplorationQueue.json";
+import Gameplay from "@luckymachines/game-core/games/hexploration/abi/HexplorationGameplay.json";
+import GameSetup from "@luckymachines/game-core/games/hexploration/abi/GameSetup.json";
 
-import Addresses from "../settings/ContractAddresses.json";
+import Addresses from "@luckymachines/game-core/games/hexploration/deployments.json";
+
 import Network from "../settings/Network.json";
-// const Addresses = require(`${process.cwd()}/settings/ContractAddresses.json`);
-// console.log("Addresses", Addresses);
 
 const network =
   Network.network == "hardhat"
