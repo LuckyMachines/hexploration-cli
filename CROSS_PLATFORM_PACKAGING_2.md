@@ -1,11 +1,10 @@
 how ppl get pkg to work
-https://github.com/vercel/pkg/issues/1291
-    - basically use esbuild or rollup to convert esm to commonjs and THEN you can use PKG (silly)
+https://github.com/vercel/pkg/issues/1291 - basically use esbuild or rollup to convert esm to commonjs and THEN you can use PKG (silly)
 
 esm package that doesn't work with above
 https://www.npmjs.com/package/esm
 
-article max used to build cli - where that way of using esm comes from 
+article max used to build cli - where that way of using esm comes from
 
 https://www.twilio.com/blog/how-to-build-a-cli-with-node-js
 
@@ -15,12 +14,10 @@ https://morioh.com/p/53ae5b0b233c
 pkg tutorials
 https://www.pulumi.com/blog/nodejs-binaries-with-pkg/
 
-
-alternative packager 
+alternative packager
 https://github.com/leafac/caxa
 
-
-i had to install electron.  then i could use esbuild to transpile.
+i had to install electron. then i could use esbuild to transpile.
 
 have more libraries to copy over still but yay!!
 
@@ -28,6 +25,7 @@ have more libraries to copy over still but yay!!
   "build": "esbuild src/cli.js --bundle --platform=node --outfile=dist/cli.cjs --define:import.meta.url=__dirname --external:electron"
 
 ```
+
 ```
 James Pollack@DESKTOP-CM33RIV MINGW64 ~/Desktop/luckystuff/hexplore/hexploration-cli (cross_platform)
 $ pkg .
@@ -74,10 +72,7 @@ $ pkg .
 > Warning Failed to make bytecode node18-x64 for file C:\snapshot\James Pollack\Desktop\luckystuff\hexplore\hexploration-cli\node_modules\rustbn.js\lib\index.asm.js
 ```
 
-
-
-*** current todo: 
-
+\*\*\* current todo:
 
 ```
 James Pollack@DESKTOP-CM33RIV MINGW64 ~/Desktop/luckystuff/hexplore/hexploration-cli/dist (cross_platform)
@@ -97,3 +92,14 @@ TypeError: Cannot read properties of undefined (reading 'HEXPLORATION_BOARD')
 
 Node.js v18.5.0
 ```
+
+note in regards to bin in package.json
+
+can perhaps add multiple ones
+"bin": {
+"hexploration-cli": "dist/cli.cjs"
+},
+
+---
+
+thought: maybe i _didn't_ have to install electron and could have copied it via the assets section of the pkg config in package.json
