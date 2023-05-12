@@ -8,3 +8,5 @@ env.js
 yarn.lock
 package-lock.json
 dist/
+dist2/
+dist3/
