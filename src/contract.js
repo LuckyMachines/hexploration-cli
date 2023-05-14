@@ -1,23 +1,24 @@
 const Ethers = require("ethers");
 
-import GameRegistry from "@luckymachines/game-core/contracts/abi/v0.0/GameRegistry.json";
-import PlayerRegistry from "@luckymachines/game-core/contracts/abi/v0.0/PlayerRegistry.json";
+const GameRegistry = require("@luckymachines/game-core/contracts/abi/v0.0/GameRegistry.json");
+const PlayerRegistry = require("@luckymachines/game-core/contracts/abi/v0.0/PlayerRegistry.json");
 
 // Game-core ABIs
-import GameSummary from "@luckymachines/game-core/games/hexploration/abi/GameSummary.json";
-import PlayerSummary from "@luckymachines/game-core/games/hexploration/abi/PlayerSummary.json";
-import PlayZoneSummary from "@luckymachines/game-core/games/hexploration/abi/PlayZoneSummary.json";
-import HexplorationController from "@luckymachines/game-core/games/hexploration/abi/HexplorationController.json";
+const GameSummary = require("@luckymachines/game-core/games/hexploration/abi/GameSummary.json");
+const PlayerSummary = require("@luckymachines/game-core/games/hexploration/abi/PlayerSummary.json");
+const PlayZoneSummary = require("@luckymachines/game-core/games/hexploration/abi/PlayZoneSummary.json");
+const HexplorationController = require("@luckymachines/game-core/games/hexploration/abi/HexplorationController.json");
+
 // Extra ABIs for admin functionality
 // TODO: add these ABIs into game-core
-import HexplorationBoard from "@luckymachines/game-core/games/hexploration/abi/HexplorationBoard.json";
-import Queue from "@luckymachines/game-core/games/hexploration/abi/HexplorationQueue.json";
-import Gameplay from "@luckymachines/game-core/games/hexploration/abi/HexplorationGameplay.json";
-import GameSetup from "@luckymachines/game-core/games/hexploration/abi/GameSetup.json";
+const HexplorationBoard = require("@luckymachines/game-core/games/hexploration/abi/HexplorationBoard.json");
+const Queue = require("@luckymachines/game-core/games/hexploration/abi/HexplorationQueue.json");
+const Gameplay = require("@luckymachines/game-core/games/hexploration/abi/HexplorationGameplay.json");
+const GameSetup = require("@luckymachines/game-core/games/hexploration/abi/GameSetup.json");
 
-import Addresses from "@luckymachines/game-core/games/hexploration/deployments.json";
+const Addresses = require("@luckymachines/game-core/games/hexploration/deployments.json");
 
-import Network from "../settings/Network.json";
+const Network = require("../settings/Network.json");
 
 const network =
   Network.network == "hardhat"
@@ -25,6 +26,9 @@ const network =
     : Network.network == "hh-lan"
     ? "hh"
     : Network.network;
+
+console.log("JBP DEBUG: network is: ", network);
+console.log("JBP DEBUG: Addresses is: ", Addresses);
 
 const boardAddress = Addresses[network].HEXPLORATION_BOARD;
 const controllerAddress = Addresses[network].HEXPLORATION_CONTROLLER;
@@ -38,6 +42,7 @@ const gameSetupAddress = Addresses[network].GAME_SETUP;
 const playerRegistryAddress = Addresses[network].PLAYER_REGISTRY;
 
 const contract = async (contractName, provider, ethersWallet) => {
+  console.log("making contract: ", contractName);
   let c;
   switch (contractName) {
     case "board":

@@ -19,10 +19,10 @@ function parseArgumentsIntoOptions(rawArgs) {
       "--showGas": Boolean,
       "-n": "--newGame",
       "-a": "--adminMode",
-      "-g": "--showGas"
+      "-g": "--showGas",
     },
     {
-      argv: rawArgs.slice(2)
+      argv: rawArgs.slice(2),
     }
   );
   return {
@@ -30,15 +30,16 @@ function parseArgumentsIntoOptions(rawArgs) {
     adminMode: args["--adminMode"] || false,
     gameID: args._[0],
     walletIndex: args._[1],
-    showGas: args["--showGas"] || false
+    showGas: args["--showGas"] || false,
   };
 }
 
 async function promptForMissingOptions(options) {
+  console.log("in promptForMissingOptions", options);
   if (options.newGame) {
     return {
       ...options,
-      gameID: 0
+      gameID: 0,
     };
   }
 
@@ -52,14 +53,14 @@ async function promptForMissingOptions(options) {
       type: "number",
       name: "gameID",
       message: "Which game ID shall we play?",
-      default: 0
+      default: 0,
     });
     console.log("Available games:");
     let gameData = [];
     for (let i = 0; i < availableGames.gameIDs.length; i++) {
       gameData.push({
         "Game ID": availableGames.gameIDs[i].toString(),
-        Players: `${availableGames.currentRegistrations[i]} / ${availableGames.maxPlayers[i]}`
+        Players: `${availableGames.currentRegistrations[i]} / ${availableGames.maxPlayers[i]}`,
       });
     }
     console.table(gameData);
@@ -67,34 +68,68 @@ async function promptForMissingOptions(options) {
     return {
       ...options,
       gameID: answers.gameID,
-      newGame: false
+      newGame: false,
     };
   } else if (options.gameID) {
     return {
       ...options,
-      gameID: options.gameID
+      gameID: options.gameID,
     };
   } else {
     return {
       ...options,
-      newGame: true
+      newGame: true,
     };
   }
 }
 
 export async function cli(args) {
-  web3 = await Provider();
-  accounts = await web3.eth.getAccounts();
-  summary = await Contract("summary", web3);
-  playerSummary = await Contract("playerSummary", web3);
-  board = await Contract("board", web3);
-  registry = await Contract("registry", web3);
+  try {
+    console.log("cli block 1");
+    web3 = await Provider();
+    console.log("cli block 2");
+    accounts = await web3.eth.getAccounts();
+    console.log("cli block 3");
+    summary = await Contract("summary", web3);
+    console.log("cli block 4");
+    playerSummary = await Contract("playerSummary", web3);
+    console.log("cli block 5");
+    board = await Contract("board", web3);
+    registry = await Contract("registry", web3);
+  } catch (err) {
+    console.log("cli block 1 errror");
+    console.error(err);
+  }
 
-  let options = parseArgumentsIntoOptions(args);
-  //console.log("Wallet Index:", options.walletIndex);
+  let options;
+  try {
+    options = parseArgumentsIntoOptions(args);
+    console.log("options after parsed", options);
+    console.log("Wallet Index:", options.walletIndex);
+  } catch (err) {
+    console.log("parseArgumentsIntoOptions error");
+    console.error(err);
+  }
 
-  options = await promptForMissingOptions(options);
+  try {
+    options = await promptForMissingOptions(options);
 
-  //console.log("Option:", options);
-  await runCLI(options);
+    console.log("promptForMissingOptions options:", options);
+  } catch (err) {
+    console.log("promptForMissingOptions error");
+    console.error(err);
+  }
+
+  try {
+    await runCLI(options);
+  } catch (err) {
+    console.log("runCLI error");
+    console.error(err);
+  }
 }
+
+//start this ourselves in packaged thing!)
+console.log("SHOULD START CLI!!");
+let args = process.argv;
+console.log("args", args);
+cli(args);
