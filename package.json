@@ -42,6 +42,6 @@
       "prebuilds/**",
       "prebuilds/**/*.node"
     ],
-    "outputPath": "dist"
+    "outputPath": "dist-pkg"
   }
 }

@@ -60,9 +60,7 @@ console.log("provider URL is... ", PROVIDER_URL);
 const provider = async (providerUrl, web3OrEthers, walletIndex) => {
   let provider;
   //my godwoken testnet key
-  let keys = [
-    "efab1d8aee4198c8f938eab2cef50301f15bb10903794e11fce5006cee976843",
-  ];
+  let keys = ["xxx"];
   //const keysFromFile = fs.readFileSync(`${pkDir}/.privateKey`).toString();
   // const keysFromFile = fs
   //   .readFileSync(`${process.cwd()}/.privateKey`)
@@ -72,23 +70,42 @@ const provider = async (providerUrl, web3OrEthers, walletIndex) => {
   //   const privateKey = line.trim();
   //   keys.push(privateKey);
   // });
+  let maybeURL = providerUrl ? providerUrl : PROVIDER_URL;
   if (web3OrEthers && web3OrEthers == "ethers") {
-    console.log("setup provider as web3OrEthers");
+    console.log("setup provider as web3OrEthers", providerUrl);
     // ethers provider
-    provider = new Ethers.providers.JsonRpcProvider(
-      providerUrl ? providerUrl : PROVIDER_URL
-    );
+    provider = new Ethers.providers.JsonRpcProvider(maybeURL);
     const index = walletIndex ? walletIndex : 0;
     const wallet = new Ethers.Wallet(keys[index], provider);
     return { provider: provider, wallet: wallet };
   } else {
-    console.log("setup provider as HDWalletProvider");
-    const wallet = new HDWalletProvider({
-      privateKeys: keys,
-      providerOrUrl: providerUrl ? providerUrl : PROVIDER_URL,
-    });
-    provider = new Web3(wallet);
-    return provider;
+    try {
+      console.log("setup provider as HDWalletProvider", providerUrl);
+      let walletOptions = {
+        privateKeys: keys,
+        providerOrUrl: maybeURL,
+      };
+      console.log("walletOptions", walletOptions);
+      let wallet;
+      try {
+        wallet = new HDWalletProvider(walletOptions);
+      } catch (err) {
+        console.log("error at new HDWalletProvider ");
+        console.error(err);
+      }
+
+      try {
+        provider = new Web3(wallet);
+      } catch (err) {
+        console.log("error at new Web3 ");
+        console.error(err);
+      }
+
+      return provider;
+    } catch (err) {
+      console.log("setup provider as HDWalletProvider", maybeURL);
+      console.error(err);
+    }
   }
 };
 

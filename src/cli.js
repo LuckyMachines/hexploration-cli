@@ -97,7 +97,7 @@ export async function cli(args) {
     board = await Contract("board", web3);
     registry = await Contract("registry", web3);
   } catch (err) {
-    console.log("cli block 1 errror");
+    console.log("cli block error");
     console.error(err);
   }
 

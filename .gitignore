@@ -10,3 +10,5 @@ package-lock.json
 dist/
 dist2/
 dist3/
+dist-pkg/
+screencaps/
