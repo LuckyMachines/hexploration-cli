@@ -109,5 +109,16 @@ and then you can run the file in dist-pkg
 
 NOTES:
 
+minification does seem to work fine... but it made the end result with pkg BIGGER!
+
+```
+
+    "build": "esbuild src/cli.js --bundle --platform=node --outfile=dist/cli.cjs --define:import.meta.url=__dirname --minify"
+```
+
+pkg version
+
+```
 pkg --version
 5.8.1
+```
