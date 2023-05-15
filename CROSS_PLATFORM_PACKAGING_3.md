@@ -106,3 +106,8 @@ pkg .
 ```
 
 and then you can run the file in dist-pkg
+
+NOTES:
+
+pkg --version
+5.8.1
