@@ -20,6 +20,27 @@ const Addresses = require("@luckymachines/game-core/games/hexploration/deploymen
 
 const Network = require("../settings/Network.json");
 
+// require("crypto-browserify");
+// require("crypto");
+// import GameRegistry from "@luckymachines/game-core/contracts/abi/v0.0/GameRegistry.json";
+// import PlayerRegistry from "@luckymachines/game-core/contracts/abi/v0.0/PlayerRegistry.json";
+
+// // Game-core ABIs
+// import GameSummary from "@luckymachines/game-core/games/hexploration/abi/GameSummary.json";
+// import PlayerSummary from "@luckymachines/game-core/games/hexploration/abi/PlayerSummary.json";
+// import PlayZoneSummary from "@luckymachines/game-core/games/hexploration/abi/PlayZoneSummary.json";
+// import HexplorationController from "@luckymachines/game-core/games/hexploration/abi/HexplorationController.json";
+// // Extra ABIs for admin functionality
+// // TODO: add these ABIs into game-core
+// import HexplorationBoard from "@luckymachines/game-core/games/hexploration/abi/HexplorationBoard.json";
+// import Queue from "@luckymachines/game-core/games/hexploration/abi/HexplorationQueue.json";
+// import Gameplay from "@luckymachines/game-core/games/hexploration/abi/HexplorationGameplay.json";
+// import GameSetup from "@luckymachines/game-core/games/hexploration/abi/GameSetup.json";
+
+// import Addresses from "@luckymachines/game-core/games/hexploration/deployments.json";
+
+// import Network from "../settings/Network.json";
+
 const network =
   Network.network == "hardhat"
     ? "hh"

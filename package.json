@@ -12,7 +12,6 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "import-addresses": "node scripts/import-addresses.js",
     "build": "esbuild src/cli.js --bundle --platform=node --outfile=dist/cli.cjs --define:import.meta.url=__dirname"
   },
   "keywords": [
@@ -24,12 +23,12 @@
   "license": "GPL-3.0",
   "dependencies": {
     "@luckymachines/game-core": "^0.0.41",
+    "@metamask/sdk": "^0.2.4",
     "@truffle/hdwallet-provider": "^2.0.8",
     "arg": "^5.0.1",
     "chalk": "^4.1.0",
+    "crypto": "^1.0.1",
     "dotenv": "^16.0.3",
-    "electron": "^24.3.0",
-    "esbuild": "^0.17.18",
     "esm": "^3.2.25",
     "ethers": "^5.7.2",
     "inquirer": "^8.2.4",
@@ -37,11 +36,15 @@
   },
   "pkg": {
     "assets": [
-      "scripts/**",
       "settings/**",
-      "prebuilds/**",
       "prebuilds/**/*.node"
     ],
     "outputPath": "dist-pkg"
+  },
+  "devDependencies": {
+    "esbuild": "^0.17.18"
+  },
+  "engines": {
+    "node": ">=18.15.0"
   }
 }

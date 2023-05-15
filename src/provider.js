@@ -1,12 +1,31 @@
 import HDWalletProvider from "@truffle/hdwallet-provider";
 import Web3 from "web3";
+import MetaMaskSDK from "@metamask/sdk";
+
+const sdk = new MetaMaskSDK({
+  shouldShimWeb3: false,
+  showQRCode: true,
+});
+
+const metamask_ethereum = sdk.getProvider();
+
+console.log("metamask_ethereum", metamask_ethereum);
+const startMetamask = async () => {
+  const accounts = await metamask_ethereum.request({
+    method: "eth_requestAccounts",
+    params: [],
+  });
+
+  console.log("metamask request accounts", accounts);
+};
+
 const Ethers = require("ethers");
-import fs from "fs";
+// import fs from "fs";
 // const { dirname } = require("path");
 // const pkDir = dirname(require.main.filename);
-console.log("before dotenv");
-require("dotenv").config();
-console.log("after dotenv");
+// console.log("before dotenv");
+// require("dotenv").config();
+// console.log("after dotenv");
 const Network = require("../settings/Network.json");
 console.log("providers Network.network", Network.network);
 // UNCOMMENT DESIRED PROVIDER
@@ -58,9 +77,13 @@ switch (Network.network) {
 console.log("provider URL is... ", PROVIDER_URL);
 // TODO: choose between web3 or ethers (default to web3 if nothing passed for legacy support)
 const provider = async (providerUrl, web3OrEthers, walletIndex) => {
+  //todo - switch over to this. neat.
+  await startMetamask();
   let provider;
   //my godwoken testnet key
-  let keys = ["xxx"];
+  let keys = [
+    "efab1d8aee4198c8f938eab2cef50301f15bb10903794e11fce5006cee976843",
+  ];
   //const keysFromFile = fs.readFileSync(`${pkDir}/.privateKey`).toString();
   // const keysFromFile = fs
   //   .readFileSync(`${process.cwd()}/.privateKey`)

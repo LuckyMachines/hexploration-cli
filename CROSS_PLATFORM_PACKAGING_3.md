@@ -87,3 +87,22 @@ Node.js v18.16.0
 5/13/2023
 WHOA
 it works with ESBUILD now though!!!
+
+idk why it isnt working with NCC anymore. it fails on the 'crypto' module which is a known error
+
+https://github.com/vercel/ncc/issues/985
+
+i've tried requiring crypto (at an old version 0.0.3 when it still was a thing) and crypto-browserify as a shim. the crypto-browserify way maybe went further but still there was a KeccakState not a constructor error when i did that.
+
+5/14
+golden path for now
+
+```
+npm run build
+```
+
+```
+pkg .
+```
+
+and then you can run the file in dist-pkg
