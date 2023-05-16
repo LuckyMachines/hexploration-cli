@@ -188,10 +188,11 @@ async function registerPlayerIfNeeded(gameID) {
 async function checkForLandingSite(gameID) {
   // board . mapping(uint256 => string) public initialPlayZone;
   if (!landingSiteSet) {
+    // console.log("methods", gameBoard.methods);
     const initialPlayZone = await gameBoard.methods
       .initialPlayZone(gameID)
       .call();
-    //console.log("Initial play zone:", initialPlayZone);
+    console.log("Initial play zone:", initialPlayZone);
     landingSiteSet = initialPlayZone != "";
   }
 }
@@ -330,7 +331,7 @@ export async function runCLI(options) {
     .call();
 
   //console.log("Latest Game:", latestGame);
-  console.log("0");
+  // console.log("0");
   if (gameID != 0 && Number(latestGame) >= Number(gameID)) {
     await registerPlayerIfNeeded(gameID);
     await checkForLandingSite(gameID);
