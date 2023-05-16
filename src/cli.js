@@ -3,6 +3,7 @@ import inquirer from "inquirer";
 import { runCLI } from "./main";
 import Contract from "./contract";
 import Provider from "./provider";
+import MetaMaskSDK from "@metamask/sdk";
 
 let web3;
 let accounts;
@@ -82,9 +83,32 @@ async function promptForMissingOptions(options) {
   }
 }
 
+const sdk = new MetaMaskSDK({
+  shouldShimWeb3: false,
+  showQRCode: true,
+  dappMetadata: {
+    name: "Hexploration",
+    url: "https://luckymachines.io"
+  }
+});
+const metamask_ethereum = sdk.getProvider();
+
+// console.log("metamask_ethereum", metamask_ethereum);
+const startMetamask = async () => {
+  const accounts = await metamask_ethereum.request({
+    method: "eth_requestAccounts",
+    params: []
+  });
+
+  console.log("metamask connected:", accounts);
+};
+
 export async function cli(args) {
-  web3 = await Provider();
-  accounts = await web3.eth.getAccounts();
+  // connect to metamask
+
+  await startMetamask();
+  web3 = await Provider(metamask_ethereum);
+  // accounts = await web3.eth.getAccounts();
   summary = await Contract("summary", web3);
   playerSummary = await Contract("playerSummary", web3);
   board = await Contract("board", web3);
@@ -96,5 +120,5 @@ export async function cli(args) {
   options = await promptForMissingOptions(options);
 
   //console.log("Option:", options);
-  await runCLI(options);
+  await runCLI(options, metamask_ethereum);
 }

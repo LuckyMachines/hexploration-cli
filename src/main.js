@@ -270,9 +270,9 @@ function saveGasReport() {
   });
 }
 
-export async function runCLI(options) {
+export async function runCLI(options, ethereum) {
   // console.log(gasReport);
-  web3 = await Provider();
+  web3 = await Provider(ethereum);
   accounts = await web3.eth.getAccounts();
   showGas = options.showGas;
   let overrideWallet = false;
@@ -285,11 +285,7 @@ export async function runCLI(options) {
 
   adminMode = options.adminMode;
 
-  ethers = await Provider(
-    null,
-    "ethers",
-    overrideWallet ? options.walletIndex : 0
-  );
+  ethers = await Provider(ethereum, "ethers");
 
   gameSummary = await Contract("summary", web3);
   playerSummary = await Contract("playerSummary", web3);
