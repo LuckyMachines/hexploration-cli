@@ -11,6 +11,7 @@ let showGas = false;
 let saveGas;
 
 export async function progressPhase(
+  network,
   gameID,
   provider,
   account,
@@ -21,10 +22,10 @@ export async function progressPhase(
   saveGas = _saveGas;
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
-  summary = await Contract("summary", provider);
-  playerSummary = await Contract("playerSummary", provider);
-  board = await Contract("board", provider);
-  gameplay = await Contract("gameplay", provider);
+  summary = await Contract(network, "summary", provider);
+  playerSummary = await Contract(network, "playerSummary", provider);
+  board = await Contract(network, "board", provider);
+  gameplay = await Contract(network, "gameplay", provider);
 
   console.log("Gameplay address:", gameplay._address);
   // add self as verified controller for manual phase progression

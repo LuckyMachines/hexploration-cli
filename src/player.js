@@ -17,13 +17,13 @@ const ACTION = [
   "Help"
 ];
 
-export async function playerInfo(gameID, provider, account) {
+export async function playerInfo(network, gameID, provider, account) {
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
   // console.log("Getting player info for game:", gameID);
-  summary = await Contract("summary", provider);
-  playerSummary = await Contract("playerSummary", provider);
-  board = await Contract("board", provider);
+  summary = await Contract(network, "summary", provider);
+  playerSummary = await Contract(network, "playerSummary", provider);
+  board = await Contract(network, "board", provider);
   let playerStats = await playerSummary.methods
     .currentPlayerStats(board._address, gameID)
     .call({ from: currentAccount });

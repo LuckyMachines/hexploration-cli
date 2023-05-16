@@ -304,6 +304,7 @@ async function pickUpItems() {
 */
 
 export async function submitMoves(
+  network,
   gameID,
   provider,
   account,
@@ -316,11 +317,11 @@ export async function submitMoves(
   showGas = _showGas;
   saveGas = _saveGas; // function to call with ("value", gas used);
 
-  hexplorationBoard = await Contract("board", provider);
-  hexplorationController = await Contract("controller", provider);
-  summary = await Contract("summary", provider);
-  playerSummary = await Contract("playerSummary", provider);
-  queue = await Contract("queue", provider);
+  hexplorationBoard = await Contract(network, "board", provider);
+  hexplorationController = await Contract(network, "controller", provider);
+  summary = await Contract(network, "summary", provider);
+  playerSummary = await Contract(network, "playerSummary", provider);
+  queue = await Contract(network, "queue", provider);
 
   //////////////////
   // TEST METHOD //

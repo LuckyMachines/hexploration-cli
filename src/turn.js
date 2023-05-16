@@ -9,6 +9,7 @@ let showGas = false;
 let saveGas;
 
 export async function progressTurn(
+  network,
   gameID,
   provider,
   account,
@@ -19,7 +20,7 @@ export async function progressTurn(
   saveGas = _saveGas;
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
-  controller = await Contract("controller", provider);
+  controller = await Contract(network, "controller", provider);
   let upkeep = await controller.methods
     .checkUpkeep("0x")
     .call({ from: currentAccount });

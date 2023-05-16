@@ -13,6 +13,7 @@ let showGas = false;
 let saveGas;
 
 export async function runServices(
+  network,
   gameID,
   ethersProvider,
   ethersWallet,
@@ -23,13 +24,28 @@ export async function runServices(
   saveGas = _saveGas;
   // const accounts = await provider.eth.getAccounts();
   // currentAccount = account ? account : accounts[0];
-  summary = await Contract("summary", ethersProvider, ethersWallet);
-  playerSummary = await Contract("playerSummary", ethersProvider, ethersWallet);
-  board = await Contract("board", ethersProvider, ethersWallet);
-  gameplay = await Contract("gameplay", ethersProvider, ethersWallet);
-  controller = await Contract("controller", ethersProvider, ethersWallet);
-  gameSetup = await Contract("gameSetup", ethersProvider, ethersWallet);
-  gameQueue = await Contract("queue", ethersProvider, ethersWallet);
+  summary = await Contract(network, "summary", ethersProvider, ethersWallet);
+  playerSummary = await Contract(
+    network,
+    "playerSummary",
+    ethersProvider,
+    ethersWallet
+  );
+  board = await Contract(network, "board", ethersProvider, ethersWallet);
+  gameplay = await Contract(network, "gameplay", ethersProvider, ethersWallet);
+  controller = await Contract(
+    network,
+    "controller",
+    ethersProvider,
+    ethersWallet
+  );
+  gameSetup = await Contract(
+    network,
+    "gameSetup",
+    ethersProvider,
+    ethersWallet
+  );
+  gameQueue = await Contract(network, "queue", ethersProvider, ethersWallet);
 
   console.log("Gameplay address:", gameplay.address);
 

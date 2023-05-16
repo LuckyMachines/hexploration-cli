@@ -23,20 +23,20 @@ let playerSummary;
     mapping(uint256 => mapping(uint256 => string)) public submissionRightHand;  
 */
 
-export async function viewQueue(gameID, provider, account) {
+export async function viewQueue(network, gameID, provider, account) {
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
 
   console.log("View queue for game ID:", gameID);
-  queue = await Contract("queue", provider);
+  queue = await Contract(network, "queue", provider);
   // console.log("Setting admin as queue controller");
   // await queue.methods
   //   .addVerifiedController(currentAccount)
   //   .send({ from: currentAccount, gas: "5000000" });
 
-  summary = await Contract("summary", provider);
-  playerSummary = await Contract("playerSummary", provider);
-  board = await Contract("board", provider);
+  summary = await Contract(network, "summary", provider);
+  playerSummary = await Contract(network, "playerSummary", provider);
+  board = await Contract(network, "board", provider);
   let playerID = await playerSummary.methods
     .getPlayerID(board._address, gameID, currentAccount)
     .call();

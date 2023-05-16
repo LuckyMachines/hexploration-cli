@@ -27,6 +27,7 @@ let landingSiteSet;
 let adminMode = false;
 let showGas = false;
 let gameType = "1p";
+let network;
 
 async function mainMenu(gameID) {
   const questions = [];
@@ -52,6 +53,7 @@ async function mainMenu(gameID) {
   switch (answers.choice) {
     case "Submit Move":
       await submitMoves(
+        network,
         gameID,
         web3,
         currentAccount,
@@ -62,17 +64,18 @@ async function mainMenu(gameID) {
       await mainMenu(gameID);
       break;
     case "Player Info":
-      await playerInfo(gameID, web3, currentAccount);
+      await playerInfo(network, gameID, web3, currentAccount);
       await checkForLandingSite(gameID);
       await mainMenu(gameID);
       break;
     case "View Map":
-      await showMap(gameID, web3, currentAccount);
+      await showMap(network, gameID, web3, currentAccount);
       await checkForLandingSite(gameID);
       await mainMenu(gameID);
       break;
     case "Progress Phase":
       await progressPhase(
+        network,
         gameID,
         web3,
         currentAccount,
@@ -95,6 +98,7 @@ async function mainMenu(gameID) {
       break;
     case "Run Services":
       await runServices(
+        network,
         gameID,
         ethers.provider,
         ethers.wallet,
@@ -106,6 +110,7 @@ async function mainMenu(gameID) {
       break;
     case "Choose Landing Site":
       await chooseLandingSite(
+        network,
         gameID,
         web3,
         currentAccount,
@@ -116,7 +121,7 @@ async function mainMenu(gameID) {
       await mainMenu(gameID);
       break;
     case "View Queue":
-      await viewQueue(gameID, web3, currentAccount);
+      await viewQueue(network, gameID, web3, currentAccount);
       await checkForLandingSite(gameID);
       await mainMenu(gameID);
       break;
@@ -270,7 +275,8 @@ function saveGasReport() {
   });
 }
 
-export async function runCLI(options, ethereum) {
+export async function runCLI(options, ethereum, ntwk) {
+  network = ntwk;
   // console.log(gasReport);
   web3 = await Provider(ethereum);
   accounts = await web3.eth.getAccounts();
@@ -287,12 +293,17 @@ export async function runCLI(options, ethereum) {
 
   ethers = await Provider(ethereum, "ethers");
 
-  gameSummary = await Contract("summary", web3);
-  playerSummary = await Contract("playerSummary", web3);
-  gameBoard = await Contract("board", web3);
-  gameRegistry = await Contract("registry", web3);
-  gameController = await Contract("controller", ethers.provider, ethers.wallet);
-  playerRegistry = await Contract("playerRegistry", web3);
+  gameSummary = await Contract(network, "summary", web3);
+  playerSummary = await Contract(network, "playerSummary", web3);
+  gameBoard = await Contract(network, "board", web3);
+  gameRegistry = await Contract(network, "registry", web3);
+  gameController = await Contract(
+    network,
+    "controller",
+    ethers.provider,
+    ethers.wallet
+  );
+  playerRegistry = await Contract(network, "playerRegistry", web3);
 
   let availableGames = await gameSummary.methods
     .getAvailableGames(gameBoard._address, gameRegistry._address)

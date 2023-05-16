@@ -17,27 +17,26 @@ import GameSetup from "@luckymachines/game-core/games/hexploration/abi/GameSetup
 
 import Addresses from "@luckymachines/game-core/games/hexploration/deployments.json";
 
-import Network from "../settings/Network.json";
+// import Network from "../settings/Network.json";
 
-const network =
-  Network.network == "hardhat"
-    ? "hh"
-    : Network.network == "hh-lan"
-    ? "hh"
-    : Network.network;
+// const network =
+//   Network.network == "hardhat"
+//     ? "hh"
+//     : Network.network == "hh-lan"
+//     ? "hh"
+//     : Network.network;
 
-const boardAddress = Addresses[network].HEXPLORATION_BOARD;
-const controllerAddress = Addresses[network].HEXPLORATION_CONTROLLER;
-const summaryAddress = Addresses[network].GAME_SUMMARY;
-const playerSummaryAddress = Addresses[network].PLAYER_SUMMARY;
-const playZoneSummaryAddress = Addresses[network].PLAY_ZONE_SUMMARY;
-const registryAddress = Addresses[network].GAME_REGISTRY;
-const queueAddress = Addresses[network].GAME_QUEUE;
-const gameplayAddress = Addresses[network].GAMEPLAY;
-const gameSetupAddress = Addresses[network].GAME_SETUP;
-const playerRegistryAddress = Addresses[network].PLAYER_REGISTRY;
-
-const contract = async (contractName, provider, ethersWallet) => {
+const contract = async (network, contractName, provider, ethersWallet) => {
+  const boardAddress = Addresses[network].HEXPLORATION_BOARD;
+  const controllerAddress = Addresses[network].HEXPLORATION_CONTROLLER;
+  const summaryAddress = Addresses[network].GAME_SUMMARY;
+  const playerSummaryAddress = Addresses[network].PLAYER_SUMMARY;
+  const playZoneSummaryAddress = Addresses[network].PLAY_ZONE_SUMMARY;
+  const registryAddress = Addresses[network].GAME_REGISTRY;
+  const queueAddress = Addresses[network].GAME_QUEUE;
+  const gameplayAddress = Addresses[network].GAMEPLAY;
+  const gameSetupAddress = Addresses[network].GAME_SETUP;
+  const playerRegistryAddress = Addresses[network].PLAYER_REGISTRY;
   let c;
   switch (contractName) {
     case "board":

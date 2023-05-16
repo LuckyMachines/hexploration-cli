@@ -1,44 +1,6 @@
-import HDWalletProvider from "@truffle/hdwallet-provider";
 import Web3 from "web3";
 const Ethers = require("ethers");
-import fs from "fs";
-const { dirname } = require("path");
-const pkDir = dirname(require.main.filename);
 require("dotenv").config();
-const Network = require("../settings/Network.json");
-
-// UNCOMMENT DESIRED PROVIDER
-let PROVIDER_URL;
-switch (Network.network) {
-  case "ganache":
-    PROVIDER_URL = "http://10.0.0.134:7545";
-    break;
-  case "godwoken":
-    PROVIDER_URL = process.env.RPC_URL_GODWOKEN;
-    break;
-  case "godwoken_test":
-    PROVIDER_URL = process.env.RPC_URL_GODWOKEN_TEST;
-    break;
-  case "goerli":
-    PROVIDER_URL = process.env.RPC_URL_GOERLI;
-    break;
-  case "sepolia":
-    PROVIDER_URL = process.env.RPC_URL_SEPOLIA;
-    break;
-  case "mumbai":
-    PROVIDER_URL = process.env.RPC_URL_MUMBAI;
-    break;
-  case "bnbTest":
-    PROVIDER_URL = process.env.RPC_URL_BINANCE_TEST;
-  case "hh-lan":
-    PROVIDER_URL = "http://192.168.132.44:8545";
-    break;
-  case "hardhat":
-  case "hh":
-  default:
-    PROVIDER_URL = "http://127.0.0.1:8545";
-    break;
-}
 
 // TODO: choose between web3 or ethers (default to web3 if nothing passed for legacy support)
 const provider = async (ethereum, web3OrEthers) => {

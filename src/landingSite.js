@@ -33,6 +33,7 @@ const startPlayersOnLandingSite = async (gameID) => {
 };
 
 export async function chooseLandingSite(
+  network,
   gameID,
   provider,
   account,
@@ -43,8 +44,8 @@ export async function chooseLandingSite(
   saveGas = _saveGas;
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
-  controller = await Contract("controller", provider);
-  board = await Contract("board", provider);
+  controller = await Contract(network, "controller", provider);
+  board = await Contract(network, "board", provider);
 
   //console.log("Board:", board._address);
   //console.log("Controller:", controller.methods);

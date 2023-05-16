@@ -104,15 +104,27 @@ const startMetamask = async () => {
 };
 
 export async function cli(args) {
-  // connect to metamask
+  // Choose network
+  let questions = [
+    {
+      type: "list",
+      name: "whichNetwork",
+      message: "Which network?",
+      choices: ["godwoken_test"],
+      default: "godwoken_test"
+    }
+  ];
+  const answers = await inquirer.prompt(questions);
+  let network = answers.whichNetwork;
 
+  // connect to metamask
   await startMetamask();
   web3 = await Provider(metamask_ethereum);
   // accounts = await web3.eth.getAccounts();
-  summary = await Contract("summary", web3);
-  playerSummary = await Contract("playerSummary", web3);
-  board = await Contract("board", web3);
-  registry = await Contract("registry", web3);
+  summary = await Contract(network, "summary", web3);
+  playerSummary = await Contract(network, "playerSummary", web3);
+  board = await Contract(network, "board", web3);
+  registry = await Contract(network, "registry", web3);
 
   let options = parseArgumentsIntoOptions(args);
   //console.log("Wallet Index:", options.walletIndex);
@@ -120,5 +132,5 @@ export async function cli(args) {
   options = await promptForMissingOptions(options);
 
   //console.log("Option:", options);
-  await runCLI(options, metamask_ethereum);
+  await runCLI(options, metamask_ethereum, network);
 }
