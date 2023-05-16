@@ -122,3 +122,160 @@ pkg version
 pkg --version
 5.8.1
 ```
+
+some warnings that print as errors when we use --debug option for pkg
+
+```
+
+
+
+SyntaxError: Unexpected token 'export'
+    at new Script (node:vm:102:7)
+    at Socket.<anonymous> ([eval]:18:19)
+    at Socket.emit (node:events:537:28)
+    at addChunk (node:internal/streams/readable:324:12)
+    at readableAddChunk (node:internal/streams/readable:297:9)
+    at Readable.push (node:internal/streams/readable:234:10)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:190:23)
+
+Node.js v18.5.0
+> Warning Failed to make bytecode node18-x64 for file /snapshot/James Pollack/Desktop/luckystuff/hexplore/hexploration-cli/node_modules/@metamask/sdk-install-modal-web/dist/InstallModalWeb.js
+/snapshot/James Pollack/Desktop/luckystuff/hexplore/hexploration-cli/node_modules/react-native-webview/index.js:1
+(function (exports, require, module, __filename, __dirname) { import WebView from './lib/WebView';
+                                                              ^^^^^^
+
+SyntaxError: Cannot use import statement outside a module
+    at new Script (node:vm:102:7)
+    at Socket.<anonymous> ([eval]:18:19)
+    at Socket.emit (node:events:537:28)
+    at addChunk (node:internal/streams/readable:324:12)
+    at readableAddChunk (node:internal/streams/readable:297:9)
+    at Readable.push (node:internal/streams/readable:234:10)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:190:23)
+
+Node.js v18.5.0
+/snapshot/James Pollack/Desktop/luckystuff/hexplore/hexploration-cli/node_modules/react-native-webview/index.js:1
+(function (exports, require, module, __filename, __dirname) { import WebView from './lib/WebView';
+                                                              ^^^^^^
+
+SyntaxError: Cannot use import statement outside a module
+    at new Script (node:vm:102:7)
+    at Socket.<anonymous> ([eval]:18:19)
+    at Socket.emit (node:events:537:28)
+    at addChunk (node:internal/streams/readable:324:12)
+    at readableAddChunk (node:internal/streams/readable:297:9)
+    at Readable.push (node:internal/streams/readable:234:10)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:190:23)
+
+Node.js v18.5.0
+> Warning Failed to make bytecode node18-x64 for file /snapshot/James Pollack/Desktop/luckystuff/hexplore/hexploration-cli/node_modules/react-native-webview/index.js
+/snapshot/James Pollack/Desktop/luckystuff/hexplore/hexploration-cli/node_modules/react-native-webview/lib/WebView.js:1
+(function (exports, require, module, __filename, __dirname) { import React from 'react';
+                                                              ^^^^^^
+
+SyntaxError: Cannot use import statement outside a module
+    at new Script (node:vm:102:7)
+    at Socket.<anonymous> ([eval]:18:19)
+    at Socket.emit (node:events:537:28)
+    at addChunk (node:internal/streams/readable:324:12)
+    at readableAddChunk (node:internal/streams/readable:297:9)
+    at Readable.push (node:internal/streams/readable:234:10)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:190:23)
+
+Node.js v18.5.0
+/snapshot/James Pollack/Desktop/luckystuff/hexplore/hexploration-cli/node_modules/react-native-webview/lib/WebView.js:1
+(function (exports, require, module, __filename, __dirname) { import React from 'react';
+                                                              ^^^^^^
+
+SyntaxError: Cannot use import statement outside a module
+    at new Script (node:vm:102:7)
+    at Socket.<anonymous> ([eval]:18:19)
+    at Socket.emit (node:events:537:28)
+    at addChunk (node:internal/streams/readable:324:12)
+    at readableAddChunk (node:internal/streams/readable:297:9)
+    at Readable.push (node:internal/streams/readable:234:10)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:190:23)
+
+Node.js v18.5.0
+> Warning Failed to make bytecode node18-x64 for file /snapshot/James Pollack/Desktop/luckystuff/hexplore/hexploration-cli/node_modules/react-native-webview/lib/WebView.js
+/snapshot/James Pollack/Desktop/luckystuff/hexplore/hexploration-cli/node_modules/lowercase-keys/index.js:1
+(function (exports, require, module, __filename, __dirname) { export default function lowercaseKeys(object) {
+                                                              ^^^^^^
+
+SyntaxError: Unexpected token 'export'
+    at new Script (node:vm:102:7)
+    at Socket.<anonymous> ([eval]:18:19)
+    at Socket.emit (node:events:537:28)
+    at addChunk (node:internal/streams/readable:324:12)
+    at readableAddChunk (node:internal/streams/readable:297:9)
+    at Readable.push (node:internal/streams/readable:234:10)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:190:23)
+
+Node.js v18.5.0
+/snapshot/James Pollack/Desktop/luckystuff/hexplore/hexploration-cli/node_modules/lowercase-keys/index.js:1
+(function (exports, require, module, __filename, __dirname) { export default function lowercaseKeys(object) {
+                                                              ^^^^^^
+
+SyntaxError: Unexpected token 'export'
+    at new Script (node:vm:102:7)
+    at Socket.<anonymous> ([eval]:18:19)
+    at Socket.emit (node:events:537:28)
+    at addChunk (node:internal/streams/readable:324:12)
+    at readableAddChunk (node:internal/streams/readable:297:9)
+    at Readable.push (node:internal/streams/readable:234:10)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:190:23)
+
+Node.js v18.5.0
+> Warning Failed to make bytecode node18-x64 for file /snapshot/James Pollack/Desktop/luckystuff/hexplore/hexploration-cli/node_modules/lowercase-keys/index.js
+/snapshot/James Pollack/Desktop/luckystuff/hexplore/hexploration-cli/node_modules/p-cancelable/index.js:1
+(function (exports, require, module, __filename, __dirname) { export class CancelError extends Error {
+                                                              ^^^^^^
+
+SyntaxError: Unexpected token 'export'
+    at new Script (node:vm:102:7)
+    at Socket.<anonymous> ([eval]:18:19)
+    at Socket.emit (node:events:537:28)
+    at addChunk (node:internal/streams/readable:324:12)
+    at readableAddChunk (node:internal/streams/readable:297:9)
+    at Readable.push (node:internal/streams/readable:234:10)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:190:23)
+
+Node.js v18.5.0
+/snapshot/James Pollack/Desktop/luckystuff/hexplore/hexploration-cli/node_modules/p-cancelable/index.js:1
+(function (exports, require, module, __filename, __dirname) { export class CancelError extends Error {
+                                                              ^^^^^^
+
+SyntaxError: Unexpected token 'export'
+    at new Script (node:vm:102:7)
+    at Socket.<anonymous> ([eval]:18:19)
+    at Socket.emit (node:events:537:28)
+    at addChunk (node:internal/streams/readable:324:12)
+    at readableAddChunk (node:internal/streams/readable:297:9)
+    at Readable.push (node:internal/streams/readable:234:10)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:190:23)
+
+Node.js v18.5.0
+> Warning Failed to make bytecode node18-x64 for file /snapshot/James Pollack/Desktop/luckystuff/hexplore/hexploration-cli/node_modules/p-cancelable/index.js
+Pkg: Cached data not produced.
+Pkg: Cached data not produced.
+> Warning Failed to make bytecode node18-x64 for file /snapshot/James Pollack/Desktop/luckystuff/hexplore/hexploration-cli/node_modules/rustbn.js/lib/index.asm.js
+```
+
+keccak change to constructor
+
+```
+var Keccak = function Keccak(bits) {
+    return {
+      blocks: [],
+      reset: true,
+      block: 0,
+      start: 0,
+      blockCount: 1600 - (bits << 1) >> 5,
+      outputBlocks: bits >> 5,
+      s: function (s) {
+        return [].concat(s, s, s, s, s);
+      }([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+    };
+  };
+
+```
