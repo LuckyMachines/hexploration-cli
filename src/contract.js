@@ -17,15 +17,6 @@ import GameSetup from "@luckymachines/game-core/games/hexploration/abi/GameSetup
 
 import Addresses from "@luckymachines/game-core/games/hexploration/deployments.json";
 
-// import Network from "../settings/Network.json";
-
-// const network =
-//   Network.network == "hardhat"
-//     ? "hh"
-//     : Network.network == "hh-lan"
-//     ? "hh"
-//     : Network.network;
-
 const contract = async (network, contractName, provider, ethersWallet) => {
   const boardAddress = Addresses[network].HEXPLORATION_BOARD;
   const controllerAddress = Addresses[network].HEXPLORATION_CONTROLLER;
