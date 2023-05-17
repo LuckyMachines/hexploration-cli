@@ -375,7 +375,9 @@ export async function submitMoves(
     .call({ from: currentAccount });
 
   let isOnLandingZone = currentSpace == landingSite;
-  let isOnRelicZone = false;
+  let isOnRelicZone = await hexplorationBoard.methods
+    .isRelicSpace(gameID, currentSpace)
+    .call();
 
   let hasCampsiteInInventory = activeInventory.campsite;
 

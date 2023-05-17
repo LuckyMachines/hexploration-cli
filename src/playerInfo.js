@@ -26,28 +26,33 @@ const centerPadText = (text, length) => {
     " ".repeat(rightSpace > 0 ? rightSpace : 0)
   );
 };
-// Constants
-const name = "Rick Sanchez";
-const badge = "RICK!";
-const movement = 6;
-const totalMovement = 9;
-const agility = 6;
-const totalAgility = 9;
-const dexterity = 6;
-const totalDexterity = 9;
-const campsite = "Setup";
-const leftHand = "Laser Sword";
-const rightHand = "None";
-const status = "Healthy";
-const artifact = "Portal Gun";
-const relic = "Relic 4";
-const shield = "None";
-const teamRole = "The Rickest Rick";
 
-// Generate ASCII art
-console.log(`
+export async function displayPlayerInfo(
+  playerID,
+  name,
+  badge,
+  movement,
+  totalMovement,
+  agility,
+  totalAgility,
+  dexterity,
+  totalDexterity,
+  campsite,
+  leftHand,
+  rightHand,
+  status,
+  artifact,
+  relic,
+  shield,
+  teamRole
+) {
+  // Generate ASCII art
+  console.log(`
         _-----_        ______________________________
-       /  MMM  \\      |o| ${rightPadText(`Player 4 - ${name}`, 24)} |o|
+       /  MMM  \\      |o| ${rightPadText(
+         `Player ${playerID}${name == "" ? "" : " - " + name}`,
+         24
+       )} |o|
       |  /o o\\  |     |o|                          |o|
       | (  C  ) |     |o| Movement Range:${leftPadText(
         `${movement}/${totalMovement}`,
@@ -63,9 +68,9 @@ console.log(`
       )} |o|
      /           \\    |o|                          |o|
     / ${centerPadText(`[${badge}]`, 12)}\\   |o| Campsite:${leftPadText(
-  campsite,
-  15
-)} |o|
+    campsite,
+    15
+  )} |o|
    /  /|       |\\  \\  |o| Left Hand:${leftPadText(leftHand, 14)} |o|
   (===)\\=======/(===) |o| Right Hand:${leftPadText(rightHand, 13)} |o|
     \\_|    |    |_/   |o| Status:${leftPadText(status, 17)} |o|
@@ -76,3 +81,4 @@ console.log(`
       (==)   (==)     |o| ${rightPadText(teamRole, 24)} |o|
      (____) (____)    |o|__________________________|o|
       """"   """"`);
+}

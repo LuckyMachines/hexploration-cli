@@ -23,6 +23,7 @@ let gameBoard;
 let gameController;
 let gameSummary;
 let playerSummary;
+let queue;
 let landingSiteSet;
 let adminMode = false;
 let showGas = false;
@@ -31,9 +32,15 @@ let network;
 
 async function mainMenu(gameID) {
   const questions = [];
-  let choices = landingSiteSet
-    ? ["Submit Move", "View Map", "Player Info"]
-    : ["View Map"];
+  let choices = [];
+  let canSubmitMove = await checkCanSubmitMove(gameID);
+  if (canSubmitMove) {
+    choices.push("Submit Move");
+  }
+  choices.push("View Map");
+  if (landingSiteSet) {
+    choices.push("Player Info");
+  }
   if (adminMode) {
     choices.push("Run Services");
     choices.push("Progress Phase");
@@ -46,7 +53,7 @@ async function mainMenu(gameID) {
     name: "choice",
     message: `\n${chalk.blue.underline("Dashboard")}`,
     choices: choices,
-    default: "Submit Move"
+    default: choices[0]
   });
 
   const answers = await inquirer.prompt(questions);
@@ -135,6 +142,28 @@ async function mainMenu(gameID) {
   return true;
 }
 
+async function checkCanSubmitMove(gameID) {
+  // console.log("Check can submit move");
+  let canSubmitMove = true;
+  const queueID = await queue.methods.queueID(gameID).call();
+  const playerID = await playerSummary.methods
+    .getPlayerID(gameBoard._address, gameID, currentAccount)
+    .call();
+
+  const currentPhase = await queue.methods.currentPhase(queueID).call();
+  // check if in submission phase
+  if (Number(currentPhase) == 1) {
+    // check if player already submitted
+    const playerSubmitted = await queue.methods
+      .playerSubmitted(queueID, playerID)
+      .call();
+    canSubmitMove = !playerSubmitted;
+  } else {
+    canSubmitMove = false;
+  }
+  return canSubmitMove;
+}
+
 async function registerPlayerIfNeeded(gameID) {
   // console.log("Register player if needed. Game type:", gameType);
   let isRegistered = await playerSummary.methods
@@ -198,7 +227,7 @@ async function checkForLandingSite(gameID) {
     const initialPlayZone = await gameBoard.methods
       .initialPlayZone(gameID)
       .call();
-    console.log("Initial play zone:", initialPlayZone);
+    // console.log("Initial play zone:", initialPlayZone);
     landingSiteSet = initialPlayZone != "";
   }
 }
@@ -312,6 +341,7 @@ export async function runCLI(options, ethereum, ntwk) {
     ethers.wallet
   );
   playerRegistry = await Contract(network, "playerRegistry", web3);
+  queue = await Contract(network, "queue", web3);
 
   let availableGames = await gameSummary.methods
     .getAvailableGames(gameBoard._address, gameRegistry._address)

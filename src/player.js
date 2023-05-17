@@ -1,6 +1,7 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
 import Contract from "./contract";
+import { displayPlayerInfo } from "./playerInfo";
 
 let currentAccount;
 let summary;
@@ -39,6 +40,51 @@ export async function playerInfo(network, gameID, provider, account) {
     .currentHandInventory(board._address, gameID)
     .call({ from: currentAccount });
 
+  // Constants
+  const playerID = await playerSummary.methods
+    .getPlayerID(board._address, gameID, currentAccount)
+    .call();
+  const name = "";
+  const badge = "P" + playerID;
+  const movement = playerStats.movement;
+  const totalMovement = 4;
+  const agility = playerStats.agility;
+  const totalAgility = 4;
+  const dexterity = playerStats.dexterity;
+  const totalDexterity = 4;
+  const campsite = activeInventory.campsite ? "Packed Up" : "Set Up (in game)";
+  const leftHand = handInventory.leftHandItem
+    ? handInventory.leftHandItem
+    : "None";
+  const rightHand = handInventory.rightHandItem
+    ? handInventory.rightHandItem
+    : "None";
+  const status = activeInventory.status ? activeInventory.status : "Healthy";
+  const artifact = activeInventory.artifact ? activeInventory.artifact : "None";
+  const relic = activeInventory.relic ? activeInventory.relic : "None";
+  const shield = activeInventory.shield ? "Enabled" : "None";
+  const teamRole = "Fearless Leader";
+  displayPlayerInfo(
+    playerID,
+    name,
+    badge,
+    movement,
+    totalMovement,
+    agility,
+    totalAgility,
+    dexterity,
+    totalDexterity,
+    campsite,
+    leftHand,
+    rightHand,
+    status,
+    artifact,
+    relic,
+    shield,
+    teamRole
+  );
+
+  /*
   console.log(
     `\nMovement: ${playerStats.movement}, Agility: ${playerStats.agility}, Dexterity: ${playerStats.dexterity}`
   );
@@ -63,7 +109,7 @@ export async function playerInfo(network, gameID, provider, account) {
   );
   console.log("Relic:", activeInventory.relic ? activeInventory.relic : "None");
   console.log("Shield:", activeInventory.shield ? "Enabled" : "None");
-
+*/
   //TODO: ensure these values are stored during dig + day phase action
   console.log("\nLast Actions:");
   const lastActions = await summary.methods

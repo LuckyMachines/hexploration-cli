@@ -99,8 +99,6 @@ const startMetamask = async () => {
     method: "eth_requestAccounts",
     params: []
   });
-
-  console.log("metamask connected:", accounts);
 };
 
 export async function cli(args) {
