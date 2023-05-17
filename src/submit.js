@@ -38,26 +38,36 @@ async function submitAction(action, options, gameID) {
     .getPlayerID(hexplorationBoard._address, gameID, currentAccount)
     .call();
 
-  console.log(`Submitting ${action} action:`);
-  console.log(
-    `playerID: ${pid}\nactionIndex:${actionEnum}\noptions:${options}\nlh:${lh} rh:${rh}`
-  );
-  let nonce = await web3.eth.getTransactionCount(currentAccount);
-  let tx = await hexplorationController.methods
-    .submitAction(
-      pid,
-      actionEnum,
-      options,
-      lh,
-      rh,
-      gameID,
-      hexplorationBoard._address
-    )
-    .send({ from: currentAccount, gas: "5000000", nonce: nonce });
-  console.log(`${action} action submitted to queue`);
-  if (showGas) {
-    console.log("Gas used:", tx.gasUsed);
-    saveGas("submitMove", tx.gasUsed);
+  // console.log(`Submitting ${action} action:`);
+  // console.log(
+  //   `playerID: ${pid}\nactionIndex:${actionEnum}\noptions:${options}\nlh:${lh} rh:${rh}`
+  // );
+  try {
+    console.log("Please confirm submission from MetaMask.");
+    let nonce = await web3.eth.getTransactionCount(currentAccount);
+    let tx = await hexplorationController.methods
+      .submitAction(
+        pid,
+        actionEnum,
+        options,
+        lh,
+        rh,
+        gameID,
+        hexplorationBoard._address
+      )
+      .send({ from: currentAccount, gas: "5000000", nonce: nonce });
+    console.log("Action submitted to queue.");
+    // console.log(`${action} action submitted to queue`);
+    if (showGas) {
+      console.log("Gas used:", tx.gasUsed);
+      saveGas("submitMove", tx.gasUsed);
+    }
+  } catch (err) {
+    console.log("Unable to submit action to queue.");
+    console.log(
+      "Make sure you are submitting a valid move and have not already submitted."
+    );
+    // console.log(err);
   }
 }
 
@@ -322,17 +332,6 @@ export async function submitMoves(
   summary = await Contract(network, "summary", provider);
   playerSummary = await Contract(network, "playerSummary", provider);
   queue = await Contract(network, "queue", provider);
-
-  //////////////////
-  // TEST METHOD //
-  // Remove before deployment
-  ////////////////////
-  // await hexplorationController.methods
-  //   .getTestInventory(gameID, hexplorationBoard._address)
-  //   .send({
-  //     from: currentAccount,
-  //     gas: "5000000"
-  //   });
 
   inventory = await playerSummary.methods
     .inactiveInventory(hexplorationBoard._address, gameID)

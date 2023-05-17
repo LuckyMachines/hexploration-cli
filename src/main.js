@@ -157,7 +157,8 @@ async function registerPlayerIfNeeded(gameID) {
         // this is the last player to register
         gasValue = "registerAndPreStart";
       }
-
+      console.log("Registering for game.");
+      console.log("Please confirm from MetaMask.");
       let tx = await gameController.registerForGame(gameID, gameBoard._address);
       // uncomment to force revert when ethers preventing execution
       // let tx = await gameController.registerForGame(
@@ -174,7 +175,7 @@ async function registerPlayerIfNeeded(gameID) {
         .isRegistered(gameBoard._address, gameID, currentAccount)
         .call();
       console.log("Player registered. Entering game.");
-      console.log(`${chalk.cyan.bold("\nPlaying Hexploration via CLI")}`);
+      // console.log(`${chalk.cyan.bold("\nPlaying Hexploration via CLI")}`);
       console.log(`${chalk.green.bold("Game ID:")} ${gameID}`);
       console.log(`${chalk.blue.bold("Player:")} ${currentAccount}`);
       console.log(`${adminMode ? chalk.red.bold("Admin mode enabled") : ""}`);
@@ -183,7 +184,7 @@ async function registerPlayerIfNeeded(gameID) {
     }
   } else {
     console.log("Player registered. Entering game.");
-    console.log(`${chalk.cyan.bold("\nPlaying Hexploration via CLI")}`);
+    // console.log(`${chalk.cyan.bold("\nPlaying Hexploration via CLI")}`);
     console.log(`${chalk.green.bold("Game ID:")} ${gameID}`);
     console.log(`${chalk.blue.bold("Player:")} ${currentAccount}`);
     console.log(`${adminMode ? chalk.red.bold("Admin mode enabled") : ""}`);
@@ -206,22 +207,29 @@ async function registerNewGame(numberPlayers) {
   // console.log(gameController);
   // TODO: prompt for how many players
   const numPlayers = numberPlayers ? numberPlayers : 4;
-  let tx = await gameController["requestNewGame(address,address,uint256)"](
-    gameRegistry._address,
-    gameBoard._address,
-    numPlayers
-  );
-  let receipt = await tx.wait();
-  if (showGas) {
-    console.log(`Created ${gameType} game with gas: ${receipt.gasUsed}`);
-    addValueToGasReport("createGame", receipt.gasUsed);
-  }
 
-  let newGameID = await gameController.latestGame(
-    gameRegistry._address,
-    gameBoard._address
-  );
-  return newGameID;
+  try {
+    console.log("Creating new game.");
+    console.log("Please confirm from MetaMask.");
+    let tx = await gameController["requestNewGame(address,address,uint256)"](
+      gameRegistry._address,
+      gameBoard._address,
+      numPlayers
+    );
+    let receipt = await tx.wait();
+    if (showGas) {
+      console.log(`Created ${gameType} game with gas: ${receipt.gasUsed}`);
+      addValueToGasReport("createGame", receipt.gasUsed);
+    }
+
+    let newGameID = await gameController.latestGame(
+      gameRegistry._address,
+      gameBoard._address
+    );
+    return newGameID;
+  } catch (err) {
+    console.log("Unable to create game.");
+  }
 }
 
 function addValueToGasReport(valueName, gasAmount) {

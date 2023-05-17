@@ -107,7 +107,9 @@ export async function runServices(
   if (upkeepNeeded) {
     console.log("1st upkeep needed. Attempting perform upkeep...");
     console.log("Perform data:", performData);
-    let tx = await gameplay.performUpkeep(performData);
+    let tx = await gameplay.performUpkeep(performData, {
+      gasLimit: "10000000"
+    });
     let receipt = await tx.wait();
     console.log("1st upkeep performed.");
     if (showGas) {
@@ -125,7 +127,9 @@ export async function runServices(
   if (upkeepNeeded2) {
     console.log("2nd upkeep needed. Attempting perform upkeep...");
     console.log("Perform data:", performData2);
-    let tx = await gameplay.performUpkeep(performData2);
+    let tx = await gameplay.performUpkeep(performData2, {
+      gasLimit: "10000000"
+    });
     let receipt = await tx.wait();
     console.log("2nd upkeep performed.");
     if (showGas) {

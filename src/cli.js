@@ -117,6 +117,14 @@ export async function cli(args) {
   const answers = await inquirer.prompt(questions);
   let network = answers.whichNetwork;
 
+  let options = parseArgumentsIntoOptions(args);
+  //console.log("Wallet Index:", options.walletIndex);
+
+  //console.log("Option:", options);
+  await startWithMetaMask(options, network);
+}
+
+const startWithMetaMask = async (options, network) => {
   // connect to metamask
   await startMetamask();
   web3 = await Provider(metamask_ethereum);
@@ -126,11 +134,36 @@ export async function cli(args) {
   board = await Contract(network, "board", web3);
   registry = await Contract(network, "registry", web3);
 
-  let options = parseArgumentsIntoOptions(args);
-  //console.log("Wallet Index:", options.walletIndex);
-
   options = await promptForMissingOptions(options);
+  try {
+    await runCLI(options, metamask_ethereum, network);
+  } catch (err) {
+    if (
+      err.message ==
+      "MetaMask is not connected/installed, please call eth_requestAccounts to connect first."
+    ) {
+      console.log("MetaMask disconnected. Please reconnect.");
+      await startWithMetaMask(options, network);
+    } else {
+      console.log(err.message);
+      await startWithoutMetaMask(options, network);
+    }
+  }
+};
 
-  //console.log("Option:", options);
-  await runCLI(options, metamask_ethereum, network);
-}
+const startWithoutMetaMask = async (options, network) => {
+  try {
+    await runCLI(options, metamask_ethereum, network);
+  } catch (err) {
+    if (
+      err.message ==
+      "MetaMask is not connected/installed, please call eth_requestAccounts to connect first."
+    ) {
+      console.log("MetaMask disconnected. Please reconnect.");
+      await startWithMetaMask(options, network);
+    } else {
+      console.log(err.message);
+      startWithoutMetaMask(options, network);
+    }
+  }
+};
