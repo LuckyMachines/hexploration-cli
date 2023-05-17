@@ -275,8 +275,19 @@ async function rest(gameID) {
 
 async function help(gameID) {
   // TODO: limit choices to stats > 1
-  // TODO: get available players
-  let availablePlayers = ["1", "2", "3", "4"];
+  let availablePlayers = [];
+  const playerLocations = await gameSummary.methods
+    .allPlayerLocations(hexplorationBoard._address, gameID)
+    .call();
+  for (let i = 0; i < playerLocations.length; i++) {
+    if (
+      playerLocations.playerIDs[i] != pid &&
+      playerLocations.playerZones[i] == currentSpace
+    ) {
+      availablePlayers.push(playerLocations.playerIDs[i].toString());
+    }
+  }
+
   let questions = [];
   questions.push({
     type: "list",
@@ -382,7 +393,24 @@ export async function submitMoves(
   let hasCampsiteInInventory = activeInventory.campsite;
 
   // TODO: check if this is actually true
-  let canHelpPlayer = true;
+  const playerLocations = await gameSummary.methods
+    .allPlayerLocations(hexplorationBoard._address, gameID)
+    .call();
+
+  const pid = await playerSummary.methods
+    .getPlayerID(hexplorationBoard._address, gameID, currentAccount)
+    .call();
+
+  let canHelpPlayer = false;
+  for (let i = 0; i < playerLocations.length; i++) {
+    if (
+      playerLocations.playerIDs[i] != pid &&
+      playerLocations.playerZones[i] == currentSpace
+    ) {
+      canHelpPlayer = true;
+      break;
+    }
+  }
 
   //////////////////////////
   // Not doing these yet
