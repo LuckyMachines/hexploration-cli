@@ -8,6 +8,7 @@ let hexplorationBoard;
 let hexplorationController;
 let summary;
 let playerSummary;
+let gameSummary;
 let queue;
 
 let inventory;
@@ -342,6 +343,7 @@ export async function submitMoves(
   hexplorationController = await Contract(network, "controller", provider);
   summary = await Contract(network, "summary", provider);
   playerSummary = await Contract(network, "playerSummary", provider);
+  gameSummary = await Contract(network, "gameSummary", provider);
   queue = await Contract(network, "queue", provider);
 
   inventory = await playerSummary.methods
@@ -392,7 +394,6 @@ export async function submitMoves(
 
   let hasCampsiteInInventory = activeInventory.campsite;
 
-  // TODO: check if this is actually true
   const playerLocations = await gameSummary.methods
     .allPlayerLocations(hexplorationBoard._address, gameID)
     .call();
