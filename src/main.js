@@ -8,6 +8,7 @@ import { chooseLandingSite } from "./landingSite";
 import { viewQueue } from "./queue";
 import { progressTurn } from "./turn";
 import { runServices } from "./services";
+import { deliverRandomness } from "./randomness";
 import Provider from "./provider";
 import Contract from "./contract.js";
 import fs from "fs";
@@ -43,8 +44,7 @@ async function mainMenu(gameID) {
   }
   if (adminMode) {
     choices.push("Run Services");
-    choices.push("Progress Phase");
-    choices.push("Progress Turn");
+    choices.push("Deliver Randomness");
     choices.push("View Queue");
   }
   choices.push("Exit");
@@ -80,8 +80,8 @@ async function mainMenu(gameID) {
       await checkForLandingSite(gameID);
       await mainMenu(gameID);
       break;
-    case "Progress Phase":
-      await progressPhase(
+    case "Deliver Randomness":
+      await deliverRandomness(
         network,
         gameID,
         web3,
@@ -92,7 +92,6 @@ async function mainMenu(gameID) {
       await checkForLandingSite(gameID);
       await mainMenu(gameID);
       break;
-    case "Progress Turn":
       await progressTurn(
         gameID,
         web3,
