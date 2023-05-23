@@ -49,6 +49,24 @@ export async function deliverRandomness(
 
   console.log("Gameplay address:", gameplay.address);
 
+  // // Progress / timeout turn + request mock randomness
+  // let turnUpkeep = await controller.checkUpkeep("0x");
+  // let { 0: turnUpkeepNeeded, 1: turnPerformData } = turnUpkeep;
+
+  // if (turnUpkeepNeeded) {
+  //   console.log("Turn upkeep needed. Attempting to progress turn...");
+  //   console.log("Perform data:", turnPerformData);
+  //   let tx = await controller.performUpkeep(turnPerformData);
+  //   let receipt = await tx.wait();
+  //   console.log("Turn progressed.");
+  //   if (showGas) {
+  //     console.log("Gas used:", receipt.gasUsed.toString());
+  //     saveGas("progressTurn", receipt.gasUsed);
+  //   }
+  // } else {
+  //   console.log("Turn not ready to progress");
+  // }
+
   // Deliver mock randomness
   let setupMockRandomnessRequests = await gameSetup.getMockRequests();
   console.log(
@@ -81,4 +99,44 @@ export async function deliverRandomness(
       saveGas("deliverRandomness", receipt.gasUsed);
     }
   }
+
+  // Perform Player action upkeep
+  // let upkeep = await gameplay.checkUpkeep("0x");
+  // let { 0: upkeepNeeded, 1: performData } = upkeep;
+
+  // if (upkeepNeeded) {
+  //   console.log("1st upkeep needed. Attempting perform upkeep...");
+  //   console.log("Perform data:", performData);
+  //   let tx = await gameplay.performUpkeep(performData, {
+  //     gasLimit: "10000000"
+  //   });
+  //   let receipt = await tx.wait();
+  //   console.log("1st upkeep performed.");
+  //   if (showGas) {
+  //     console.log("Gas used: ", receipt.gasUsed.toString());
+  //     saveGas("processing1", receipt.gasUsed);
+  //   }
+  // } else {
+  //   console.log("No 1st upkeep needed");
+  // }
+
+  // Perform day phase upkeep
+  // let upkeep2 = await gameplay.checkUpkeep("0x");
+  // let { 0: upkeepNeeded2, 1: performData2 } = upkeep2;
+
+  // if (upkeepNeeded2) {
+  //   console.log("2nd upkeep needed. Attempting perform upkeep...");
+  //   console.log("Perform data:", performData2);
+  //   let tx = await gameplay.performUpkeep(performData2, {
+  //     gasLimit: "10000000"
+  //   });
+  //   let receipt = await tx.wait();
+  //   console.log("2nd upkeep performed.");
+  //   if (showGas) {
+  //     console.log("Gas used:", receipt.gasUsed.toString());
+  //     saveGas("processing2", receipt.gasUsed);
+  //   }
+  // } else {
+  //   console.log("No 2nd upkeep needed");
+  // }
 }

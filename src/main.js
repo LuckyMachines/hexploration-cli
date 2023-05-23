@@ -84,8 +84,8 @@ async function mainMenu(gameID) {
       await deliverRandomness(
         network,
         gameID,
-        web3,
-        currentAccount,
+        ethers.provider,
+        ethers.wallet,
         showGas,
         addValueToGasReport
       );
