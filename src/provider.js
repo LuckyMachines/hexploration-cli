@@ -1,6 +1,6 @@
 import Web3 from "web3";
 const Ethers = require("ethers");
-require("dotenv").config();
+// require("dotenv").config();
 
 // TODO: choose between web3 or ethers (default to web3 if nothing passed for legacy support)
 const provider = async (ethereum, web3OrEthers) => {

@@ -20,10 +20,10 @@ function parseArgumentsIntoOptions(rawArgs) {
       "--showGas": Boolean,
       "-n": "--newGame",
       "-a": "--adminMode",
-      "-g": "--showGas"
+      "-g": "--showGas",
     },
     {
-      argv: rawArgs.slice(2)
+      argv: rawArgs.slice(2),
     }
   );
   return {
@@ -31,7 +31,7 @@ function parseArgumentsIntoOptions(rawArgs) {
     adminMode: args["--adminMode"] || false,
     gameID: args._[0],
     walletIndex: args._[1],
-    showGas: args["--showGas"] || false
+    showGas: args["--showGas"] || false,
   };
 }
 
@@ -39,7 +39,7 @@ async function promptForMissingOptions(options) {
   if (options.newGame) {
     return {
       ...options,
-      gameID: 0
+      gameID: 0,
     };
   }
 
@@ -53,14 +53,14 @@ async function promptForMissingOptions(options) {
       type: "number",
       name: "gameID",
       message: "Which game ID shall we play?",
-      default: 0
+      default: 0,
     });
     console.log("Available games:");
     let gameData = [];
     for (let i = 0; i < availableGames.gameIDs.length; i++) {
       gameData.push({
         "Game ID": availableGames.gameIDs[i].toString(),
-        Players: `${availableGames.currentRegistrations[i]} / ${availableGames.maxPlayers[i]}`
+        Players: `${availableGames.currentRegistrations[i]} / ${availableGames.maxPlayers[i]}`,
       });
     }
     console.table(gameData);
@@ -68,17 +68,17 @@ async function promptForMissingOptions(options) {
     return {
       ...options,
       gameID: answers.gameID,
-      newGame: false
+      newGame: false,
     };
   } else if (options.gameID) {
     return {
       ...options,
-      gameID: options.gameID
+      gameID: options.gameID,
     };
   } else {
     return {
       ...options,
-      newGame: true
+      newGame: true,
     };
   }
 }
@@ -88,8 +88,8 @@ const sdk = new MetaMaskSDK({
   showQRCode: true,
   dappMetadata: {
     name: "Hexploration",
-    url: "https://luckymachines.io"
-  }
+    url: "https://luckymachines.io",
+  },
 });
 const metamask_ethereum = sdk.getProvider();
 
@@ -97,7 +97,7 @@ const metamask_ethereum = sdk.getProvider();
 const startMetamask = async () => {
   const accounts = await metamask_ethereum.request({
     method: "eth_requestAccounts",
-    params: []
+    params: [],
   });
 };
 
@@ -109,8 +109,8 @@ export async function cli(args) {
       name: "whichNetwork",
       message: "Which network?",
       choices: ["godwoken_test"],
-      default: "godwoken_test"
-    }
+      default: "godwoken_test",
+    },
   ];
   const answers = await inquirer.prompt(questions);
   let network = answers.whichNetwork;
@@ -165,3 +165,9 @@ const startWithoutMetaMask = async (options, network) => {
     }
   }
 };
+
+//start this ourselves in packaged thing!)
+console.log("SHOULD START CLI!!");
+let args = process.argv;
+console.log("args", args);
+cli(args);

@@ -2,17 +2,19 @@
   "name": "@luckymachines/hexploration-cli",
   "version": "0.0.1",
   "description": "A CLI to play Hexploration",
-  "main": "src/index.js",
+  "main": "dist/cli.cjs",
   "bin": {
     "@luckymachines/hexploration-cli": "bin/hexploration-cli",
-    "hexploration-cli": "bin/hexploration-cli"
+    "hexploration-cli": "dist/cli.cjs",
+    "hexploration-cli-local": "bin/hexploration-cli"
   },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "import-addresses": "node scripts/import-addresses.js"
+    "import-addresses": "node scripts/import-addresses.js",
+    "build": "esbuild src/cli.js --bundle --platform=node --outfile=dist/cli.cjs --define:import.meta.url=__dirname"
   },
   "keywords": [
     "cli",
@@ -30,6 +32,19 @@
     "esm": "^3.2.25",
     "ethers": "^5.7.2",
     "inquirer": "^8.2.4",
-    "web3": "^1.7.3"
+    "web3": "^1.7.3",
+    "crypto": "^1.0.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.17.18"
+  },
+  "engines": {
+    "node": ">=18.15.0"
+  },
+  "pkg": {
+    "assets": [
+      "prebuilds/**/*.node"
+    ],
+    "outputPath": "dist-pkg"
   }
 }
