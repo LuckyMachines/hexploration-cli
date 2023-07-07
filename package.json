@@ -24,16 +24,16 @@
   "author": "Max Meier",
   "license": "GPL-3.0",
   "dependencies": {
-    "@luckymachines/game-core": "0.0.46",
+    "@luckymachines/game-core": "0.0.48",
     "@metamask/sdk": "^0.2.4",
     "arg": "^5.0.1",
     "chalk": "^4.1.0",
+    "crypto": "^1.0.1",
     "dotenv": "^16.0.3",
     "esm": "^3.2.25",
     "ethers": "^5.7.2",
     "inquirer": "^8.2.4",
-    "web3": "^1.7.3",
-    "crypto": "^1.0.1"
+    "web3": "^1.7.3"
   },
   "devDependencies": {
     "esbuild": "^0.17.18"
