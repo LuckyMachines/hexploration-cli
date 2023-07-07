@@ -1,23 +1,5 @@
 # Hexploration CLI
 
-## Clone Hexploration and Hexploration CLI to same directory
-
-```
-gh repo clone LuckyMachines/hexploration
-```
-
-```
-gh repo clone LuckyMachines/hexploration-cli
-```
-
-## Create .env file with RPC providers
-
-- use `.env-example` as a template
-
-## Setup Private Keys in `hexploration-cli`
-
-- Create .privatekey file and move to /bin
-
 ## Install hexploration-cli:
 
 ```
@@ -35,13 +17,11 @@ npm link
 ## Start CLI:
 
 ```
-hexploration-cli
+hexploration-cli-local
 ```
 
-## Arguments:
+## Cross Platform Packaging
 
-`-n` = start new game
+To build and run on Windows, Linux, and Mac, we use [PKG from Vercel](https://github.com/vercel/pkg)
 
-## Change network:
-
-Uncomment selected chain in src/provider.js and src/contract.js
+For details, see [Cross Platform Packaging Documentation](CROSS_PLATFORM.md)
