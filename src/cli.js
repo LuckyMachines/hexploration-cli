@@ -108,8 +108,8 @@ export async function cli(args) {
       type: "list",
       name: "whichNetwork",
       message: "Which network?",
-      choices: ["sepolia", "godwoken_test"],
-      default: "sepolia"
+      choices: ["mumbai", "sepolia", "godwoken_test"],
+      default: "mumbai"
     }
   ];
   const answers = await inquirer.prompt(questions);

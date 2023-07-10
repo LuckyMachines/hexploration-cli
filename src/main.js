@@ -187,13 +187,13 @@ async function registerPlayerIfNeeded(gameID) {
       }
       console.log("Registering for game.");
       console.log("Please confirm from MetaMask.");
-      let tx = await gameController.registerForGame(gameID, gameBoard._address);
+      // let tx = await gameController.registerForGame(gameID, gameBoard._address);
       // uncomment to force revert when ethers preventing execution
-      // let tx = await gameController.registerForGame(
-      //   gameID,
-      //   gameBoard._address,
-      //   { gasLimit: "4000000" }
-      // );
+      let tx = await gameController.registerForGame(
+        gameID,
+        gameBoard._address,
+        { gasLimit: "4000000" }
+      );
       let receipt = await tx.wait();
       if (showGas) {
         console.log("Registered player with gas:", receipt.gasUsed.toString());
