@@ -25,7 +25,7 @@
   "author": "Max Meier",
   "license": "GPL-3.0",
   "dependencies": {
-    "@luckymachines/game-core": "0.0.53",
+    "@luckymachines/game-core": "^0.0.55",
     "@metamask/sdk": "^0.2.4",
     "arg": "^5.0.1",
     "chalk": "^4.1.0",

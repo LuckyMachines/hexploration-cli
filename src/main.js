@@ -25,27 +25,223 @@ let gameController;
 let gameSummary;
 let playerSummary;
 let queue;
-let landingSiteSet;
+let gameEvents;
+let landingSiteSet = false;
 let adminMode = false;
 let showGas = false;
 let gameType = "1p";
 let network;
+let gameID;
+let canSubmitMove = false;
+
+function pause(time) {
+  return new Promise((resolve) =>
+    setTimeout(() => {
+      resolve();
+    }, time * 1000)
+  );
+}
+
+async function waitForGameStart(gameID) {
+  await checkForLandingSite(gameID);
+  if (!landingSiteSet) {
+    console.log("Searching for a safe landing site...");
+    gameEvents.events
+      .GameStart({
+        filter: { gameID: gameID }
+      })
+      .once("data", async (event) => {
+        console.log("Landing site found! Descending...");
+        landingSiteSet = true;
+        await pause(2);
+      });
+    while (!landingSiteSet) {
+      await pause(1);
+    }
+  } else {
+    console.log(`Joining game ${gameID}`);
+  }
+  // console.log("Start game callback result:", result);
+  // GameStart(uint256 indexed gameID, uint256 timeStamp)
+
+  await showMap(network, gameID, web3, currentAccount);
+  await checkCanSubmitMove(gameID);
+  if (!canSubmitMove) {
+    console.log("Waiting for next turn to start...");
+    while (!canSubmitMove) {
+      await checkCanSubmitMove(gameID);
+      await pause(1);
+      // TODO: check if game is over or player is dead
+    }
+    await mainMenu(gameID);
+  } else {
+    await mainMenu(gameID);
+  }
+}
+
+async function submitMovesCallback(result) {
+  if (result) {
+    canSubmitMove = false;
+    // console.log("Submit moves callback result:", result);
+    console.log("Waiting for all moves to be submitted...");
+
+    let turnProcessed = false;
+
+    const processingPhases = [
+      "Start",
+      "Submission",
+      "Processing",
+      "PlayThrough",
+      "Processed",
+      "Closed",
+      "Failed"
+    ];
+    let processingPhase = 0;
+    // console.log(
+    //   `subscribing to TurnProcessingStart event for gameID ${gameID}, from block ${result.blockNumber}...`
+    // );
+    // gameEvents.events
+    //   .TurnProcessingStart({
+    //     filter: { gameID: gameID },
+    //     fromBlock: result.blockNumber
+    //   })
+    //   .once("data", async (event) => {
+    // console.log("All turns submitted. Processing 50%.");
+    // console.log("TurnProcessingStart event emitted");
+    // console.log("TurnProcessingStart event:", event);
+    // console.log(
+    //   "TurnProcessingStart event return values:",
+    //   event.returnValues
+    // );
+    // console.log(
+    //   "TurnProcessingStart event return values gameID:",
+    //   event.returnValues.gameID
+    // );
+    // console.log(
+    //   "TurnProcessingStart event return values timeStamp:",
+    //   event.returnValues.timeStamp
+    // );
+    // });
+    // gameEvents.events
+    //   .ProcessingPhaseChange({
+    //     filter: {
+    //       gameID: gameID,
+    //       newPhase: processingPhases.indexOf("PlayThrough")
+    //     },
+    //     fromBlock: result.blockNumber
+    //   })
+    //   .once("data", async (event) => {
+    //     console.log("Processing 75%.");
+    //   });
+    gameEvents.events
+      .ProcessingPhaseChange({
+        filter: {
+          gameID: gameID,
+          newPhase: processingPhases.indexOf("Processed")
+        },
+        fromBlock: result.blockNumber
+      })
+      .once("data", async (event) => {
+        console.log("All moves processed.");
+      });
+    gameEvents.events
+      .ProcessingPhaseChange({
+        filter: {
+          gameID: gameID,
+          newPhase: processingPhases.indexOf("Submission")
+        },
+        fromBlock: result.blockNumber
+      })
+      .once("data", async (event) => {
+        console.log("Digital remapping in progress...");
+        turnProcessed = true;
+      });
+
+    while (!turnProcessed) {
+      await pause(1);
+    }
+
+    // make sure we're at a future block
+    const previousBlock = result.blockNumber;
+    let currentBlock = await web3.eth.getBlockNumber();
+    const update1 = "Sending data back to ship...";
+    const update2 = "Sensors calibrating...";
+    const update3 = "Calculating new coordinates...";
+    const update4 = "Predicting weather patterns...";
+    const update5 = "Eating a snack...";
+    let update1Shown = false;
+    let update2Shown = false;
+    let update3Shown = false;
+    let update4Shown = false;
+    let update5Shown = false;
+    const update1Block = previousBlock + 1;
+    const update2Block = previousBlock + 2;
+    const update3Block = previousBlock + 3;
+    const update4Block = previousBlock + 4;
+    const update5Block = previousBlock + 5;
+
+    while (currentBlock <= previousBlock + 6) {
+      currentBlock = await web3.eth.getBlockNumber();
+      if (currentBlock == update1Block && !update1Shown) {
+        console.log(update1);
+        update1Shown = true;
+      }
+      if (currentBlock == update2Block && !update2Shown) {
+        console.log(update2);
+        update2Shown = true;
+      }
+      if (currentBlock == update3Block && !update3Shown) {
+        console.log(update3);
+        update3Shown = true;
+      }
+      if (currentBlock == update4Block && !update4Shown) {
+        console.log(update4);
+        update4Shown = true;
+      }
+      if (currentBlock == update5Block && !update5Shown) {
+        console.log(update5);
+        update5Shown = true;
+      }
+      await pause(1);
+    }
+
+    // await checkForLandingSite(gameID);
+    await playerInfo(network, gameID, web3, currentAccount);
+    await showMap(network, gameID, web3, currentAccount);
+
+    await checkCanSubmitMove(gameID);
+    if (!canSubmitMove) {
+      console.log("Waiting for next turn to start...");
+      while (!canSubmitMove) {
+        await checkCanSubmitMove(gameID);
+        await pause(1);
+        // TODO: check if game is over or player is dead
+      }
+      await mainMenu(gameID);
+    } else {
+      await mainMenu(gameID);
+    }
+  } else {
+    await mainMenu(gameID);
+  }
+}
 
 async function mainMenu(gameID) {
   const questions = [];
   let choices = [];
-  let canSubmitMove = await checkCanSubmitMove(gameID);
+  // let canSubmitMove = await checkCanSubmitMove(gameID);
   if (canSubmitMove) {
     choices.push("Submit Move");
   }
-  choices.push("View Map");
-  if (landingSiteSet) {
-    choices.push("Player Info");
-  }
+
   if (adminMode) {
     choices.push("Run Services");
     choices.push("Deliver Randomness");
     choices.push("View Queue");
+    choices.push("View Map");
+    if (landingSiteSet) {
+      choices.push("Player Info");
+    }
   }
   choices.push("Exit");
   questions.push({
@@ -59,16 +255,20 @@ async function mainMenu(gameID) {
   const answers = await inquirer.prompt(questions);
   switch (answers.choice) {
     case "Submit Move":
-      await submitMoves(
-        network,
-        gameID,
-        web3,
-        currentAccount,
-        showGas,
-        addValueToGasReport
-      );
-      await checkForLandingSite(gameID);
-      await mainMenu(gameID);
+      let canSubmit = await checkCanSubmitMove(gameID);
+      if (canSubmit) {
+        await submitMoves(
+          network,
+          gameID,
+          web3,
+          currentAccount,
+          showGas,
+          addValueToGasReport,
+          submitMovesCallback
+        );
+      } else {
+        console.log("Unable to submit move. You may have already submitted.");
+      }
       break;
     case "Player Info":
       await playerInfo(network, gameID, web3, currentAccount);
@@ -92,6 +292,7 @@ async function mainMenu(gameID) {
       await checkForLandingSite(gameID);
       await mainMenu(gameID);
       break;
+    case "Progress Turn":
       await progressTurn(
         gameID,
         web3,
@@ -143,7 +344,6 @@ async function mainMenu(gameID) {
 
 async function checkCanSubmitMove(gameID) {
   // console.log("Check can submit move");
-  let canSubmitMove = true;
   const queueID = await queue.methods.queueID(gameID).call();
   const playerID = await playerSummary.methods
     .getPlayerID(gameBoard._address, gameID, currentAccount)
@@ -186,7 +386,7 @@ async function registerPlayerIfNeeded(gameID) {
         gasValue = "registerAndPreStart";
       }
       console.log("Registering for game.");
-      console.log("Please confirm from MetaMask.");
+      console.log("Please confirm in MetaMask app.");
       // let tx = await gameController.registerForGame(gameID, gameBoard._address);
       // uncomment to force revert when ethers preventing execution
       let tx = await gameController.registerForGame(
@@ -238,7 +438,7 @@ async function registerNewGame(numberPlayers) {
 
   try {
     console.log("Creating new game.");
-    console.log("Please confirm from MetaMask.");
+    console.log("Please confirm in MetaMask app.");
     let tx = await gameController["requestNewGame(address,address,uint256)"](
       gameRegistry._address,
       gameBoard._address,
@@ -341,12 +541,12 @@ export async function runCLI(options, ethereum, ntwk) {
   );
   playerRegistry = await Contract(network, "playerRegistry", web3);
   queue = await Contract(network, "queue", web3);
+  gameEvents = await Contract(network, "events", web3);
 
   let availableGames = await gameSummary.methods
     .getAvailableGames(gameBoard._address, gameRegistry._address)
     .call();
 
-  let gameID;
   // Create new game if requested
   let questions = {
     type: "list",
@@ -378,8 +578,7 @@ export async function runCLI(options, ethereum, ntwk) {
   // console.log("0");
   if (gameID != 0 && Number(latestGame) >= Number(gameID)) {
     await registerPlayerIfNeeded(gameID);
-    await checkForLandingSite(gameID);
-    await mainMenu(gameID);
+    await waitForGameStart(gameID);
   } else {
     console.log("Game ID not found.");
     process.exit();

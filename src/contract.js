@@ -14,6 +14,7 @@ import HexplorationBoard from "@luckymachines/game-core/games/hexploration/abi/H
 import Queue from "@luckymachines/game-core/games/hexploration/abi/HexplorationQueue.json";
 import Gameplay from "@luckymachines/game-core/games/hexploration/abi/HexplorationGameplay.json";
 import GameSetup from "@luckymachines/game-core/games/hexploration/abi/GameSetup.json";
+import GameEvents from "@luckymachines/game-core/games/hexploration/abi/GameEvents.json";
 
 import Addresses from "@luckymachines/game-core/games/hexploration/deployments.json";
 
@@ -28,6 +29,7 @@ const contract = async (network, contractName, provider, ethersWallet) => {
   const gameplayAddress = Addresses[network].GAMEPLAY;
   const gameSetupAddress = Addresses[network].GAME_SETUP;
   const playerRegistryAddress = Addresses[network].PLAYER_REGISTRY;
+  const gameEventsAddress = Addresses[network].GAME_EVENTS;
   let c;
   switch (contractName) {
     case "board":
@@ -93,6 +95,11 @@ const contract = async (network, contractName, provider, ethersWallet) => {
         ? new Ethers.Contract(gameplayAddress, Gameplay, ethersWallet)
         : new provider.eth.Contract(Gameplay, gameplayAddress);
       break;
+    case "gameEvents":
+    case "events":
+      c = ethersWallet
+        ? new Ethers.Contract(gameEventsAddress, GameEvents, ethersWallet)
+        : new provider.eth.Contract(GameEvents, gameEventsAddress);
     default:
       break;
   }

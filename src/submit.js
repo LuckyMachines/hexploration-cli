@@ -44,7 +44,7 @@ async function submitAction(action, options, gameID) {
   //   `playerID: ${pid}\nactionIndex:${actionEnum}\noptions:${options}\nlh:${lh} rh:${rh}`
   // );
   try {
-    console.log("Please confirm submission from MetaMask.");
+    console.log("Please confirm in MetaMask app.");
     let nonce = await web3.eth.getTransactionCount(currentAccount);
     let tx = await hexplorationController.methods
       .submitAction(
@@ -63,12 +63,15 @@ async function submitAction(action, options, gameID) {
       console.log("Gas used:", tx.gasUsed);
       saveGas("submitMove", tx.gasUsed);
     }
+    // call callback if provided
+    return tx;
   } catch (err) {
     console.log("Unable to submit action to queue.");
     console.log(
       "Make sure you are submitting a valid move and have not already submitted."
     );
     // console.log(err);
+    return false;
   }
 }
 
@@ -112,7 +115,8 @@ function getAvailableSpaceChoices(currentSpace, allSpaces, maxMovement) {
 }
 
 async function idle(gameID) {
-  await submitAction("Idle", [""], gameID);
+  const tx = await submitAction("Idle", [""], gameID);
+  return tx;
 }
 
 async function moveToSpace(gameID) {
@@ -174,7 +178,8 @@ async function moveToSpace(gameID) {
     } // otherwise is at last space choice, doesn't need to update this
   }
 
-  await submitAction("Move", movementChoices, gameID);
+  const tx = await submitAction("Move", movementChoices, gameID);
+  return tx;
   //console.log(`Moving through spaces: ${movementChoices}`);
   // try {
   //   let tx = await hexplorationController.methods
@@ -245,19 +250,22 @@ async function equipItem(gameID) {
 async function setupCamp(gameID) {
   console.log("Setup camp...");
   // send to queue
-  await submitAction("SetupCamp", [""], gameID);
+  const tx = await submitAction("SetupCamp", [""], gameID);
+  return tx;
 }
 
 async function breakDownCamp(gameID) {
   console.log("Break down camp");
   // send to queue
-  await submitAction("BreakDownCamp", [""], gameID);
+  const tx = await submitAction("BreakDownCamp", [""], gameID);
+  return tx;
 }
 
 async function dig(gameID) {
   console.log("Digging...");
   // send to queue
-  await submitAction("Dig", [""], gameID);
+  const tx = await submitAction("Dig", [""], gameID);
+  return tx;
 }
 
 async function rest(gameID) {
@@ -271,7 +279,8 @@ async function rest(gameID) {
   });
 
   let answers = await inquirer.prompt(questions);
-  await submitAction("Rest", [answers.restAttribute], gameID);
+  const tx = await submitAction("Rest", [answers.restAttribute], gameID);
+  return tx;
 }
 
 async function help(gameID) {
@@ -306,11 +315,12 @@ async function help(gameID) {
   });
 
   let answers = await inquirer.prompt(questions);
-  await submitAction(
+  const tx = await submitAction(
     "Help",
     [answers.helpPlayer, answers.helpAttribute],
     gameID
   );
+  return tx;
 }
 
 /*
@@ -331,7 +341,8 @@ export async function submitMoves(
   provider,
   account,
   _showGas,
-  _saveGas
+  _saveGas,
+  callback
 ) {
   web3 = provider;
   const accounts = await provider.eth.getAccounts();
@@ -448,41 +459,58 @@ export async function submitMoves(
       default: "Idle"
     });
     const answers = await inquirer.prompt(questions);
+    let submissionFunction;
     switch (answers.move) {
       case "Idle":
-        await idle(gameID);
+        submissionFunction = idle;
+        // await idle(gameID);
         break;
       case "Move to space":
-        await moveToSpace(gameID);
+        submissionFunction = moveToSpace;
+        // await moveToSpace(gameID);
         break;
       case "Setup camp":
-        await setupCamp(gameID);
+        submissionFunction = setupCamp;
+        // await setupCamp(gameID);
         break;
       case "Dig":
-        await dig(gameID);
+        submissionFunction = dig;
+        // await dig(gameID);
         break;
       case "Rest":
-        await rest(gameID);
+        submissionFunction = rest;
+        // await rest(gameID);
         break;
       case "Help":
-        await help(gameID);
+        submissionFunction = help;
+        // await help(gameID);
         break;
       case "Break down camp":
-        await breakDownCamp(gameID);
+        submissionFunction = breakDownCamp;
+        // await breakDownCamp(gameID);
         break;
       case "Equip item":
-        await equipItem(gameID);
+        submissionFunction = equipItem;
+        // await equipItem(gameID);
         break;
       case "Trade items":
-        await tradeItems();
+        // submissionFunction = tradeItems;
+        // await tradeItems();
         break;
       case "Pick up items":
-        await pickUpItems();
+        // submissionFunction = pickUpItems;
+        // await pickUpItems();
         break;
       case "Cancel":
       default:
         console.log("Cancel move.");
         break;
+    }
+    if (submissionFunction) {
+      let result = await submissionFunction(gameID);
+      if (callback) {
+        await callback(result);
+      }
     }
   } else {
     console.log("Not submission phase.");
