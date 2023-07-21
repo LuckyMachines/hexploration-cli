@@ -180,7 +180,7 @@ async function submitMovesCallback(result) {
     const update4Block = previousBlock + 4;
     const update5Block = previousBlock + 5;
 
-    while (currentBlock <= previousBlock + 6) {
+    while (currentBlock <= previousBlock + 8) {
       currentBlock = await web3.eth.getBlockNumber();
       if (currentBlock == update1Block && !update1Shown) {
         console.log(update1);
