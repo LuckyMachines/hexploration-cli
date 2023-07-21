@@ -6,7 +6,6 @@ env.js
 /bin/.privatekey
 /settings/ContractAddresses.js
 yarn.lock
-package-lock.json
 dist/
 dist-pkg/
 screencaps/
