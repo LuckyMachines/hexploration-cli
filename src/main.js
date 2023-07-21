@@ -180,7 +180,7 @@ async function submitMovesCallback(result) {
     const update4Block = previousBlock + 4;
     const update5Block = previousBlock + 5;
 
-    while (currentBlock <= previousBlock + 8) {
+    while (currentBlock <= previousBlock + 5) {
       currentBlock = await web3.eth.getBlockNumber();
       if (currentBlock == update1Block && !update1Shown) {
         console.log(update1);
@@ -206,6 +206,26 @@ async function submitMovesCallback(result) {
     }
 
     // await checkForLandingSite(gameID);
+
+    // TODO: also check for completed queue (finished game)
+    let queueIsUpdated = false;
+    const queueID = await queue.methods.queueID(gameID).call();
+    const currentPhase = await queue.methods.currentPhase(queueID).call();
+    if (Number(currentPhase) == 1) {
+      queueIsUpdated = true;
+    }
+    if (!queueIsUpdated) {
+      console.log("Finalizing compartment upgrade modularization...");
+      while (!queueIsUpdated) {
+        const queueID = await queue.methods.queueID(gameID).call();
+        const currentPhase = await queue.methods.currentPhase(queueID).call();
+        if (Number(currentPhase) == 1) {
+          queueIsUpdated = true;
+        }
+        await pause(1);
+      }
+    }
+
     await playerInfo(network, gameID, web3, currentAccount);
     await showMap(network, gameID, web3, currentAccount);
 
