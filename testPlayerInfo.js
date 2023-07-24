@@ -77,67 +77,14 @@ const splitText = (text, length) => {
 */
 
 const displayCard = (card) => {
-  // console.log("Inside displayCard");
-  // console.log("card type:", card.cardType);
-  // console.log("card title:", card.cardTitle);
-  // console.log("card text:", card.cardText);
-  // console.log("outcomes:", card.cardOutcomes);
-  // console.log("outcome roll thresholds:", card.cardRollThresholds);
-  // console.log("roll type:", card.cardRollType);
-  // console.log("outcome index:", card.cardOutcomeIndex);
-
-  let cardWidth = 37; // change to your desired card width
-  const emptyLine = "|" + rightPadText("", cardWidth) + "|";
-  let cardBodyTexts = [
-    card.cardText,
-    `${card.cardRollThresholds[0]}-${Number(card.cardRollThresholds[1]) - 1} ${
-      card.cardOutcomes[0]
-    }`,
-    `${card.cardRollThresholds[1]}-${Number(card.cardRollThresholds[2]) - 1} ${
-      card.cardOutcomes[1]
-    }`,
-    `${card.cardRollThresholds[2]}+ ${card.cardOutcomes[2]}`
-  ];
-
-  console.log("+" + "-".repeat(cardWidth) + "+");
-  console.log(emptyLine);
-  console.log("|" + centerPadText(card.cardType, cardWidth) + "|");
-  console.log(emptyLine);
-  console.log("+" + "=".repeat(cardWidth) + "+");
-  console.log(emptyLine);
-  console.log("|" + centerPadText(card.cardTitle, cardWidth) + "|");
-  console.log(emptyLine);
-  for (let i = 0; i < cardBodyTexts.length; i++) {
-    let textLines = splitText(cardBodyTexts[i], cardWidth);
-    for (let j = 0; j < textLines.length; j++) {
-      if (i == 0) {
-        console.log("|" + centerPadText(textLines[j], cardWidth) + "|");
-      } else {
-        console.log("|" + rightPadText(textLines[j], cardWidth) + "|");
-      }
-    }
-    if (i == 0) {
-      console.log(emptyLine);
-      console.log(
-        "|" + rightPadText(` Roll Type: ${card.cardRollType}`, cardWidth) + "|"
-      );
-    }
-    console.log(emptyLine);
-  }
-
-  console.log("+" + "-".repeat(cardWidth) + "+");
-};
-
-// display an array of cards
-const displayCards = (card) => {
-  // console.log("Inside displayCard");
-  // console.log("card type:", card.cardType);
-  // console.log("card title:", card.cardTitle);
-  // console.log("card text:", card.cardText);
-  // console.log("outcomes:", card.cardOutcomes);
-  // console.log("outcome roll thresholds:", card.cardRollThresholds);
-  // console.log("roll type:", card.cardRollType);
-  // console.log("outcome index:", card.cardOutcomeIndex);
+  console.log("Inside displayCard");
+  console.log("card type:", card.cardType);
+  console.log("card title:", card.cardTitle);
+  console.log("card text:", card.cardText);
+  console.log("outcomes:", card.cardOutcomes);
+  console.log("outcome roll thresholds:", card.cardRollThresholds);
+  console.log("roll type:", card.cardRollType);
+  console.log("outcome index:", card.cardOutcomeIndex);
 
   let cardWidth = 37; // change to your desired card width
   const emptyLine = "|" + rightPadText("", cardWidth) + "|";
@@ -237,4 +184,39 @@ const displayPlayerInfo = (
         """"   """"`);
 };
 
-export { displayPlayerInfo, displayCard };
+displayPlayerInfo(
+  1,
+  "Test",
+  "A",
+  2,
+  6,
+  3,
+  6,
+  5,
+  6,
+  "Set Up (in game)",
+  "None",
+  "None",
+  "Healthy",
+  "None",
+  "None",
+  "None",
+  "Fearless Leader"
+);
+
+let card = {
+  cardType: "Event",
+  cardTitle: "Mysterious Signal",
+  cardText:
+    "Your equipment picks up a strange signal. It could be a distress call or something more sinister...",
+  cardOutcomes: [
+    "You hear the signal, but it's too faint to locate its origin or understand its meaning.",
+    "You try to decipher the strange signal but it remains a mystery.",
+    "You trace the strange signal and find a hidden cache of alien technology. +1 MOV"
+  ],
+  cardRollThresholds: ["0", "2", "5"],
+  cardRollType: "Agility",
+  cardOutcomeIndex: 0
+};
+
+displayCard(card);

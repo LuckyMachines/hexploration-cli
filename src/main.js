@@ -162,6 +162,7 @@ async function submitMovesCallback(result) {
     }
 
     // make sure we're at a future block
+    /*
     const previousBlock = result.blockNumber;
     let currentBlock = await web3.eth.getBlockNumber();
     const update1 = "Sending data back to ship...";
@@ -204,6 +205,7 @@ async function submitMovesCallback(result) {
       }
       await pause(1);
     }
+    */
 
     // await checkForLandingSite(gameID);
 
@@ -219,10 +221,11 @@ async function submitMovesCallback(result) {
       while (!queueIsUpdated) {
         const queueID = await queue.methods.queueID(gameID).call();
         const currentPhase = await queue.methods.currentPhase(queueID).call();
+        console.log(`Queue ${queueID} at ${currentPhase}...`);
         if (Number(currentPhase) == 1) {
           queueIsUpdated = true;
         }
-        await pause(1);
+        await pause(5);
       }
     }
 

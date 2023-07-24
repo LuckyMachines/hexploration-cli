@@ -15,6 +15,7 @@ import Queue from "@luckymachines/game-core/games/hexploration/abi/HexplorationQ
 import Gameplay from "@luckymachines/game-core/games/hexploration/abi/HexplorationGameplay.json";
 import GameSetup from "@luckymachines/game-core/games/hexploration/abi/GameSetup.json";
 import GameEvents from "@luckymachines/game-core/games/hexploration/abi/GameEvents.json";
+import CardDeck from "@luckymachines/game-core/games/hexploration/abi/CardDeck.json";
 
 import Addresses from "@luckymachines/game-core/games/hexploration/deployments.json";
 
@@ -30,8 +31,29 @@ const contract = async (network, contractName, provider, ethersWallet) => {
   const gameSetupAddress = Addresses[network].GAME_SETUP;
   const playerRegistryAddress = Addresses[network].PLAYER_REGISTRY;
   const gameEventsAddress = Addresses[network].GAME_EVENTS;
+  const ambushDeckAddress = Addresses[network].AMBUSH_DECK;
+  const eventDeckAddress = Addresses[network].EVENT_DECK;
+  const treasureDeckAddress = Addresses[network].TREASURE_DECK;
   let c;
   switch (contractName) {
+    case "ambush":
+    case "ambushDeck":
+      c = ethersWallet
+        ? new Ethers.Contract(ambushDeckAddress, CardDeck, ethersWallet)
+        : new provider.eth.Contract(CardDeck, ambushDeckAddress);
+      break;
+    case "event":
+    case "eventDeck":
+      c = ethersWallet
+        ? new Ethers.Contract(eventDeckAddress, CardDeck, ethersWallet)
+        : new provider.eth.Contract(CardDeck, eventDeckAddress);
+      break;
+    case "treasure":
+    case "treasureDeck":
+      c = ethersWallet
+        ? new Ethers.Contract(treasureDeckAddress, CardDeck, ethersWallet)
+        : new provider.eth.Contract(CardDeck, treasureDeckAddress);
+      break;
     case "board":
       c = ethersWallet
         ? new Ethers.Contract(boardAddress, HexplorationBoard, ethersWallet)
