@@ -119,7 +119,7 @@ const displayCard = (card) => {
         textBlock = "|" + rightPadText(textLines[j], cardWidth) + "|";
       }
       if (i > 0 && i != card.cardOutcomeIndex + 1) {
-        textBlock = chalk.dim(textBlock);
+        textBlock = chalk.gray(textBlock);
       }
       if (i == 0 || (i > 0 && i < 3 && card.cardType != "Treasure") || i == 3) {
         console.log(textBlock);
