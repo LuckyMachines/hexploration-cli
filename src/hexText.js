@@ -138,7 +138,7 @@ export async function drawMap(
   let highlights = showList ? showList : [];
   //console.log("Hightlights:", highlights);
   //console.log("start zone:", startingZone);
-  console.log("Current Zone:", currentPlayerZone);
+  // console.log("Current Zone:", currentPlayerZone);
   console.log("Game Phase:", gamePhase);
   console.log(`Day #${dayNumber}`);
   console.log(`Artifacts Recovered: (${artifacts.length}/${totalPlayers})`);

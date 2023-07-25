@@ -1,3 +1,5 @@
+import chalk from "chalk";
+
 // Draws a character sheet for a player in ASCII art
 const leftPadText = (text, length) => {
   if (text.length > length) {
@@ -110,11 +112,16 @@ const displayCard = (card) => {
   for (let i = 0; i < cardBodyTexts.length; i++) {
     let textLines = splitText(cardBodyTexts[i], cardWidth);
     for (let j = 0; j < textLines.length; j++) {
+      let textBlock;
       if (i == 0) {
-        console.log("|" + centerPadText(textLines[j], cardWidth) + "|");
+        textBlock = "|" + centerPadText(textLines[j], cardWidth) + "|";
       } else {
-        console.log("|" + rightPadText(textLines[j], cardWidth) + "|");
+        textBlock = "|" + rightPadText(textLines[j], cardWidth) + "|";
       }
+      if (i > 0 && i != card.cardOutcomeIndex + 1) {
+        textBlock = chalk.dim(textBlock);
+      }
+      console.log(textBlock);
     }
     if (i == 0) {
       console.log(emptyLine);
@@ -129,112 +136,110 @@ const displayCard = (card) => {
 };
 
 // display an array of cards
-const displayCards = (card) => {
-  // console.log("Inside displayCard");
-  // console.log("card type:", card.cardType);
-  // console.log("card title:", card.cardTitle);
-  // console.log("card text:", card.cardText);
-  // console.log("outcomes:", card.cardOutcomes);
-  // console.log("outcome roll thresholds:", card.cardRollThresholds);
-  // console.log("roll type:", card.cardRollType);
-  // console.log("outcome index:", card.cardOutcomeIndex);
-
-  let cardWidth = 37; // change to your desired card width
-  const emptyLine = "|" + rightPadText("", cardWidth) + "|";
-  let cardBodyTexts = [
-    card.cardText,
-    `${card.cardRollThresholds[0]}-${Number(card.cardRollThresholds[1]) - 1} ${
-      card.cardOutcomes[0]
-    }`,
-    `${card.cardRollThresholds[1]}-${Number(card.cardRollThresholds[2]) - 1} ${
-      card.cardOutcomes[1]
-    }`,
-    `${card.cardRollThresholds[2]}+ ${card.cardOutcomes[2]}`
-  ];
-
-  console.log("+" + "-".repeat(cardWidth) + "+");
-  console.log(emptyLine);
-  console.log("|" + centerPadText(card.cardType, cardWidth) + "|");
-  console.log(emptyLine);
-  console.log("+" + "=".repeat(cardWidth) + "+");
-  console.log(emptyLine);
-  console.log("|" + centerPadText(card.cardTitle, cardWidth) + "|");
-  console.log(emptyLine);
-  for (let i = 0; i < cardBodyTexts.length; i++) {
-    let textLines = splitText(cardBodyTexts[i], cardWidth);
-    for (let j = 0; j < textLines.length; j++) {
-      if (i == 0) {
-        console.log("|" + centerPadText(textLines[j], cardWidth) + "|");
-      } else {
-        console.log("|" + rightPadText(textLines[j], cardWidth) + "|");
-      }
-    }
-    if (i == 0) {
-      console.log(emptyLine);
-      console.log(
-        "|" + rightPadText(` Roll Type: ${card.cardRollType}`, cardWidth) + "|"
-      );
-    }
-    console.log(emptyLine);
+const displayCards = (cards) => {
+  for (let i = 0; i < cards.length; i++) {
+    displayCard(cards[i]);
   }
-
-  console.log("+" + "-".repeat(cardWidth) + "+");
 };
 
-const displayPlayerInfo = (
-  playerID,
-  name,
-  badge,
-  movement,
-  totalMovement,
-  agility,
-  totalAgility,
-  dexterity,
-  totalDexterity,
-  campsite,
-  leftHand,
-  rightHand,
-  status,
-  artifact,
-  relic,
-  shield,
-  teamRole
-) => {
+const displayPlayerInfo = (playerProfile) => {
   // Generate ASCII art
+  const playerColors = { 1: "red", 2: "magenta", 3: "blue", 4: "yellow" };
+  const colorBadge = chalk[playerColors[playerProfile.playerID]].bold(
+    centerPadText("[" + playerProfile.badge + "]", 12)
+  );
+
   console.log(`
           _-----_        ______________________________
          /  MMM  \\      |o| ${rightPadText(
-           `Player ${playerID}${name == "" ? "" : " - " + name}`,
+           `Player ${playerProfile.playerID}${
+             playerProfile.name == "" ? "" : " - " + playerProfile.name
+           }`,
            24
          )} |o|
         |  /o o\\  |     |o|                          |o|
         | (  C  ) |     |o| Movement Range:${leftPadText(
-          `${movement}/${totalMovement}`,
+          `${playerProfile.movement}/${playerProfile.totalMovement}`,
           9
         )} |o|
          \\ \\_W_/ /      |o| Agility:${leftPadText(
-           `${agility}/${totalAgility}`,
+           `${playerProfile.agility}/${playerProfile.totalAgility}`,
            16
          )} |o|
         _/=======\\_     |o| Dexterity:${leftPadText(
-          `${dexterity}/${totalDexterity}`,
+          `${playerProfile.dexterity}/${playerProfile.totalDexterity}`,
           14
         )} |o|
        /           \\    |o|                          |o|
-      / ${centerPadText(`[${badge}]`, 12)}\\   |o| Campsite:${leftPadText(
-    campsite,
+      / ${colorBadge}\\   |o| Campsite:${leftPadText(
+    playerProfile.campsite,
     15
   )} |o|
-     /  /|       |\\  \\  |o| Left Hand:${leftPadText(leftHand, 14)} |o|
-    (===)\\=======/(===) |o| Right Hand:${leftPadText(rightHand, 13)} |o|
-      \\_|    |    |_/   |o| Status:${leftPadText(status, 17)} |o|
-        |   / \\   |     |o| Artifact:${leftPadText(artifact, 15)} |o|
-        |  |   |  |     |o| Relic:${leftPadText(relic, 18)} |o|
-        |  |   |  |     |o| Shield:${leftPadText(shield, 17)} |o|
+     /  /|       |\\  \\  |o| Left Hand:${leftPadText(
+       playerProfile.leftHand,
+       14
+     )} |o|
+    (===)\\=======/(===) |o| Right Hand:${leftPadText(
+      playerProfile.rightHand,
+      13
+    )} |o|
+      \\_|    |    |_/   |o| Status:${leftPadText(playerProfile.status, 17)} |o|
+        |   / \\   |     |o| Artifact:${leftPadText(
+          playerProfile.artifact,
+          15
+        )} |o|
+        |  |   |  |     |o| Relic:${leftPadText(playerProfile.relic, 18)} |o|
+        |  |   |  |     |o| Shield:${leftPadText(playerProfile.shield, 17)} |o|
         \\__/   \\__/     |o|                          |o|
-        (==)   (==)     |o| ${rightPadText(teamRole, 24)} |o|
+        (==)   (==)     |o| ${rightPadText(playerProfile.teamRole, 24)} |o|
        (____) (____)    |o|__________________________|o|
         """"   """"`);
 };
 
-export { displayPlayerInfo, displayCard };
+const displayStats = (data) => {
+  // console.log("Inside displayStats...");
+  if (data.inventoryChanges && data.inventoryChanges.length >= 3) {
+    if (data.inventoryChanges[0] != "") {
+      console.log("Item loss:", data.inventoryChanges[0]);
+    }
+    if (data.inventoryChanges[1] != "") {
+      console.log("Item gain:", data.inventoryChanges[1]);
+    }
+    if (data.inventoryChanges[2] != "") {
+      console.log("Hand loss:", data.inventoryChanges[2]);
+    }
+  } else {
+    console.log("Inventory changes is undefined");
+  }
+
+  // console.log("Stat Updates:", data.statUpdates);
+  // check if statUpdates is defined and has at least 3 elements
+  if (data.statUpdates && data.statUpdates.length >= 3) {
+    if (
+      data.statUpdates[0] != 0 ||
+      data.statUpdates[1] != 0 ||
+      data.statUpdates[2] != 0
+    ) {
+      console.log("Stat Updates:");
+    }
+    if (data.statUpdates[0] > 0) {
+      console.log(`Movement: +${data.statUpdates[0]}`);
+    } else if (data.statUpdates[0] < 0) {
+      console.log(`Movement: ${data.statUpdates[0]}`);
+    }
+
+    if (data.statUpdates[1] > 0) {
+      console.log(`Agility: +${data.statUpdates[1]}`);
+    } else if (data.statUpdates[1] < 0) {
+      console.log(`Agility: ${data.statUpdates[1]}`);
+    }
+
+    if (data.statUpdates[2] > 0) {
+      console.log(`Dexterity: +${data.statUpdates[2]}`);
+    } else if (data.statUpdates[2] < 0) {
+      console.log(`Dexterity: ${data.statUpdates[2]}`);
+    }
+  }
+};
+
+export { displayPlayerInfo, displayCard, displayCards, displayStats };

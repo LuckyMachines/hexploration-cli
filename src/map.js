@@ -44,7 +44,7 @@ export async function showMap(network, gameID, provider, account) {
   const totalPlayers = await summary.methods
     .totalPlayers(board._address, gameID)
     .call();
-  console.log(`Current Player: P${playerID}`);
+  // console.log(`Current Player: P${playerID}`);
   await drawMap(
     Number(mapSize.rows),
     Number(mapSize.columns),

@@ -225,11 +225,15 @@ async function submitMovesCallback(result) {
         if (Number(currentPhase) == 1) {
           queueIsUpdated = true;
         }
-        await pause(5);
+        await pause(15);
       }
     }
 
     await playerInfo(network, gameID, web3, currentAccount);
+    // pause for time to read player info
+
+    await pause(10);
+
     await showMap(network, gameID, web3, currentAccount);
 
     await checkCanSubmitMove(gameID);

@@ -1,7 +1,12 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
 import Contract from "./contract";
-import { displayPlayerInfo, displayCard } from "./playerInfo";
+import {
+  displayPlayerInfo,
+  displayCard,
+  displayCards,
+  displayStats
+} from "./playerInfo";
 
 let currentAccount;
 let summary;
@@ -56,74 +61,29 @@ export async function playerInfo(network, gameID, provider, account) {
   const playerID = await playerSummary.methods
     .getPlayerID(board._address, gameID, currentAccount)
     .call();
-  const name = "";
-  const badge = "P" + playerID;
-  const movement = playerStats.movement;
-  const totalMovement = 4;
-  const agility = playerStats.agility;
-  const totalAgility = 4;
-  const dexterity = playerStats.dexterity;
-  const totalDexterity = 4;
-  const campsite = activeInventory.campsite ? "Packed Up" : "Set Up (in game)";
-  const leftHand = handInventory.leftHandItem
-    ? handInventory.leftHandItem
-    : "None";
-  const rightHand = handInventory.rightHandItem
-    ? handInventory.rightHandItem
-    : "None";
-  const status = activeInventory.status ? activeInventory.status : "Healthy";
-  const artifact = activeInventory.artifact ? activeInventory.artifact : "None";
-  const relic = activeInventory.relic ? activeInventory.relic : "None";
-  const shield = activeInventory.shield ? "Enabled" : "None";
-  const teamRole = "Fearless Leader";
-  displayPlayerInfo(
-    playerID,
-    name,
-    badge,
-    movement,
-    totalMovement,
-    agility,
-    totalAgility,
-    dexterity,
-    totalDexterity,
-    campsite,
-    leftHand,
-    rightHand,
-    status,
-    artifact,
-    relic,
-    shield,
-    teamRole
-  );
+  // TODO: get total movement / agility / dexterity from contracts
 
-  /*
-  console.log(
-    `\nMovement: ${playerStats.movement}, Agility: ${playerStats.agility}, Dexterity: ${playerStats.dexterity}`
-  );
-  console.log(
-    "Campsite:",
-    activeInventory.campsite ? "Packed Up" : "Set Up (in game)"
-  );
-  console.log(
-    `Left hand item: ${
-      handInventory.leftHandItem ? handInventory.leftHandItem : "None"
-    }, Right hand item: ${
-      handInventory.rightHandItem ? handInventory.rightHandItem : "None"
-    }`
-  );
-  console.log(
-    "Player Status:",
-    activeInventory.status ? activeInventory.status : "Healthy"
-  );
-  console.log(
-    "Artifact:",
-    activeInventory.artifact ? activeInventory.artifact : "None"
-  );
-  console.log("Relic:", activeInventory.relic ? activeInventory.relic : "None");
-  console.log("Shield:", activeInventory.shield ? "Enabled" : "None");
-*/
-  //TODO: ensure these values are stored during dig + day phase action
-  console.log("\nLast Actions:");
+  const playerProfile = {
+    playerID: playerID,
+    name: "",
+    badge: "P" + playerID,
+    movement: playerStats.movement,
+    totalMovement: 4,
+    agility: playerStats.agility,
+    totalAgility: 4,
+    dexterity: playerStats.dexterity,
+    totalDexterity: 4,
+    campsite: activeInventory.campsite ? "Packed Up" : "Set Up (in game)",
+    leftHand: handInventory.leftHandItem ? handInventory.leftHandItem : "None",
+    rightHand: handInventory.rightHandItem
+      ? handInventory.rightHandItem
+      : "None",
+    status: activeInventory.status ? activeInventory.status : "Healthy",
+    artifact: activeInventory.artifact ? activeInventory.artifact : "None",
+    relic: activeInventory.relic ? activeInventory.relic : "None",
+    shield: activeInventory.shield ? "Enabled" : "None",
+    teamRole: "Fearless Leader"
+  };
 
   const cardDecks = {
     Event: eventDeck,
@@ -138,36 +98,36 @@ export async function playerInfo(network, gameID, provider, account) {
     const lastActionDeck = hasCard ? cardDecks[eventSummary.cardType] : null;
     // console.log(`lastActionDeck is defined: ${lastActionDeck !== undefined}`);
     // console.log(`cardType: ${eventSummary.cardType}`);
+    let lastActionCardDetail = "";
+    let lastActionCardOutcomes = ["", "", ""];
+    let lastActionCardRollThresholds = [0, 0, 0];
+    let lastActionCardRollTypeRequired = 0;
+    if (lastActionDeck) {
+      lastActionCardDetail = await lastActionDeck.methods
+        .description(eventSummary.cardDrawn)
+        .call();
 
-    const lastActionCardDetail = hasCard
-      ? await lastActionDeck.methods.description(eventSummary.cardDrawn).call()
-      : "";
-    // console.log(`lastActionCardDetail: ${lastActionCardDetail}`);
+      // console.log(`lastActionCardDetail: ${lastActionCardDetail}`);
 
-    const lastActionCardOutcomes = hasCard
-      ? await lastActionDeck.methods
-          .getOutcomeDescription(eventSummary.cardDrawn)
-          .call()
-      : ["", "", ""]; // strings
-    // console.log(`lastActionCardOutcomes: ${lastActionCardOutcomes}`);
+      lastActionCardOutcomes = await lastActionDeck.methods
+        .getOutcomeDescription(eventSummary.cardDrawn)
+        .call();
+      // console.log(`lastActionCardOutcomes: ${lastActionCardOutcomes}`);
 
-    const lastActionCardRollThresholds = hasCard
-      ? await lastActionDeck.methods
-          .getRollThresholds(eventSummary.cardDrawn)
-          .call()
-      : [0, 0, 0]; // uints
-    // console.log(
-    //   `lastActionCardRollThresholds: ${lastActionCardRollThresholds}`
-    // );
+      lastActionCardRollThresholds = await lastActionDeck.methods
+        .getRollThresholds(eventSummary.cardDrawn)
+        .call();
+      // console.log(
+      //   `lastActionCardRollThresholds: ${lastActionCardRollThresholds}`
+      // );
 
-    const lastActionCardRollTypeRequired = hasCard
-      ? await lastActionDeck.methods
-          .getRollTypeRequired(eventSummary.cardDrawn)
-          .call()
-      : 0; // uint
-    // console.log(
-    //   `lastActionCardRollTypeRequired: ${lastActionCardRollTypeRequired}`
-    // );
+      lastActionCardRollTypeRequired = await lastActionDeck.methods
+        .getRollTypeRequired(eventSummary.cardDrawn)
+        .call();
+      // console.log(
+      //   `lastActionCardRollTypeRequired: ${lastActionCardRollTypeRequired}`
+      // );
+    }
 
     let finalSummary = hasCard
       ? {
@@ -205,9 +165,15 @@ export async function playerInfo(network, gameID, provider, account) {
           cardRollType: "",
           cardOutcomeIndex: -1,
           currentAction: ACTION[Number(eventSummary.currentAction)],
-          inventoryChanges: eventSummary.inventoryChanges,
-          statUpdates: eventSummary.statUpdates,
+          inventoryChanges: eventSummary.inventoryChanges
+            ? eventSummary.inventoryChanges
+            : ["", "", ""],
+          statUpdates: eventSummary.statUpdates
+            ? eventSummary.statUpdates
+            : [0, 0, 0],
           movementPath: eventSummary.movementPath
+            ? eventSummary.movementPath
+            : []
         };
 
     // console.log("Final summary:", finalSummary);
@@ -244,92 +210,105 @@ export async function playerInfo(network, gameID, provider, account) {
       break;
     }
   }
+  console.log("Player Action:");
+  console.log(lastActionSummary.currentAction);
+  switch (lastActionSummary.currentAction) {
+    case "Move":
+      // console.log(`Movement Path: ${lastActionSummary.movementPath}`);
+      break;
+    case "Setup Camp":
+      break;
+    case "Break Down Camp":
+      break;
+    case "Dig":
+      break;
+    case "Rest":
+      // TODO: get rest options
+      break;
+    case "Help":
+      // TODO: get help options
+      break;
+    default:
+      break;
+  }
+
+  // TODO: list player inventory
 
   // console.log("Last Action summary:", lastActionSummary);
   // console.log("pre-displayCard");
-  if (lastActionSummary.hasCard) {
+
+  if (
+    lastActionSummary &&
+    lastActionSummary.hasCard &&
+    lastActionSummary.cardType != "None"
+  ) {
     // console.log("displayCard");
     displayCard(lastActionSummary);
   }
+  displayStats(lastActionSummary);
   // console.log("post-displayCard");
 
   //[item loss, item gain, hand loss]
-  if (
-    lastActionSummary.inventoryChanges &&
-    lastActionSummary.inventoryChanges.length >= 3
-  ) {
-    if (lastActionSummary.inventoryChanges[0] != "") {
-      console.log("Item loss:", lastActionSummary.inventoryChanges[0]);
-    }
-    if (lastActionSummary.inventoryChanges[1] != "") {
-      console.log("Item gain:", lastActionSummary.inventoryChanges[1]);
-    }
-    if (lastActionSummary.inventoryChanges[2] != "") {
-      console.log("Hand loss:", lastActionSummary.inventoryChanges[2]);
-    }
-  } else {
-    console.log("Inventory changes is undefined");
-  }
-
-  // console.log("Stat Updates:", lastActionSummary.statUpdates);
-  // check if statUpdates is defined and has at least 3 elements
-  if (
-    lastActionSummary.statUpdates &&
-    lastActionSummary.statUpdates.length >= 3
-  ) {
-    if (
-      lastActionSummary.statUpdates[0] != 0 ||
-      lastActionSummary.statUpdates[1] != 0 ||
-      lastActionSummary.statUpdates[2] != 0
-    ) {
-      console.log("Stat Updates:");
-    }
-    if (lastActionSummary.statUpdates[0] > 0) {
-      console.log(`Movement: +${lastActionSummary.statUpdates[0]}`);
-    } else if (lastActionSummary.statUpdates[0] < 0) {
-      console.log(`Movement: ${lastActionSummary.statUpdates[0]}`);
-    }
-
-    if (lastActionSummary.statUpdates[1] > 0) {
-      console.log(`Agility: +${lastActionSummary.statUpdates[1]}`);
-    } else if (lastActionSummary.statUpdates[1] < 0) {
-      console.log(`Agility: ${lastActionSummary.statUpdates[1]}`);
-    }
-
-    if (lastActionSummary.statUpdates[2] > 0) {
-      console.log(`Dexterity: +${lastActionSummary.statUpdates[2]}`);
-    } else if (lastActionSummary.statUpdates[2] < 0) {
-      console.log(`Dexterity: ${lastActionSummary.statUpdates[2]}`);
-    }
-  }
 
   // TODO: only display the following immediately after a day phase event
 
+  // Note: this uses the old array format, not an EventSummary struct
+  /*
+  returns (
+            uint256[] memory playerIDs,
+            string[] memory cardTypes,
+            string[] memory cardsDrawn,
+            string[] memory cardResults,
+            string[3][] memory inventoryChanges,
+            int8[3][] memory statUpdates
+        )
+  */
   const lastDayEvents = await summary.methods
     .lastDayPhaseEvents(board._address, gameID)
     .call();
 
   let lastDayEventData = [];
+
   for (let i = 0; i < lastDayEvents.playerIDs.length; i++) {
     const inventoryChanges = lastDayEvents.inventoryChanges[i];
-    const inventoryChange =
-      inventoryChanges[0] != ""
-        ? `Item loss: ${inventoryChanges[0]}`
-        : inventoryChanges[1] != ""
-        ? `Item gain: ${inventoryChanges[1]}`
-        : inventoryChanges[2] != ""
-        ? `Item loss: ${inventoryChanges[2]}`
-        : "";
+    // const inventoryChange =
+    //   inventoryChanges[0] != ""
+    //     ? `Item loss: ${inventoryChanges[0]}`
+    //     : inventoryChanges[1] != ""
+    //     ? `Item gain: ${inventoryChanges[1]}`
+    //     : inventoryChanges[2] != ""
+    //     ? `Item loss: ${inventoryChanges[2]}`
+    //     : "";
     lastDayEventData.push({
-      "Player ID": lastDayEvents.playerIDs[i].toString(),
-      "Card Type": lastDayEvents.cardTypes[i],
-      "Card Drawn": lastDayEvents.cardsDrawn[i],
-      Result: lastDayEvents.cardResults[i],
-      Inventory: inventoryChange,
-      "Stat Updates": lastDayEvents.statUpdates[i]
+      playerID: lastDayEvents.playerIDs[i].toString(),
+      cardType: lastDayEvents.cardTypes[i],
+      cardDrawn: lastDayEvents.cardsDrawn[i],
+      cardResult: lastDayEvents.cardResults[i],
+      inventoryChanges: inventoryChanges,
+      statUpdates: lastDayEvents.statUpdates[i]
     });
   }
 
-  console.log("\n Day Time Events:");
-  console.table(lastDayEventData);
+  let lastDayEventSummary;
+  for (let i = 0; i < lastDayEventData.length; i++) {
+    const ldeSummary = lastDayEventData[i];
+    if (ldeSummary.playerID == playerID) {
+      lastDayEventSummary = await summaryFromEventSummary(ldeSummary);
+      break;
+    }
+  }
+
+  // console.table(lastDayEventData);
+
+  if (
+    lastDayEventSummary &&
+    lastDayEventSummary.hasCard &&
+    lastDayEventSummary.cardType != "None"
+  ) {
+    console.log("\n Day Time Events:");
+    displayCard(lastDayEventSummary);
+    displayStats(lastDayEventSummary);
+  }
+
+  displayPlayerInfo(playerProfile);
 }
