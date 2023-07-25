@@ -97,6 +97,8 @@ async function submitMovesCallback(result) {
       "Failed"
     ];
     let processingPhase = 0;
+    let hasLineToClear = false;
+
     // console.log(
     //   `subscribing to TurnProcessingStart event for gameID ${gameID}, from block ${result.blockNumber}...`
     // );
@@ -153,7 +155,13 @@ async function submitMovesCallback(result) {
         fromBlock: result.blockNumber
       })
       .once("data", async (event) => {
-        console.log("Digital remapping in progress...");
+        if (hasLineToClear) {
+          process.stdout.clearLine(0);
+          process.stdout.cursorTo(0);
+        }
+        process.stdout.write("Digital remapping in progress...");
+        hasLineToClear = true;
+        await pause(1);
         turnProcessed = true;
       });
 
@@ -170,6 +178,8 @@ async function submitMovesCallback(result) {
     const update3 = "Calculating new coordinates...";
     const update4 = "Predicting weather patterns...";
     const update5 = "Eating a snack...";
+
+
     
     let update1Shown = false;
     let update2Shown = false;
@@ -218,17 +228,51 @@ async function submitMovesCallback(result) {
       queueIsUpdated = true;
     }
     if (!queueIsUpdated) {
-      console.log("Finalizing compartment upgrade modularization...");
+      const updateMessages = [
+        "Sending data back to ship...",
+        "Sensors calibrating...",
+        "Calculating new coordinates...",
+        "Predicting weather patterns...",
+        "Reticulating splines...",
+        "Eating a snack...",
+        "Calling in the cavalry...",
+        "Checking for updates...",
+        "Cramping your style...",
+        "Getting ready to rumble..."
+      ];
+      if (hasLineToClear) {
+        process.stdout.clearLine(0);
+        process.stdout.cursorTo(0);
+      }
+      process.stdout.write("Finalizing compartment upgrade modularization...");
+      hasLineToClear = true;
+
+      await pause(1);
+
+      let updateIndex = 0;
       while (!queueIsUpdated) {
         const queueID = await queue.methods.queueID(gameID).call();
         const currentPhase = await queue.methods.currentPhase(queueID).call();
-        console.log(`Queue ${queueID} at ${currentPhase}...`);
+        // console.log(`Queue ${queueID} at ${currentPhase}...`);
         if (Number(currentPhase) == 1) {
           queueIsUpdated = true;
+        }
+        if (hasLineToClear) {
+          process.stdout.clearLine(0);
+          process.stdout.cursorTo(0);
+        }
+        process.stdout.write(updateMessages[updateIndex]);
+        hasLineToClear = true;
+        if (updateIndex != updateMessages.length - 1) {
+          updateIndex++;
+        } else {
+          updateIndex = 0;
         }
         await pause(15);
       }
     }
+
+    console.log("\n");
 
     await playerInfo(network, gameID, web3, currentAccount);
     // pause for time to read player info

@@ -236,6 +236,9 @@ export async function playerInfo(network, gameID, provider, account) {
 
   // console.log("Last Action summary:", lastActionSummary);
   // console.log("pre-displayCard");
+  const gamePhase = await summary.methods
+    .currentPhase(board._address, gameID)
+    .call();
 
   if (
     lastActionSummary &&
@@ -301,6 +304,7 @@ export async function playerInfo(network, gameID, provider, account) {
   // console.table(lastDayEventData);
 
   if (
+    gamePhase == "Day" &&
     lastDayEventSummary &&
     lastDayEventSummary.hasCard &&
     lastDayEventSummary.cardType != "None"
