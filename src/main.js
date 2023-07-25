@@ -170,6 +170,7 @@ async function submitMovesCallback(result) {
     const update3 = "Calculating new coordinates...";
     const update4 = "Predicting weather patterns...";
     const update5 = "Eating a snack...";
+    
     let update1Shown = false;
     let update2Shown = false;
     let update3Shown = false;

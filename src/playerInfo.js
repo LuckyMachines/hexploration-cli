@@ -121,9 +121,11 @@ const displayCard = (card) => {
       if (i > 0 && i != card.cardOutcomeIndex + 1) {
         textBlock = chalk.dim(textBlock);
       }
-      console.log(textBlock);
+      if (i == 0 || (i > 0 && i < 3 && card.cardType != "Treasure") || i == 3) {
+        console.log(textBlock);
+      }
     }
-    if (i == 0) {
+    if (i == 0 && card.cardType != "Treasure") {
       console.log(emptyLine);
       console.log(
         "|" + rightPadText(` Roll Type: ${card.cardRollType}`, cardWidth) + "|"
