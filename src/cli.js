@@ -167,7 +167,7 @@ const startWithoutMetaMask = async (options, network) => {
 };
 
 //start this ourselves in packaged thing!)
-console.log("SHOULD START CLI!!");
+// console.log("SHOULD START CLI!!");
 let args = process.argv;
-console.log("args", args);
+// console.log("args", args);
 cli(args);

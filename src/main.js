@@ -327,6 +327,7 @@ async function mainMenu(gameID) {
   const answers = await inquirer.prompt(questions);
   switch (answers.choice) {
     case "Submit Move":
+      console.log("Checking moves...");
       let canSubmit = await checkCanSubmitMove(gameID);
       if (canSubmit) {
         await submitMoves(
