@@ -7,6 +7,7 @@ import {
   displayCards,
   displayStats
 } from "./playerInfo";
+import AnimatedLine from "./animatedLine";
 
 let currentAccount;
 let summary;
@@ -29,6 +30,12 @@ const ACTION = [
 const ROLL_TYPE = ["Movement", "Agility", "Dexterity", "None"];
 
 export async function playerInfo(network, gameID, provider, account) {
+  playerInfoStatusLine = new AnimatedLine(
+    "Getting updated player info ",
+    ["|", "/", "-", "\\"],
+    "✔️"
+  );
+  playerInfoStatusLine.animate();
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
   // console.log("Getting player info for game:", gameID);
@@ -210,6 +217,7 @@ export async function playerInfo(network, gameID, provider, account) {
       break;
     }
   }
+  playerInfoStatusLine.stop();
   console.log("Player Action:");
   console.log(lastActionSummary.currentAction);
   switch (lastActionSummary.currentAction) {

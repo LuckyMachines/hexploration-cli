@@ -3,7 +3,7 @@ export default class AnimatedLine {
     this.line = line ? line : "";
     this.animation = animation ? animation : ["|", "/", "-", "\\"];
     this.animationIndex = 0;
-    this.animationInterval = interval ? interval : 100;
+    this.animationInterval = interval ? interval : 250;
     this.finalFrame = finalFrame ? finalFrame : "✔️";
     this.loop = loop;
     this.loopRuns = 0;

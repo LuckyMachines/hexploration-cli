@@ -3,6 +3,8 @@ import inquirer from "inquirer";
 
 import Contract from "./contract.js";
 
+import AnimatedLine from "./animatedLine.js";
+
 let currentAccount;
 let hexplorationBoard;
 let hexplorationController;
@@ -21,6 +23,15 @@ let web3;
 
 let showGas = false;
 let saveGas;
+
+let activeAnimations = [];
+
+function stopAnimations() {
+  activeAnimations.forEach((animation) => {
+    animation.stop();
+  });
+  activeAnimations = [];
+}
 
 async function submitAction(action, options, gameID) {
   const lh = submitLeftHand ? submitLeftHand : "";
@@ -191,60 +202,99 @@ async function moveToSpace(gameID) {
   // }
 }
 
-async function equipItem(gameID) {
-  console.log("Equip item...");
+export async function equipItem(network, gameID, provider, account) {
+  web3 = provider;
+  const accounts = await provider.eth.getAccounts();
+  currentAccount = account ? account : accounts[0];
+  console.log("Equip Item:");
+  console.log("Getting inventory...");
+  hexplorationBoard = await Contract(network, "board", provider);
+  hexplorationController = await Contract(network, "controller", provider);
+  summary = await Contract(network, "summary", provider);
+  playerSummary = await Contract(network, "playerSummary", provider);
+  gameSummary = await Contract(network, "gameSummary", provider);
+  queue = await Contract(network, "queue", provider);
 
-  let inventoryChoices = [];
-  let excluded = ["Campsite"];
-  if (submitLeftHand) {
-    excluded.push(submitLeftHand);
-  }
-  if (submitRightHand) {
-    excluded.push(submitRightHand);
-  }
+  inventory = await playerSummary.methods
+    .inactiveInventory(hexplorationBoard._address, gameID)
+    .call({ from: currentAccount });
+  // console.log(inventory);
+
+  activeInventory = await playerSummary.methods
+    .activeInventory(hexplorationBoard._address, gameID)
+    .call({ from: currentAccount });
+
+  const _queueID = await summary.methods
+    .currentGameplayQueue(hexplorationBoard._address, gameID)
+    .call();
+
+  let hasItems = false;
   for (let i = 0; i < inventory.itemBalances.length; i++) {
     if (
-      Number(inventory.itemBalances[i]) > 0 &&
-      excluded.indexOf(inventory.itemTypes[i]) < 0
+      i != inventory.itemTypes.indexOf("Campsite") &&
+      Number(inventory.itemBalances[i]) > 0
     ) {
-      inventoryChoices.push(inventory.itemTypes[i]);
+      hasItems = true;
+      break;
     }
   }
-  inventoryChoices.push("Clear hand");
 
-  let questions = [];
-  questions.push({
-    type: "list",
-    name: "handToUse",
-    message: "Which hand?",
-    choices: ["Left", "Right"],
-    default: "Left"
-  });
-  questions.push({
-    type: "list",
-    name: "itemToEquip",
-    message: "Which item?",
-    choices: inventoryChoices,
-    default: inventoryChoices[0]
-  });
-
-  let answers = await inquirer.prompt(questions);
-
-  if (answers.itemToEquip != "Clear hand") {
-    console.log(
-      `Equipping ${answers.itemToEquip} to ${answers.handToUse} hand`
-    );
+  if (!hasItems) {
+    console.log("No items to equip");
   } else {
-    console.log(`Clearing ${answers.handToUse} hand`);
-  }
-  if (answers.handToUse == "Left") {
-    submitLeftHand =
-      answers.itemToEquip != "Clear hand" ? answers.itemToEquip : "None";
-  } else {
-    submitRightHand =
-      answers.itemToEquip != "Clear hand" ? answers.itemToEquip : "None";
+    let inventoryChoices = [];
+    let excluded = ["Campsite"];
+    if (submitLeftHand) {
+      excluded.push(submitLeftHand);
+    }
+    if (submitRightHand) {
+      excluded.push(submitRightHand);
+    }
+    for (let i = 0; i < inventory.itemBalances.length; i++) {
+      if (
+        Number(inventory.itemBalances[i]) > 0 &&
+        excluded.indexOf(inventory.itemTypes[i]) < 0
+      ) {
+        inventoryChoices.push(inventory.itemTypes[i]);
+      }
+    }
+    inventoryChoices.push("Clear hand");
+
+    let questions = [];
+    questions.push({
+      type: "list",
+      name: "handToUse",
+      message: "Which hand?",
+      choices: ["Left", "Right"],
+      default: "Left"
+    });
+    questions.push({
+      type: "list",
+      name: "itemToEquip",
+      message: "Which item?",
+      choices: inventoryChoices,
+      default: inventoryChoices[0]
+    });
+
+    let answers = await inquirer.prompt(questions);
+
+    if (answers.itemToEquip != "Clear hand") {
+      console.log(
+        `Equipping ${answers.itemToEquip} to ${answers.handToUse} hand`
+      );
+    } else {
+      console.log(`Clearing ${answers.handToUse} hand`);
+    }
+    if (answers.handToUse == "Left") {
+      submitLeftHand =
+        answers.itemToEquip != "Clear hand" ? answers.itemToEquip : "None";
+    } else {
+      submitRightHand =
+        answers.itemToEquip != "Clear hand" ? answers.itemToEquip : "None";
+    }
   }
   //console.log(`LH: ${submitLeftHand}, RH: ${submitRightHand}`);
+  return [submitLeftHand, submitRightHand];
 }
 
 async function setupCamp(gameID) {
@@ -342,8 +392,20 @@ export async function submitMoves(
   account,
   _showGas,
   _saveGas,
-  callback
+  callback,
+  _submitLeftHand,
+  _submitRightHand
 ) {
+  submitLeftHand = _submitLeftHand;
+  submitRightHand = _submitRightHand;
+  const checkingMovesLine = new AnimatedLine(
+    "Checking available moves ",
+    [".", "..", "...", "....", "....."],
+    [" ✔️"]
+  );
+  activeAnimations.push(checkingMovesLine);
+  checkingMovesLine.animate();
+
   web3 = provider;
   const accounts = await provider.eth.getAccounts();
   currentAccount = account ? account : accounts[0];
@@ -430,9 +492,9 @@ export async function submitMoves(
   let canPickupItems = false;
   //////////////////////////
   if (isSubmissionPhase) {
-    if (hasItems) {
-      choices.push("Equip item");
-    }
+    // if (hasItems) {
+    //   choices.push("Equip item");
+    // }
     if (isAtCampsite) {
       choices.push("Dig");
       choices.push("Rest");
@@ -458,6 +520,7 @@ export async function submitMoves(
       choices: choices,
       default: "Idle"
     });
+    stopAnimations();
     const answers = await inquirer.prompt(questions);
     let submissionFunction;
     switch (answers.move) {
@@ -489,10 +552,10 @@ export async function submitMoves(
         submissionFunction = breakDownCamp;
         // await breakDownCamp(gameID);
         break;
-      case "Equip item":
-        submissionFunction = equipItem;
-        // await equipItem(gameID);
-        break;
+      // case "Equip item":
+      //   submissionFunction = equipItem;
+      //   // await equipItem(gameID);
+      //   break;
       case "Trade items":
         // submissionFunction = tradeItems;
         // await tradeItems();

@@ -63,43 +63,31 @@ class AnimatedLine {
 }
 
 const main = async () => {
-  const line = new AnimatedLine(
-    "Loading ",
-    ["|=>", "|==>", "|===>", "|====>"],
-    "|====> Done!",
-    null,
-    true
-  );
-  // line.animate();
-  line.display();
-  await pause(1);
-  line.progressFrame();
-  await pause(1);
-  line.progressFrame();
-  await pause(1);
-  line.progressFrame();
-  await pause(1);
-  line.progressFrame();
-  await pause(1);
-  line.progressFrame();
-  await pause(0.75);
-  line.progressFrame();
-  await pause(0.75);
-  line.progressFrame();
-  await pause(0.75);
-  line.progressFrame();
-  await pause(0.75);
-  line.progressFrame();
-  await pause(0.5);
-  line.progressFrame();
-  await pause(0.5);
-  line.progressFrame();
-  await pause(0.5);
-  line.progressFrame();
-  await pause(0.5);
-  line.progressFrame();
+  // create a new animated line
+  const line = new AnimatedLine("Doing something ");
   line.animate();
+  // let it run for a few seconds...
   await pause(3);
+
+  // update the line
+  line.line = "Doing another thing ";
+  await pause(3);
+
+  // update the animation frames
+  line.animation = ["🌑", "🌒", "🌓", "🌔", "🌕"];
+  await pause(3);
+
+  line.line = "About to remove the static string ";
+  await pause(3);
+
+  // remove the static string
+  line.line = "";
+  await pause(3);
+
+  // set the final frame
+  line.finalFrame = "⭐️";
+
+  // stop the animation
   line.stop();
 };
 

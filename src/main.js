@@ -1,8 +1,9 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
-import { showMap } from "./map";
+import { showMap, prepareMap } from "./map";
 import { progressPhase } from "./phase";
 import { submitMoves } from "./submit";
+import { equipItem } from "./submit";
 import { playerInfo } from "./player";
 import { chooseLandingSite } from "./landingSite";
 import { viewQueue } from "./queue";
@@ -13,6 +14,7 @@ import Provider from "./provider";
 import Contract from "./contract.js";
 import fs from "fs";
 import gasReport from "../gas-report.json";
+import AnimatedLine from "./animatedLine";
 
 let web3; // provider
 let ethers; // ethers provider
@@ -33,6 +35,17 @@ let gameType = "1p";
 let network;
 let gameID;
 let canSubmitMove = false;
+let submitRightHand;
+let submitLeftHand;
+
+let activeAnimations = [];
+
+function stopAnimations() {
+  activeAnimations.forEach((animation) => {
+    animation.stop();
+  });
+  activeAnimations = [];
+}
 
 function pause(time) {
   return new Promise((resolve) =>
@@ -63,8 +76,24 @@ async function waitForGameStart(gameID) {
   }
   // console.log("Start game callback result:", result);
   // GameStart(uint256 indexed gameID, uint256 timeStamp)
+  await playerInfo(network, gameID, web3, currentAccount);
 
-  await showMap(network, gameID, web3, currentAccount);
+  const loadingMapLine = new AnimatedLine(
+    "Loading map ",
+    [".", "..", "...", "....", "....."],
+    "✔️"
+  );
+  activeAnimations.push(loadingMapLine);
+  loadingMapLine.animate();
+  const mapData = await prepareMap(network, gameID, web3, currentAccount);
+  stopAnimations();
+  await inquirer.prompt({
+    type: "input",
+    name: "enter",
+    message: "Press Enter to continue..."
+  });
+
+  await showMap(network, gameID, web3, currentAccount, mapData);
   await checkCanSubmitMove(gameID);
   if (!canSubmitMove) {
     console.log("Waiting for next turn to start...");
@@ -83,7 +112,20 @@ async function submitMovesCallback(result) {
   if (result) {
     canSubmitMove = false;
     // console.log("Submit moves callback result:", result);
-    console.log("Waiting for all moves to be submitted...");
+    // console.log("Waiting for all moves to be submitted...");
+    const waitingForMovesLine = new AnimatedLine(
+      "Waiting for all moves to be submitted ",
+      [".", "..", "...", "....", "....."],
+      "✔️"
+    );
+    activeAnimations.push(waitingForMovesLine);
+    waitingForMovesLine.animate();
+
+    const genericLoadingLine = new AnimatedLine(
+      "",
+      ["⏳", "⌛", "⏳", "⌛", "⏳", "⌛", "⏳", "⌛", "⏳", "⌛"],
+      "✔️"
+    );
 
     let turnProcessed = false;
 
@@ -97,7 +139,7 @@ async function submitMovesCallback(result) {
       "Failed"
     ];
     let processingPhase = 0;
-    let hasLineToClear = false;
+    // let hasLineToClear = false;
 
     // console.log(
     //   `subscribing to TurnProcessingStart event for gameID ${gameID}, from block ${result.blockNumber}...`
@@ -144,7 +186,11 @@ async function submitMovesCallback(result) {
         fromBlock: result.blockNumber
       })
       .once("data", async (event) => {
+        stopAnimations();
         console.log("All moves processed.");
+        activeAnimations.push(genericLoadingLine);
+        genericLoadingLine.line = "Digital remapping in progress ";
+        genericLoadingLine.animate();
       });
     gameEvents.events
       .ProcessingPhaseChange({
@@ -155,12 +201,6 @@ async function submitMovesCallback(result) {
         fromBlock: result.blockNumber
       })
       .once("data", async (event) => {
-        if (hasLineToClear) {
-          process.stdout.clearLine(0);
-          process.stdout.cursorTo(0);
-        }
-        process.stdout.write("Digital remapping in progress...");
-        hasLineToClear = true;
         await pause(1);
         turnProcessed = true;
       });
@@ -168,57 +208,6 @@ async function submitMovesCallback(result) {
     while (!turnProcessed) {
       await pause(1);
     }
-
-    // make sure we're at a future block
-    /*
-    const previousBlock = result.blockNumber;
-    let currentBlock = await web3.eth.getBlockNumber();
-    const update1 = "Sending data back to ship...";
-    const update2 = "Sensors calibrating...";
-    const update3 = "Calculating new coordinates...";
-    const update4 = "Predicting weather patterns...";
-    const update5 = "Eating a snack...";
-
-
-    
-    let update1Shown = false;
-    let update2Shown = false;
-    let update3Shown = false;
-    let update4Shown = false;
-    let update5Shown = false;
-    const update1Block = previousBlock + 1;
-    const update2Block = previousBlock + 2;
-    const update3Block = previousBlock + 3;
-    const update4Block = previousBlock + 4;
-    const update5Block = previousBlock + 5;
-
-    while (currentBlock <= previousBlock + 5) {
-      currentBlock = await web3.eth.getBlockNumber();
-      if (currentBlock == update1Block && !update1Shown) {
-        console.log(update1);
-        update1Shown = true;
-      }
-      if (currentBlock == update2Block && !update2Shown) {
-        console.log(update2);
-        update2Shown = true;
-      }
-      if (currentBlock == update3Block && !update3Shown) {
-        console.log(update3);
-        update3Shown = true;
-      }
-      if (currentBlock == update4Block && !update4Shown) {
-        console.log(update4);
-        update4Shown = true;
-      }
-      if (currentBlock == update5Block && !update5Shown) {
-        console.log(update5);
-        update5Shown = true;
-      }
-      await pause(1);
-    }
-    */
-
-    // await checkForLandingSite(gameID);
 
     // TODO: also check for completed queue (finished game)
     let queueIsUpdated = false;
@@ -229,23 +218,20 @@ async function submitMovesCallback(result) {
     }
     if (!queueIsUpdated) {
       const updateMessages = [
-        "Sending data back to ship...",
-        "Sensors calibrating...",
-        "Calculating new coordinates...",
-        "Predicting weather patterns...",
-        "Reticulating splines...",
-        "Eating a snack...",
-        "Calling in the cavalry...",
-        "Checking for updates...",
-        "Cramping your style...",
-        "Getting ready to rumble..."
+        "Sending data back to ship ",
+        "Sensors calibrating ",
+        "Calculating new coordinates ",
+        "Predicting weather patterns ",
+        "Reticulating splines ",
+        "Eating a snack ",
+        "Calling in the cavalry ",
+        "Checking for update ",
+        "Cramping your style ",
+        "Getting ready to rumble "
       ];
-      if (hasLineToClear) {
-        process.stdout.clearLine(0);
-        process.stdout.cursorTo(0);
-      }
-      process.stdout.write("Finalizing compartment upgrade modularization...");
-      hasLineToClear = true;
+
+      genericLoadingLine.line =
+        "Finalizing compartment upgrade modularization ";
 
       await pause(1);
 
@@ -257,12 +243,7 @@ async function submitMovesCallback(result) {
         if (Number(currentPhase) == 1) {
           queueIsUpdated = true;
         }
-        if (hasLineToClear) {
-          process.stdout.clearLine(0);
-          process.stdout.cursorTo(0);
-        }
-        process.stdout.write(updateMessages[updateIndex]);
-        hasLineToClear = true;
+        genericLoadingLine.line = updateMessages[updateIndex];
         if (updateIndex != updateMessages.length - 1) {
           updateIndex++;
         } else {
@@ -271,19 +252,41 @@ async function submitMovesCallback(result) {
         await pause(15);
       }
     }
-
-    console.log("\n");
+    genericLoadingLine.line = "Game update complete ";
+    stopAnimations();
 
     await playerInfo(network, gameID, web3, currentAccount);
-    // pause for time to read player info
 
-    await pause(10);
+    const loadingMapLine = new AnimatedLine(
+      "Loading map ",
+      [".", "..", "...", "....", "....."],
+      "✔️"
+    );
+    activeAnimations.push(loadingMapLine);
+    loadingMapLine.animate();
 
-    await showMap(network, gameID, web3, currentAccount);
+    const mapData = await prepareMap(network, gameID, web3, currentAccount);
 
+    stopAnimations();
+
+    await inquirer.prompt({
+      type: "input",
+      name: "enter",
+      message: "Press Enter to continue..."
+    });
+
+    await showMap(network, gameID, web3, currentAccount, mapData);
+
+    const waitingForNextTurnLine = new AnimatedLine(
+      "Waiting for next turn to start ",
+      [".", "..", "...", "...."],
+      "✔️"
+    );
+    activeAnimations.push(waitingForNextTurnLine);
+    waitingForNextTurnLine.animate();
     await checkCanSubmitMove(gameID);
     if (!canSubmitMove) {
-      console.log("Waiting for next turn to start...");
+      // console.log("Waiting for next turn to start...");
       while (!canSubmitMove) {
         await checkCanSubmitMove(gameID);
         await pause(1);
@@ -299,11 +302,13 @@ async function submitMovesCallback(result) {
 }
 
 async function mainMenu(gameID) {
+  stopAnimations();
   const questions = [];
   let choices = [];
   // let canSubmitMove = await checkCanSubmitMove(gameID);
   if (canSubmitMove) {
     choices.push("Submit Move");
+    choices.push("Equip Item");
   }
 
   if (adminMode) {
@@ -327,8 +332,15 @@ async function mainMenu(gameID) {
   const answers = await inquirer.prompt(questions);
   switch (answers.choice) {
     case "Submit Move":
-      console.log("Checking moves...");
+      const checkingMovesLine = new AnimatedLine(
+        "Checking can submit moves ",
+        [".", "..", "...", "....", "....."],
+        ["✔️"]
+      );
+      activeAnimations.push(checkingMovesLine);
+      checkingMovesLine.animate();
       let canSubmit = await checkCanSubmitMove(gameID);
+      stopAnimations();
       if (canSubmit) {
         await submitMoves(
           network,
@@ -337,12 +349,21 @@ async function mainMenu(gameID) {
           currentAccount,
           showGas,
           addValueToGasReport,
-          submitMovesCallback
+          submitMovesCallback,
+          submitLeftHand,
+          submitRightHand
         );
       } else {
         console.log("Unable to submit move. You may have already submitted.");
       }
       break;
+    case "Equip Item":
+      [submitLeftHand, submitRightHand] = await equipItem(
+        network,
+        gameID,
+        web3,
+        currentAccount
+      );
     case "Player Info":
       await playerInfo(network, gameID, web3, currentAccount);
       await checkForLandingSite(gameID);
@@ -482,6 +503,7 @@ async function registerPlayerIfNeeded(gameID) {
       console.log(`${adminMode ? chalk.red.bold("Admin mode enabled") : ""}`);
     } catch (err) {
       console.log("Error registering:", err.message);
+      stopAnimations();
     }
   } else {
     console.log("Player registered. Entering game.");
@@ -530,6 +552,7 @@ async function registerNewGame(numberPlayers) {
     return newGameID;
   } catch (err) {
     console.log("Unable to create game.");
+    stopAnimations();
   }
 }
 
