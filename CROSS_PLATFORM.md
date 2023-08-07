@@ -1,10 +1,11 @@
 1. `npm run build`
    - this generates /dist/cli.cjs
    - use `node dist/cli.cjs` to test it at this point
-2. `pkg . --options no-deprecation` (build with node option to hide deprecation warnings - see below)
+2. `npm run package`
+   - under the hood this runs `pkg . --options no-deprecation` (build with node option to hide deprecation warnings - see below)
    - this generates /dist-pkg .exe file and other executables
-   - use `./dist-pkg/hexploration-cli-win.exe` to start it up
-   - or double click the icon
+3. - use `./dist-pkg/hexploration-cli-win.exe` to start it up
+   - or double click the icons!!
 
 #### exact error for buffer issue
 

@@ -169,12 +169,12 @@ const startWithoutMetaMask = async (options, network) => {
   }
 };
 
-// if (detectOS() === "windows") {
-//   console.log("we are on windows");
-//   setConsoleBufferHeightWindows(100);
-// } else {
-//   console.log("not on windows");
-// }
+if (detectOS() === "windows") {
+  //console.log("we are on windows");
+  setConsoleBufferHeightWindows(100);
+} else {
+  console.log("not on windows");
+}
 
 //start this ourselves in packaged thing!)
 // console.log("SHOULD START CLI!!");
