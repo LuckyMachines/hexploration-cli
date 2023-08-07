@@ -14,8 +14,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "import-addresses": "node scripts/import-addresses.js",
-    "build": "esbuild src/cli.js --bundle --platform=node --outfile=dist/cli.cjs --define:import.meta.url=__dirname",
-    "play": "node dist/cli.cjs"
+    "build": "esbuild src/cli.js --bundle --platform=node --outfile=dist/cli.cjs --define:import.meta.url=__dirname --external:ref-napi --external:ffi-napi",
+    "play": "node dist/cli.cjs",
+    "package": "pkg . --options no-deprecation"
   },
   "keywords": [
     "cli",
@@ -33,19 +34,24 @@
     "dotenv": "^16.0.3",
     "esm": "^3.2.25",
     "ethers": "^5.7.2",
+    "ffi-napi": "^4.0.3",
     "inquirer": "^8.2.4",
+    "ref-napi": "^3.0.3",
+    "ref-struct-di": "^1.1.1",
     "web3": "^1.7.3"
-  },
-  "devDependencies": {
-    "esbuild": "^0.17.18"
   },
   "engines": {
     "node": ">=18.15.0"
   },
   "pkg": {
     "assets": [
-      "prebuilds/**/*.node"
+      "prebuilds/**/*.node",
+      "node_modules/ref-napi/**/*",
+      "node_modules/ffi-napi/**/*"
     ],
     "outputPath": "dist-pkg"
+  },
+  "devDependencies": {
+    "esbuild": "^0.18.19"
   }
 }
