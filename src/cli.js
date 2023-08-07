@@ -173,7 +173,7 @@ if (detectOS() === "windows") {
   //console.log("we are on windows");
   setConsoleBufferHeightWindows(100);
 } else {
-  console.log("not on windows");
+  //console.log("not on windows");
 }
 
 //start this ourselves in packaged thing!)
